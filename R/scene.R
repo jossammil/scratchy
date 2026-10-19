@@ -26,11 +26,13 @@ exc_scene <- function(..., background = "#ffffff", app_state = list()) {
   new_scene(unclass(els), app, attr(els, "files") %||% list())
 }
 
-new_scene <- function(elements, app_state, files) {
+# `meta` holds R-only settings (such as the paper) that aren't written to files.
+new_scene <- function(elements, app_state, files, meta = list()) {
   structure(
     list(elements = ensure_indices(unname(elements)),
          appState = app_state,
-         files = files),
+         files = files,
+         meta = meta),
     class = "exc_scene"
   )
 }
@@ -56,7 +58,7 @@ exc_add <- function(scene, ...) {
   add <- c.exc_elements(...)
   files <- c(scene$files, attr(add, "files"))
   new_scene(c(scene$elements, unclass(add)), scene$appState,
-            files[!duplicated(names(files))])
+            files[!duplicated(names(files))], scene$meta)
 }
 
 check_scene <- function(x, arg = rlang::caller_arg(x)) {

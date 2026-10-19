@@ -16,7 +16,8 @@ exc_line(
   angle = 0,
   group = NULL,
   id = NULL,
-  custom = NULL
+  custom = NULL,
+  seed = NULL
 )
 
 exc_arrow(
@@ -32,7 +33,8 @@ exc_arrow(
   angle = 0,
   group = NULL,
   id = NULL,
-  custom = NULL
+  custom = NULL,
+  seed = NULL
 )
 
 exc_freedraw(
@@ -44,7 +46,8 @@ exc_freedraw(
   angle = 0,
   group = NULL,
   id = NULL,
-  custom = NULL
+  custom = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -69,6 +72,9 @@ segments.}
 \item{id}{Element id. Generated if \code{NULL}.}
 
 \item{custom}{A list stored in the element's \code{customData}.}
+
+\item{seed}{The rough.js seed that decides the element's wobble. Random
+(from R's RNG) if \code{NULL}; change it to "re-roll" the hand-drawn look.}
 
 \item{start, end}{Arrowheads: \code{NULL} for none, or one of \code{"arrow"}, \code{"bar"},
 \code{"circle"}, \code{"circle_outline"}, \code{"triangle"}, \code{"triangle_outline"},

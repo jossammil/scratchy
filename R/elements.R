@@ -121,10 +121,10 @@ bind_label <- function(container, label, s, center) {
 }
 
 shape_constructor <- function(type, x, y, width, height, label, args, style, roundness,
-                              angle, group, id, custom) {
+                              angle, group, id, custom, seed = NULL) {
   s <- resolve_style(style, args)
   el <- base_element(type, x, y, width, height, s, angle = angle, roundness = roundness,
-                     group = group, id = id, custom = custom)
+                     group = group, id = id, custom = custom, seed = seed)
   if (is.null(label)) return(new_elements(list(el)))
   new_elements(bind_label(el, label, s, c(x + width / 2, y + height / 2)))
 }
@@ -144,6 +144,8 @@ shape_constructor <- function(type, x, y, width, height, label, args, style, rou
 #' @param group Group id(s) to put the element in. See [exc_group()].
 #' @param id Element id. Generated if `NULL`.
 #' @param custom A list stored in the element's `customData`.
+#' @param seed The rough.js seed that decides the element's wobble. Random
+#'   (from R's RNG) if `NULL`; change it to "re-roll" the hand-drawn look.
 #' @return An `exc_elements` object.
 #' @export
 #' @examples
@@ -151,25 +153,27 @@ shape_constructor <- function(type, x, y, width, height, label, args, style, rou
 #' exc_ellipse(200, 0, 120, 80, fill = "#a5d8ff", fill_style = "hachure")
 #' exc_diamond(360, 0, 120, 100, rounded = TRUE)
 exc_rect <- function(x, y, width, height, label = NULL, ..., style = NULL,
-                     rounded = FALSE, angle = 0, group = NULL, id = NULL, custom = NULL) {
+                     rounded = FALSE, angle = 0, group = NULL, id = NULL, custom = NULL,
+                     seed = NULL) {
   shape_constructor("rectangle", x, y, width, height, label, list(...), style,
-                    if (rounded) list(type = 3) else NULL, angle, group, id, custom)
+                    if (rounded) list(type = 3) else NULL, angle, group, id, custom, seed)
 }
 
 #' @rdname exc_rect
 #' @export
 exc_ellipse <- function(x, y, width, height, label = NULL, ..., style = NULL,
-                        angle = 0, group = NULL, id = NULL, custom = NULL) {
+                        angle = 0, group = NULL, id = NULL, custom = NULL, seed = NULL) {
   shape_constructor("ellipse", x, y, width, height, label, list(...), style,
-                    NULL, angle, group, id, custom)
+                    NULL, angle, group, id, custom, seed)
 }
 
 #' @rdname exc_rect
 #' @export
 exc_diamond <- function(x, y, width, height, label = NULL, ..., style = NULL,
-                        rounded = FALSE, angle = 0, group = NULL, id = NULL, custom = NULL) {
+                        rounded = FALSE, angle = 0, group = NULL, id = NULL, custom = NULL,
+                        seed = NULL) {
   shape_constructor("diamond", x, y, width, height, label, list(...), style,
-                    if (rounded) list(type = 2) else NULL, angle, group, id, custom)
+                    if (rounded) list(type = 2) else NULL, angle, group, id, custom, seed)
 }
 
 #' Text
@@ -198,12 +202,12 @@ exc_text <- function(text, x, y, ..., hjust = 0, vjust = 0, text_align = NULL,
   new_elements(list(el))
 }
 
-linear_element <- function(type, pts, s, angle, roundness, group, id, custom) {
+linear_element <- function(type, pts, s, angle, roundness, group, id, custom, seed = NULL) {
   origin <- pts[1, ]
   rel <- sweep(pts, 2, origin)
   el <- base_element(type, origin[[1]], origin[[2]], diff(range(rel[, 1])), diff(range(rel[, 2])),
                      s, angle = angle, roundness = roundness, group = group, id = id,
-                     custom = custom)
+                     custom = custom, seed = seed)
   el$points <- xy_to_points(rel)
   el <- set_null(el, "lastCommittedPoint")
   el <- set_null(el, "startBinding")
@@ -237,13 +241,13 @@ linear_element <- function(type, pts, s, angle, roundness, group, id, custom) {
 #' exc_arrow(c(0, 150), c(0, 0), label = "next")
 #' exc_freedraw(cos(seq(0, 6, 0.2)) * 30, sin(seq(0, 6, 0.2)) * 30)
 exc_line <- function(x, y = NULL, ..., style = NULL, closed = FALSE, curved = FALSE,
-                     angle = 0, group = NULL, id = NULL, custom = NULL) {
+                     angle = 0, group = NULL, id = NULL, custom = NULL, seed = NULL) {
   pts <- as_xy(x, y)
   if (nrow(pts) < 2) cli::cli_abort("A line needs at least two points.")
   if (closed && any(pts[1, ] != pts[nrow(pts), ])) pts <- rbind(pts, pts[1, ])
   s <- resolve_style(style, list(...))
   el <- linear_element("line", pts, s, angle, if (curved) list(type = 2) else NULL,
-                       group, id, custom)
+                       group, id, custom, seed)
   el <- set_null(el, "startArrowhead")
   el <- set_null(el, "endArrowhead")
   el$polygon <- closed
@@ -260,12 +264,12 @@ check_arrowhead <- function(a, arg) {
 #' @export
 exc_arrow <- function(x, y = NULL, ..., start = NULL, end = "arrow", curved = FALSE,
                       elbowed = FALSE, label = NULL, style = NULL, angle = 0,
-                      group = NULL, id = NULL, custom = NULL) {
+                      group = NULL, id = NULL, custom = NULL, seed = NULL) {
   pts <- as_xy(x, y)
   if (nrow(pts) < 2) cli::cli_abort("An arrow needs at least two points.")
   s <- resolve_style(style, list(...))
   el <- linear_element("arrow", pts, s, angle, if (curved) list(type = 2) else NULL,
-                       group, id, custom)
+                       group, id, custom, seed)
   el$startArrowhead <- check_arrowhead(start, "start")
   el$endArrowhead <- check_arrowhead(end, "end")
   if (is.null(start)) el <- set_null(el, "startArrowhead")
@@ -280,14 +284,16 @@ exc_arrow <- function(x, y = NULL, ..., start = NULL, end = "arrow", curved = FA
 #' @rdname exc_line
 #' @export
 exc_freedraw <- function(x, y = NULL, ..., pressures = NULL, style = NULL, angle = 0,
-                         group = NULL, id = NULL, custom = NULL) {
+                         group = NULL, id = NULL, custom = NULL, seed = NULL) {
   pts <- as_xy(x, y)
   s <- resolve_style(style, list(...))
-  el <- linear_element("freedraw", pts, s, angle, NULL, group, id, custom)
+  el <- linear_element("freedraw", pts, s, angle, NULL, group, id, custom, seed)
   el$startBinding <- NULL
   el$endBinding <- NULL
   el$pressures <- as.list(pressures %||% numeric())
   el$simulatePressure <- is.null(pressures)
+  # Excalidraw sets this when a stroke is finished; it closes the end cap.
+  el$lastCommittedPoint <- el$points[[length(el$points)]]
   new_elements(list(el))
 }
 

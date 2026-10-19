@@ -18,7 +18,8 @@ exc_rect(
   angle = 0,
   group = NULL,
   id = NULL,
-  custom = NULL
+  custom = NULL,
+  seed = NULL
 )
 
 exc_ellipse(
@@ -32,7 +33,8 @@ exc_ellipse(
   angle = 0,
   group = NULL,
   id = NULL,
-  custom = NULL
+  custom = NULL,
+  seed = NULL
 )
 
 exc_diamond(
@@ -47,7 +49,8 @@ exc_diamond(
   angle = 0,
   group = NULL,
   id = NULL,
-  custom = NULL
+  custom = NULL,
+  seed = NULL
 )
 }
 \arguments{
@@ -73,6 +76,9 @@ attached to the shape when you edit it in Excalidraw.}
 \item{id}{Element id. Generated if \code{NULL}.}
 
 \item{custom}{A list stored in the element's \code{customData}.}
+
+\item{seed}{The rough.js seed that decides the element's wobble. Random
+(from R's RNG) if \code{NULL}; change it to "re-roll" the hand-drawn look.}
 }
 \value{
 An \code{exc_elements} object.

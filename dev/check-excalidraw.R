@@ -34,3 +34,17 @@ excalidraw_check <- function(scene, svg_file = NULL) {
   if (!is.null(svg_file) && isTRUE(res$ok)) writeLines(res$svg, svg_file)
   res
 }
+
+# Rasterise an SVG file with headless Chrome (for eyeballing parity).
+svg_to_png <- function(svg_file, png_file, zoom = 2) {
+  b <- chromote::ChromoteSession$new()
+  on.exit(b$close(), add = TRUE)
+  svg <- paste(readLines(svg_file, warn = FALSE), collapse = "\n")
+  html <- sprintf('<html><body style="margin:0;background:#fff">%s</body></html>', svg)
+  tmp <- tempfile(fileext = ".html")
+  writeLines(html, tmp)
+  b$Page$navigate(paste0("file://", tmp))
+  Sys.sleep(1.5)
+  b$screenshot(png_file, selector = "svg", scale = zoom, show = FALSE)
+  invisible(png_file)
+}
