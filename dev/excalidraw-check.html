@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>excalidraw check</title>
+</head>
+<body>
+<script type="module">
+  // Dev-only harness: loads the real Excalidraw from a CDN so R can check that
+  // the scenes it writes are accepted, and get Excalidraw's own SVG export.
+  import * as EX from "https://esm.sh/@excalidraw/excalidraw@0.18.1?deps=react@19.1.0,react-dom@19.1.0";
+
+  window.checkScene = async (json) => {
+    const errors = [];
+    const origError = console.error;
+    console.error = (...args) => { errors.push(args.map(String).join(" ")); origError(...args); };
+    try {
+      const data = JSON.parse(json);
+      const restored = EX.restore(data, null, null);
+      const svg = await EX.exportToSvg({
+        elements: restored.elements,
+        appState: { ...restored.appState, exportBackground: true, exportPadding: 10 },
+        files: restored.files || {},
+      });
+      return {
+        ok: true,
+        n_in: data.elements.length,
+        n_restored: restored.elements.filter((e) => !e.isDeleted).length,
+        types: restored.elements.map((e) => e.type),
+        dims: restored.elements.map((e) => [e.type, e.x, e.y, e.width, e.height]),
+        svg: svg.outerHTML,
+        errors,
+      };
+    } catch (e) {
+      return { ok: false, message: String(e && e.stack || e), errors };
+    } finally {
+      console.error = origError;
+    }
+  };
+  window.excalidrawReady = true;
+</script>
+</body>
+</html>

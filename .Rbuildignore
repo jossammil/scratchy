@@ -1,0 +1,6 @@
+^LICENSE\.md$
+^data-raw$
+^srcjs$
+^dev$
+^README\.Rmd$
+^node_modules$

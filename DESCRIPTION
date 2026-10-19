@@ -1,0 +1,34 @@
+Package: excalidrawer
+Title: Excalidraw-Style Charts, Drawings and Slides from R
+Version: 0.0.0.9000
+Authors@R:
+    person("Joseph S.", "Miller", , "jossammil@gmail.com", role = c("aut", "cre"))
+Description: Build, read and write 'Excalidraw' scenes from R, turn 'ggplot2'
+    and base graphics into editable hand-drawn drawings, and render them
+    offline with the same 'rough.js' engine and handwriting fonts that
+    'Excalidraw' uses. Not affiliated with or endorsed by Excalidraw.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Depends:
+    R (>= 4.1)
+Imports:
+    cli,
+    grDevices,
+    grid,
+    jsonlite,
+    rlang,
+    stats,
+    systemfonts (>= 1.1.0),
+    textshaping (>= 0.4.0),
+    tools,
+    utils,
+    V8
+Suggests:
+    png,
+    ragg,
+    svglite,
+    testthat (>= 3.0.0),
+    withr
+Config/testthat/edition: 3

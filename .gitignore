@@ -1,0 +1,10 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+.DS_Store
+node_modules/
+dev/parity/
+docs/
+inst/doc
+*.tar.gz
