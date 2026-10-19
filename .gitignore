@@ -8,3 +8,5 @@ dev/parity/
 docs/
 inst/doc
 *.tar.gz
+dev/gallery/
+dev/check.log

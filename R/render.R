@@ -37,6 +37,13 @@ exc_grob <- function(scene, padding = 10, background = TRUE,
   paper_info <- paper_spec(paper %||% scene$meta$paper)
   if (!is.null(paper_info$background)) bg <- paper_info$background
   bb <- exc_bbox(scene)
+  # Converted plots keep the plot's own canvas (with its margins).
+  if (!is.null(scene$meta$size)) {
+    bb[["xmin"]] <- min(bb[["xmin"]], padding)
+    bb[["ymin"]] <- min(bb[["ymin"]], padding)
+    bb[["xmax"]] <- max(bb[["xmax"]], scene$meta$size[["width"]] - padding)
+    bb[["ymax"]] <- max(bb[["ymax"]], scene$meta$size[["height"]] - padding)
+  }
   if (frames) {
     for (e in els) {
       if (e$type == "frame" && !is.null(e$name)) bb[["ymin"]] <- min(bb[["ymin"]], e$y - 24)
