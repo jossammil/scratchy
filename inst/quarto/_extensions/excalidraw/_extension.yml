@@ -1,0 +1,30 @@
+title: Excalidraw
+author: excalidrawer
+version: 0.1.0
+quarto-required: ">=1.4.0"
+contributes:
+  formats:
+    revealjs:
+      theme: [default, excalidraw.scss]
+      css: [fonts.css, sketchy.css]
+      transition: fade
+      background-transition: fade
+      slide-number: true
+      center: false
+      width: 1280
+      height: 720
+      highlight-style: github
+      fig-align: center
+      fig-dpi: 192
+      knitr:
+        opts_chunk:
+          dev: ragg_png
+          dev.args:
+            bg: transparent
+          fig.width: 9
+          fig.height: 5
+          echo: false
+          message: false
+          warning: false
+      revealjs-plugins:
+        - sketchy

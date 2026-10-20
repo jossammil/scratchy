@@ -32,6 +32,20 @@
         "devtools::load_all('.', quiet = TRUE); shiny::runApp(run_sketch_studio(launch.browser = FALSE), port = 8767, launch.browser = FALSE)"
       ],
       "port": 8767
+    },
+    {
+      "name": "deck-test",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8768",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "/private/tmp/claude-501/-Users-jsm-data-projects-excalidrawer/15f51627-7640-4664-86e9-cc69ce354010/scratchpad/deck"
+      ],
+      "port": 8768
     }
   ]
 }

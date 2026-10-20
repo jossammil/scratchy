@@ -1,0 +1,48 @@
+/*-- scss:defaults --*/
+// Excalidraw's palette (Open Color) and fonts.
+$ink: #1e1e1e;
+$blue: #1971c2;
+$red: #e03131;
+$green: #2f9e44;
+$yellow-fill: #ffec99;
+$blue-fill: #a5d8ff;
+
+$body-bg: #fdfcf7;
+$body-color: $ink;
+$link-color: $blue;
+$selection-bg: $yellow-fill;
+$font-family-sans-serif: "Excalifont", "Comic Shanns", "Nunito", system-ui, sans-serif;
+$font-family-monospace: "Cascadia Code", ui-monospace, monospace;
+$presentation-font-size-root: 34px;
+$presentation-heading-font: "Excalifont", cursive;
+$presentation-heading-color: $ink;
+$presentation-heading-font-weight: normal;
+$presentation-heading-text-transform: none;
+$presentation-h1-font-size: 2.3em;
+$presentation-h2-font-size: 1.7em;
+$presentation-h3-font-size: 1.3em;
+$code-block-font-size: 0.6em;
+$code-color: $blue;
+$code-block-bg: #f8f9fa;
+$code-block-border-color: #ced4da;
+
+/*-- scss:rules --*/
+.reveal .slides section { text-align: left; }
+.reveal .title-slide h1.title { margin-top: 1.4em; }
+.reveal .subtitle, .reveal .quarto-title-author-name, .reveal .date { font-family: "Nunito", sans-serif; }
+.reveal p, .reveal li { line-height: 1.35; }
+.reveal ul li::marker { content: "~ "; color: $blue; }
+.reveal ol li::marker { color: $blue; font-family: "Excalifont", cursive; }
+.reveal .small, .reveal small { font-family: "Nunito", sans-serif; }
+.reveal .footer, .reveal .slide-number { font-family: "Excalifont", cursive; }
+
+// hand-drawn tables
+.reveal table { border-collapse: collapse; font-size: 0.8em; }
+.reveal table th { border-bottom: 2px solid $ink; }
+.reveal table td { border-bottom: 1px dashed #adb5bd; }
+
+// code blocks get a sketchy frame
+.reveal pre { border: 2px solid $ink; border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px; box-shadow: 3px 4px 0 rgba(30, 30, 30, 0.12); }
+
+// callouts drawn like Excalidraw shapes
+.reveal .callout { border: 2px solid $ink !important; border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px !important; }

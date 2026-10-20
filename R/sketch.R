@@ -12,6 +12,8 @@
 #'   `roughness`, `font`, `theme` or `seed`.
 #' @param preset Optional [exc_preset()] name.
 #' @param paper Optional paper background; see [exc_papers()].
+#' @param background Draw the background colour; `FALSE` leaves it
+#'   transparent (nice on slides with a paper background).
 #' @param width,height Fixed layout size in px. By default the device size
 #'   is used.
 #' @return An `exc_sketch` object. Print it to draw it, or turn it into a
@@ -26,9 +28,10 @@
 #' sketch(p, preset = "chalkboard")
 #' sketch(~ barplot(VADeaths, beside = TRUE))
 #' }
-sketch <- function(plot, ..., preset = NULL, paper = NULL, width = NULL, height = NULL) {
+sketch <- function(plot, ..., preset = NULL, paper = NULL, background = TRUE,
+                   width = NULL, height = NULL) {
   structure(list(plot = plot, args = list(...), preset = preset, paper = paper,
-                 width = width, height = height),
+                 background = background, width = width, height = height),
             class = "exc_sketch")
 }
 
@@ -58,7 +61,8 @@ plot.exc_sketch <- function(x, ...) print.exc_sketch(x, ...)
 #' @export
 grid.draw.exc_sketch <- function(x, recording = TRUE) {
   scene <- sketch_scene(x, grDevices::dev.size("in"))
-  grid::grid.draw(exc_grob(scene, paper = x$paper), recording = recording)
+  grid::grid.draw(exc_grob(scene, paper = x$paper, background = x$background %||% TRUE),
+                  recording = recording)
 }
 
 #' @exportS3Method knitr::knit_print

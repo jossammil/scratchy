@@ -1,0 +1,5 @@
+name: RevealSketchy
+script: [rough.js, sketchy.js]
+config:
+  excalidraw:
+    paper: plain

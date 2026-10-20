@@ -1,0 +1,60 @@
+/* Hand-drawn extras for the excalidraw Quarto format. */
+
+/* Sticky notes: [text]{.sticky-note} or ::: {.sticky-note} */
+.reveal .sticky-note {
+  display: inline-block;
+  background: #ffec99;
+  padding: 0.5em 0.8em;
+  margin: 0.2em 0.4em;
+  font-family: "Excalifont", cursive;
+  transform: rotate(-2deg);
+  border-radius: 4px 14px 6px 12px;
+  box-shadow: 4px 5px 0 rgba(30, 30, 30, 0.15);
+}
+.reveal .sticky-note.blue { background: #a5d8ff; transform: rotate(1.5deg); }
+.reveal .sticky-note.pink { background: #fcc2d7; transform: rotate(-1deg); }
+.reveal .sticky-note.green { background: #b2f2bb; transform: rotate(2deg); }
+
+/* Boxes with a rough.js border: ::: {.sketch-box} */
+.reveal .sketch-box, .reveal .sketch-circle { position: relative; padding: 0.6em 0.9em; margin: 0.3em 0; }
+.reveal .sketch-svg { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; }
+
+/* Annotation overlays (rn-underline, rn-circle, ...) */
+.reveal .rn-svg { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; z-index: 0; }
+.reveal .rn-svg.rn-highlight-layer { mix-blend-mode: multiply; }
+.reveal .rn-svg path { transition: stroke-dashoffset 0.7s ease-in-out; }
+
+/* Paper backgrounds (format option `excalidraw: paper:`) */
+.reveal-viewport.paper-graph {
+  background-image:
+    linear-gradient(#e7f5ff 1px, transparent 1px),
+    linear-gradient(90deg, #e7f5ff 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.reveal-viewport.paper-dots {
+  background-image: radial-gradient(#ced4da 1.2px, transparent 1.2px);
+  background-size: 24px 24px;
+}
+.reveal-viewport.paper-lines {
+  background-image:
+    linear-gradient(90deg, transparent 72px, #ffa8a8 72px, #ffa8a8 74px, transparent 74px),
+    linear-gradient(#d0ebff 1px, transparent 1px);
+  background-size: 100% 100%, 100% 38px;
+}
+.reveal-viewport.paper-kraft { background-color: #dcc7a1; }
+.reveal-viewport.paper-chalkboard { background-color: #2f3d33; }
+.reveal-viewport.paper-chalkboard .reveal { color: #f1f3f5; }
+.reveal-viewport.paper-chalkboard .reveal h1,
+.reveal-viewport.paper-chalkboard .reveal h2,
+.reveal-viewport.paper-chalkboard .reveal h3 { color: #f8f9fa; }
+.reveal-viewport.paper-blueprint {
+  background-color: #1d4f86;
+  background-image:
+    linear-gradient(#2b62a0 1px, transparent 1px),
+    linear-gradient(90deg, #2b62a0 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.reveal-viewport.paper-blueprint .reveal { color: #f8f9fa; }
+.reveal-viewport.paper-blueprint .reveal h1,
+.reveal-viewport.paper-blueprint .reveal h2,
+.reveal-viewport.paper-blueprint .reveal h3 { color: #ffffff; }

@@ -39,9 +39,11 @@ Suggests:
     jpeg,
     knitr,
     miniUI,
+    officer,
     png,
     ragg (>= 1.5.0),
     rsvg,
+    rvg,
     testthat (>= 3.0.0),
     vdiffr,
     withr

@@ -1,0 +1,73 @@
+---
+title: "Hand-drawn slides"
+subtitle: "made with excalidrawer"
+author: "Your name"
+format:
+  excalidraw-revealjs:
+    excalidraw:
+      paper: dots
+---
+
+```{r}
+#| include: false
+library(ggplot2)
+library(excalidrawer)
+cars <- ggplot(mpg, aes(class)) +
+  geom_bar(fill = "#a5d8ff") +
+  labs(x = NULL, y = "cars")
+```
+
+## Charts that look drawn by hand
+
+```{r}
+sketch(cars, background = FALSE)
+```
+
+## Point things out
+
+```{r}
+as_excalidraw(cars, width = 860, height = 480) |>
+  exc_mark(x = "suv", y = c(0, 62), type = "box") |>
+  exc_note("SUVs win!", x = "midsize", y = 52, to = c("suv", 50)) |>
+  exc_callout("only 5 of these", x = "2seater", y = 5, dx = 30, dy = -70) |>
+  plot(background = FALSE)
+```
+
+## Highlight words, one click at a time
+
+- Data can be [beautiful]{.rn-highlight}
+- Charts can be [playful]{.rn-circle .fragment}
+- Messages should be [clear]{.rn-underline .fragment}
+- Jargon is [never needed]{.rn-strike .fragment}
+
+## Notes and boxes
+
+[Remember to smile]{.sticky-note} [and breathe]{.sticky-note .blue}
+
+::: {.sketch-box data-fill="#e7f5ff"}
+Anything inside a `.sketch-box` gets a hand-drawn border (and an optional
+hachure fill).
+:::
+
+## Diagrams
+
+```{r}
+# Mermaid text becomes editable Excalidraw shapes (this needs Chrome); a saved
+# copy is used when Chrome isn't available.
+flow <- tryCatch(
+  exc_mermaid("flowchart LR\n  A[Data] --> B[Sketch it] --> C[Share]\n  B --> D((Smile))"),
+  error = function(e) read_excalidraw(system.file("templates", "flow.excalidraw", package = "excalidrawer"))
+)
+plot(flow, background = FALSE)
+```
+
+## Change the whole look
+
+```{r}
+sketch(ggplot(mpg, aes(displ, hwy, colour = drv)) + geom_point(size = 3) +
+         scale_colour_excalidraw(), preset = "chalkboard")
+```
+
+## Thanks! {.center}
+
+[questions?]{.sticky-note .pink}

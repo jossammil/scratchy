@@ -4,7 +4,15 @@
 \alias{sketch}
 \title{Draw any plot in Excalidraw style}
 \usage{
-sketch(plot, ..., preset = NULL, paper = NULL, width = NULL, height = NULL)
+sketch(
+  plot,
+  ...,
+  preset = NULL,
+  paper = NULL,
+  background = TRUE,
+  width = NULL,
+  height = NULL
+)
 }
 \arguments{
 \item{plot}{A ggplot, a formula such as \code{~ hist(x)}, a function that draws
@@ -16,6 +24,9 @@ with base graphics, or a grob.}
 \item{preset}{Optional \code{\link[=exc_preset]{exc_preset()}} name.}
 
 \item{paper}{Optional paper background; see \code{\link[=exc_papers]{exc_papers()}}.}
+
+\item{background}{Draw the background colour; \code{FALSE} leaves it
+transparent (nice on slides with a paper background).}
 
 \item{width, height}{Fixed layout size in px. By default the device size
 is used.}

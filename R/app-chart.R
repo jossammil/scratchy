@@ -14,19 +14,19 @@ studio_needs <- function(type) {
   )
 }
 
-sym <- function(col) if (make.names(col) == col) col else paste0("`", col, "`")
+col_sym <- function(col) if (make.names(col) == col) col else paste0("`", col, "`")
 
 # Build the ggplot code for a chart spec (a list of the app's choices).
 studio_code <- function(spec, data_name = "data") {
   has <- function(v) !is.null(v) && nzchar(v) && v != "(none)"
   aes_args <- c()
   if (spec$type == "pie") {
-    aes_args <- c(x = '""', y = sym(spec$y), fill = sym(spec$x))
+    aes_args <- c(x = '""', y = col_sym(spec$y), fill = col_sym(spec$x))
   } else {
-    aes_args <- c(x = sym(spec$x))
-    if ("y" %in% studio_needs(spec$type)) aes_args <- c(aes_args, y = sym(spec$y))
+    aes_args <- c(x = col_sym(spec$x))
+    if ("y" %in% studio_needs(spec$type)) aes_args <- c(aes_args, y = col_sym(spec$y))
     if (has(spec$group)) {
-      aes_args <- c(aes_args, stats::setNames(sym(spec$group),
+      aes_args <- c(aes_args, stats::setNames(col_sym(spec$group),
                                               if (spec$type %in% c("line", "point")) "colour" else "fill"))
     }
   }
@@ -48,7 +48,7 @@ studio_code <- function(spec, data_name = "data") {
   if (grouped) {
     lines <- c(lines, if (spec$type %in% c("line", "point")) "scale_colour_excalidraw()" else "scale_fill_excalidraw()")
   }
-  if (has(spec$facet)) lines <- c(lines, sprintf("facet_wrap(vars(%s))", sym(spec$facet)))
+  if (has(spec$facet)) lines <- c(lines, sprintf("facet_wrap(vars(%s))", col_sym(spec$facet)))
   if (spec$type == "pie") lines <- c(lines, 'coord_polar("y")')
   labs <- c(title = spec$title, subtitle = spec$subtitle)
   labs <- labs[!is.na(labs) & nzchar(labs)]
