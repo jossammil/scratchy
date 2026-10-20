@@ -19,8 +19,11 @@ Imports:
     graphics,
     grDevices,
     grid,
+    htmltools,
+    htmlwidgets,
     jsonlite,
     rlang,
+    shiny,
     stats,
     systemfonts (>= 1.3.0),
     textshaping (>= 1.0.5),
@@ -30,8 +33,11 @@ Imports:
     V8,
     xml2
 Suggests:
+    chromote,
+    httpuv,
     jpeg,
     knitr,
+    miniUI,
     png,
     ragg (>= 1.5.0),
     rsvg,

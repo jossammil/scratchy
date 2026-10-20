@@ -1,0 +1,28 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "widget-test",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8765",
+        "--bind",
+        "127.0.0.1",
+        "--directory",
+        "dev/widget"
+      ],
+      "port": 8765
+    },
+    {
+      "name": "shiny-test",
+      "runtimeExecutable": "Rscript",
+      "runtimeArgs": [
+        "-e",
+        "devtools::load_all('.', quiet = TRUE); shiny::runApp('dev/shiny-test', port = 8766, launch.browser = FALSE)"
+      ],
+      "port": 8766
+    }
+  ]
+}

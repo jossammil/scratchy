@@ -32,6 +32,9 @@
 #'   the same.
 #' @param max_elements Warn when the scene has more elements than this;
 #'   Excalidraw slows down with very many.
+#' @param id A name for the chart. All its elements are grouped and tagged
+#'   with it, so the chart can be found later, for example to swap it for a
+#'   new version with [exc_proxy_replace_chart()]. Random if `NULL`.
 #' @param ... Unused.
 #' @return An `exc_scene`.
 #' @export
@@ -52,7 +55,7 @@ as_excalidraw <- function(x, ...) UseMethod("as_excalidraw")
 as_excalidraw.ggplot <- function(x, width = 800, height = 500, theme = theme_excalidraw(),
                                  fill_style = "hachure", roughness = "artist", outline = TRUE,
                                  font = "Excalifont", snap = TRUE, preset = NULL, seed = 1,
-                                 max_elements = 5000, ...) {
+                                 max_elements = 5000, id = NULL, ...) {
   rlang::check_installed(c("ggplot2", "svglite", "xml2"))
   p <- x
   if (!is.null(preset)) theme <- theme_excalidraw(preset = preset)
@@ -75,7 +78,7 @@ as_excalidraw.ggplot <- function(x, width = 800, height = 500, theme = theme_exc
     grid::grid.draw(gt)
     panel_locations(height / 96)
   }, width, height)
-  opts <- convert_opts(fill_style, roughness, outline, font, snap)
+  opts <- convert_opts(fill_style, roughness, outline, font, snap, id)
   scene <- with_seed(seed, svg_to_scene(cap$svg, opts))
   scene$meta$coord <- coord_mapping(build, cap$extra)
   scene$meta$size <- c(width = width, height = height)
@@ -86,20 +89,22 @@ as_excalidraw.ggplot <- function(x, width = 800, height = 500, theme = theme_exc
 #' @export
 as_excalidraw.formula <- function(x, width = 800, height = 500, fill_style = "hachure",
                                   roughness = "artist", outline = TRUE, font = "Excalifont",
-                                  snap = TRUE, preset = NULL, seed = 1, max_elements = 5000, ...) {
+                                  snap = TRUE, preset = NULL, seed = 1, max_elements = 5000,
+                                  id = NULL, ...) {
   env <- environment(x)
   expr <- x[[length(x)]]
   as_excalidraw.function(function() eval(expr, env), width = width, height = height,
                          fill_style = fill_style, roughness = roughness, outline = outline,
                          font = font, snap = snap, preset = preset, seed = seed,
-                         max_elements = max_elements)
+                         max_elements = max_elements, id = id)
 }
 
 #' @rdname as_excalidraw
 #' @export
 as_excalidraw.function <- function(x, width = 800, height = 500, fill_style = "hachure",
                                    roughness = "artist", outline = TRUE, font = "Excalifont",
-                                   snap = TRUE, preset = NULL, seed = 1, max_elements = 5000, ...) {
+                                   snap = TRUE, preset = NULL, seed = 1, max_elements = 5000,
+                                   id = NULL, ...) {
   rlang::check_installed(c("svglite", "xml2"))
   fam <- if (is.null(font)) "" else resolve_font(font)$family
   cap <- capture_svg(function() {
@@ -109,7 +114,7 @@ as_excalidraw.function <- function(x, width = 800, height = 500, fill_style = "h
     if (inherits(res, c("ggplot", "grob", "gtable", "trellis"))) print(res)
     NULL
   }, width, height)
-  opts <- convert_opts(fill_style, roughness, outline, font, snap)
+  opts <- convert_opts(fill_style, roughness, outline, font, snap, id)
   scene <- with_seed(seed, svg_to_scene(cap$svg, opts))
   scene$meta$size <- c(width = width, height = height)
   finish_conversion(scene, preset, max_elements)
@@ -119,12 +124,13 @@ as_excalidraw.function <- function(x, width = 800, height = 500, fill_style = "h
 #' @export
 as_excalidraw.grob <- function(x, width = 800, height = 500, fill_style = "hachure",
                                roughness = "artist", outline = TRUE, font = "Excalifont",
-                               snap = TRUE, preset = NULL, seed = 1, max_elements = 5000, ...) {
+                               snap = TRUE, preset = NULL, seed = 1, max_elements = 5000,
+                               id = NULL, ...) {
   as_excalidraw.function(function() {
     grid::grid.draw(x)
   }, width = width, height = height, fill_style = fill_style, roughness = roughness,
   outline = outline, font = font, snap = snap, preset = preset, seed = seed,
-  max_elements = max_elements)
+  max_elements = max_elements, id = id)
 }
 
 #' @export
@@ -140,10 +146,10 @@ finish_conversion <- function(scene, preset, max_elements) {
   scene
 }
 
-convert_opts <- function(fill_style, roughness, outline, font, snap) {
+convert_opts <- function(fill_style, roughness, outline, font, snap, id = NULL) {
   st <- normalize_style(list(fillStyle = fill_style, roughness = roughness))
   list(fill_style = st$fillStyle, roughness = st$roughness, outline = outline,
-       font = if (is.null(font)) NULL else resolve_font(font), snap = snap)
+       font = if (is.null(font)) NULL else resolve_font(font), snap = snap, id = id)
 }
 
 with_seed <- function(seed, code) {
@@ -241,7 +247,7 @@ svg_to_scene <- function(svg, opts) {
   state$els <- list()
   state$files <- list()
   state$background <- NULL
-  state$chart <- new_id()
+  state$chart <- opts$id %||% new_id()
   state$groups <- list()
   walk_svg(xml2::xml_find_first(doc, "/svg/g"), NULL, canvas, clips, opts, state)
   els <- state$els

@@ -23,6 +23,7 @@ as_excalidraw(x, ...)
   preset = NULL,
   seed = 1,
   max_elements = 5000,
+  id = NULL,
   ...
 )
 
@@ -38,6 +39,7 @@ as_excalidraw(x, ...)
   preset = NULL,
   seed = 1,
   max_elements = 5000,
+  id = NULL,
   ...
 )
 
@@ -53,6 +55,7 @@ as_excalidraw(x, ...)
   preset = NULL,
   seed = 1,
   max_elements = 5000,
+  id = NULL,
   ...
 )
 
@@ -68,6 +71,7 @@ as_excalidraw(x, ...)
   preset = NULL,
   seed = 1,
   max_elements = 5000,
+  id = NULL,
   ...
 )
 }
@@ -105,6 +109,10 @@ the same.}
 
 \item{max_elements}{Warn when the scene has more elements than this;
 Excalidraw slows down with very many.}
+
+\item{id}{A name for the chart. All its elements are grouped and tagged
+with it, so the chart can be found later, for example to swap it for a
+new version with \code{\link[=exc_proxy_replace_chart]{exc_proxy_replace_chart()}}. Random if \code{NULL}.}
 }
 \value{
 An \code{exc_scene}.

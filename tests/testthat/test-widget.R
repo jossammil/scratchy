@@ -1,0 +1,71 @@
+test_that("the widget carries the scene and the module bundle", {
+  s <- exc_scene(exc_rect(0, 0, 100, 50, label = "hi"))
+  w <- excalidraw(s, mode = "view", theme = "dark", grid = TRUE)
+  expect_s3_class(w, "htmlwidget")
+  expect_equal(w$x$mode, "view")
+  expect_equal(w$x$theme, "dark")
+  expect_true(w$x$grid)
+  expect_identical(scene_to_json(scene_from_json(w$x$scene)), scene_to_json(s))
+  dep <- w$dependencies[[1]]
+  expect_equal(dep$name, "excalidraw-widget")
+  expect_equal(dep$script$type, "module")
+  lib <- dep$src$file
+  expect_true(file.exists(file.path(lib, "excalidraw-widget.js")))
+  expect_true(file.exists(file.path(lib, "excalidraw-widget.css")))
+  expect_true(dir.exists(file.path(lib, "fonts", "Excalifont")))
+})
+
+test_that("ggplots can go straight into the widget", {
+  skip_if_not_installed("ggplot2")
+  p <- ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg)) + ggplot2::geom_point()
+  w <- excalidraw(p)
+  expect_gt(length(jsonlite::fromJSON(w$x$scene, simplifyVector = FALSE)$elements), 10)
+})
+
+test_that("proxy functions send the right messages", {
+  sent <- list()
+  session <- list(ns = function(id) paste0("mod-", id),
+                  sendCustomMessage = function(type, message) sent[[length(sent) + 1]] <<- list(type, message))
+  p <- excalidraw_proxy("canvas", session = session)
+  exc_proxy_add(p, exc_rect(0, 0, 10, 10), placement = "right")
+  exc_proxy_replace_chart(p, exc_scene(exc_text("x", 0, 0)), chart = "main")
+  exc_proxy_set(p, theme = "dark", grid = TRUE)
+  exc_proxy_export(p, "svg", embed = TRUE)
+  exc_proxy_mermaid(p, "flowchart LR\n A --> B")
+  expect_length(sent, 5)
+  expect_true(all(vapply(sent, function(m) m[[1]] == "excalidrawer-proxy", TRUE)))
+  expect_equal(sent[[1]][[2]]$id, "mod-canvas")
+  expect_equal(sent[[1]][[2]]$method, "add")
+  expect_equal(sent[[1]][[2]]$args$placement, "right")
+  expect_equal(sent[[2]][[2]]$args$chart, "main")
+  expect_equal(sent[[3]][[2]]$args, list(theme = "dark", grid = TRUE))
+  expect_equal(sent[[4]][[2]]$args$type, "svg")
+  expect_true(sent[[4]][[2]]$args$embed)
+  expect_equal(sent[[5]][[2]]$method, "mermaid")
+  expect_error(excalidraw_proxy("x", session = NULL), "Shiny server")
+})
+
+test_that("charts can be named for later replacement", {
+  skip_if_not_installed("ggplot2")
+  s <- as_excalidraw(ggplot2::ggplot(mtcars, ggplot2::aes(factor(cyl))) + ggplot2::geom_bar(), id = "main")
+  charts <- unique(vapply(s$elements, function(e) e$customData$excalidrawer$chart, ""))
+  expect_equal(charts, "main")
+})
+
+test_that("Mermaid and exact exports run through headless Chrome", {
+  skip_on_cran()
+  skip_if_not_installed("chromote")
+  skip_if(is.null(tryCatch(chromote::find_chrome(), error = function(e) NULL)), "no Chrome")
+  withr::defer(chrome_close())
+  m <- exc_mermaid("flowchart LR\n  a[Data] --> b((notes))")
+  df <- as.data.frame(m)
+  expect_true(all(c("rectangle", "ellipse", "arrow", "text") %in% df$type))
+  label <- df[df$type == "text" & df$text %in% "notes", ]
+  expect_equal(nrow(label), 1)
+  png_file <- withr::local_tempfile(fileext = ".png")
+  exc_save(m, png_file, engine = "excalidraw", scale = 2)
+  expect_gt(file.size(png_file), 1000)
+  svg_file <- withr::local_tempfile(fileext = ".excalidraw.svg")
+  exc_save(m, svg_file, engine = "excalidraw")
+  expect_s3_class(read_excalidraw(svg_file), "exc_scene")
+})

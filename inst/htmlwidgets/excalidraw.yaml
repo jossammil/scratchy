@@ -1,0 +1,3 @@
+# The editor bundle is attached from R (see excalidraw_dependency()) because it
+# is an ES module.
+dependencies: []

@@ -15,6 +15,9 @@
 #' @param background Draw the background colour (`FALSE` = transparent).
 #' @param paper Optional paper background; see [exc_papers()].
 #' @param text Text drawing mode; see [exc_grob()].
+#' @param engine `"native"` draws in R (works offline, any format).
+#'   `"excalidraw"` exports through the real Excalidraw editor in headless
+#'   Chrome for a pixel-exact match (PNG and SVG only; needs chromote).
 #' @param embed_scene For SVG and PNG, also store the scene inside the image
 #'   so it can be reopened as an editable drawing (like Excalidraw's "Embed
 #'   scene" export). On by default for `.excalidraw.svg` / `.excalidraw.png`
@@ -28,10 +31,17 @@
 #' exc_save(s, f, scale = 2)
 exc_save <- function(scene, file, scale = 1, padding = 10, background = TRUE,
                      paper = NULL, text = c("auto", "outline", "font"),
+                     engine = c("native", "excalidraw"),
                      embed_scene = grepl("\\.excalidraw\\.(svg|png)$", tolower(file))) {
   check_scene(scene)
   text <- match.arg(text)
+  engine <- match.arg(engine)
   ext <- tolower(tools::file_ext(file))
+  if (engine == "excalidraw") {
+    if (!ext %in% c("png", "svg")) cli::cli_abort("The Excalidraw engine saves PNG and SVG only.")
+    return(excalidraw_export(scene, file, ext, scale = max(scale, 1), padding = padding,
+                             background = background, embed = embed_scene))
+  }
   g <- exc_grob(scene, padding = padding, background = background, text = text, paper = paper)
   w_in <- g$canvas[["w"]] / 96 * scale
   h_in <- g$canvas[["h"]] / 96 * scale
