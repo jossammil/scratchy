@@ -27,6 +27,18 @@ await esbuild.build({
   logLevel: "info",
 });
 
+// Open Peeps generator for the native renderer (runs in R's V8).
+await esbuild.build({
+  entryPoints: ["src/peeps.js"],
+  bundle: true,
+  minify: true,
+  format: "iife",
+  target: ["es2020"],
+  outfile: "../inst/js/peeps.js",
+  legalComments: "eof",
+  logLevel: "info",
+});
+
 // Excalidraw's fonts, minus the 12 MB CJK font (loaded from the CDN if needed).
 const fonts = "node_modules/@excalidraw/excalidraw/dist/prod/fonts";
 for (const family of readdirSync(fonts)) {

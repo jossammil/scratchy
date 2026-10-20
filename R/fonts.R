@@ -1,5 +1,6 @@
 .onLoad <- function(libname, pkgname) {
   register_fonts()
+  register_downloaded_fonts()
 }
 
 #' Register the bundled handwriting fonts
@@ -52,6 +53,55 @@ exc_fonts <- function() {
   )
 }
 
+.fonts_extra <- new.env(parent = emptyenv())
+
+#' Download extra fonts
+#'
+#' Some fun fonts can't be bundled because of their licence, so they are
+#' downloaded on request, stored in your user data folder and registered for
+#' this and future sessions.
+#'
+#' * `"xkcd"`: the xkcd Script handwriting font by the iPython team, made
+#'   from Randall Munroe's handwriting (CC BY-NC 3.0: non-commercial use).
+#'
+#' @param name Which font to download.
+#' @return The font's family name, invisibly. Use it as `font =`.
+#' @export
+#' @examples
+#' \dontrun{
+#' exc_font_fetch("xkcd")
+#' sketch(p, preset = "xkcd", font = "xkcd Script")
+#' }
+exc_font_fetch <- function(name = c("xkcd")) {
+  name <- match.arg(name)
+  spec <- list(xkcd = list(
+    family = "xkcd Script",
+    url = "https://github.com/ipython/xkcd-font/raw/master/xkcd-script/font/xkcd-script.ttf",
+    file = "xkcd-script.ttf"
+  ))[[name]]
+  dir <- tools::R_user_dir("excalidrawer", "data")
+  dir.create(dir, recursive = TRUE, showWarnings = FALSE)
+  path <- file.path(dir, spec$file)
+  if (!file.exists(path)) {
+    cli::cli_inform("Downloading {spec$family} from {.url {spec$url}}")
+    utils::download.file(spec$url, path, mode = "wb", quiet = TRUE)
+  }
+  register_extra_font(spec$family, path)
+  invisible(spec$family)
+}
+
+register_extra_font <- function(family, path) {
+  systemfonts::register_font(family, plain = path, bold = path, italic = path, bolditalic = path)
+  .fonts_extra[[family]] <- path
+}
+
+# Fonts downloaded in earlier sessions.
+register_downloaded_fonts <- function() {
+  dir <- tools::R_user_dir("excalidrawer", "data")
+  xkcd <- file.path(dir, "xkcd-script.ttf")
+  if (file.exists(xkcd)) try(register_extra_font("xkcd Script", xkcd), silent = TRUE)
+}
+
 # Resolve a font given by name or Excalidraw id.
 # Returns list(id, name, family, custom) where `custom` is the non-Excalidraw
 # font name to record in customData (or NULL).
@@ -64,6 +114,10 @@ resolve_font <- function(font) {
     key <- tolower(gsub("[ _-]", "", font))
     row <- match(key, tolower(gsub("[ _-]", "", .fonts$name)))
     if (is.na(row)) row <- match(key, tolower(gsub("[ _-]", "", .fonts$family)))
+    if (is.na(row)) {
+      extra <- names(.fonts_extra)[tolower(gsub("[ _-]", "", names(.fonts_extra))) == key]
+      if (length(extra)) return(list(id = 5, name = extra[1], family = extra[1], custom = extra[1]))
+    }
     if (is.na(row)) {
       cli::cli_abort(c("Unknown font {.val {font}}.",
                        i = "See {.fn exc_fonts} for the available fonts."))
@@ -88,14 +142,14 @@ element_font <- function(el) {
 # Metrics (ascender/descender in em units) for vertical placement.
 font_metrics <- function(font) {
   row <- match(font$name, .fonts$name)
-  if (!is.na(.fonts$units_per_em[row])) {
+  if (!is.na(row) && !is.na(.fonts$units_per_em[row])) {
     return(list(ascender = .fonts$ascender[row] / .fonts$units_per_em[row],
                 descender = .fonts$descender[row] / .fonts$units_per_em[row],
                 line_height = .fonts$line_height[row]))
   }
   info <- systemfonts::font_info(family = font$family, size = 100, res = 72)
   list(ascender = info$max_ascend / 100, descender = info$max_descend / 100,
-       line_height = .fonts$line_height[row])
+       line_height = if (is.na(row)) 1.25 else .fonts$line_height[row])
 }
 
 # Excalidraw's getVerticalOffset(): distance from the top of a line box to the

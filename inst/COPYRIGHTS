@@ -26,3 +26,20 @@ inst/fonts/
   included as TrueType files converted from the original WOFF2 so that R's
   graphics devices can read them; the Caveat, Nunito and Cascadia Code
   variable fonts are included as static Regular and Bold instances.
+
+inst/stickers/
+  Excalidraw libraries from https://libraries.excalidraw.com (repository
+  excalidraw/excalidraw-libraries, MIT License, Copyright (c) 2020 Excalidraw).
+  Each library's title, authors and source are listed in
+  inst/stickers/manifest.csv.
+
+inst/js/peeps.js
+  DiceBear core and the Open Peeps style 9.4.2 (code: MIT, Copyright (c)
+  Florian Koerner), bundled for V8. The Open Peeps artwork is by Pablo
+  Stanley, CC0 1.0.
+
+inst/htmlwidgets/lib/excalidraw-widget/
+  Built from @excalidraw/excalidraw 0.18.1 (MIT, Copyright (c) 2020
+  Excalidraw), React 19 (MIT, Meta Platforms) and their dependencies; see
+  excalidraw-widget.js.LEGAL.txt for the bundled licences. Excalidraw's fonts
+  are included under their own licences (OFL-1.1 / MIT).

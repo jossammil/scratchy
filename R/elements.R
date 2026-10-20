@@ -326,7 +326,16 @@ exc_image <- function(file, x, y, width = NULL, height = NULL, ..., angle = 0,
   } else if (is.null(width)) {
     width <- if (is.null(dims)) height else height * dims[1] / dims[2]
   }
-  file_id <- unname(tools::md5sum(file))
+  image_element(bytes, mime, x, y, width, height, ..., angle = angle, group = group,
+                id = id, custom = custom)
+}
+
+image_element <- function(bytes, mime, x, y, width, height, ..., angle = 0, group = NULL,
+                          id = NULL, custom = NULL) {
+  f <- tempfile()
+  on.exit(unlink(f))
+  writeBin(bytes, f)
+  file_id <- unname(tools::md5sum(f))
   s <- resolve_style(NULL, list(...))
   s$strokeColor <- "transparent"
   s$backgroundColor <- "transparent"

@@ -74,3 +74,29 @@ writeLines(c(
 ), file.path(js_dir, "perfect-freehand.js"))
 
 message("done")
+
+# ---- sticker libraries (libraries.excalidraw.com, MIT) -----------------------
+stickers <- c(
+  "r-icons" = "jumpingrivers/r.excalidrawlib",
+  "stick-figures" = "youritjang/stick-figures.excalidrawlib",
+  "storytelling" = "drwnio/storytelling.excalidrawlib",
+  "bubbles" = "ocapraro/bubbles.excalidrawlib",
+  "sticky-notes" = "ferminrp/post-it.excalidrawlib",
+  "stars" = "lipis/stars.excalidrawlib",
+  "hearts" = "dwelle/hearts.excalidrawlib",
+  "emojis" = "anumithaapollo12/emojis.excalidrawlib",
+  "data-viz" = "dbssticky/data-viz.excalidrawlib",
+  "signs" = "kwirke/some-handdrawn-signs.excalidrawlib",
+  "icons" = "ferminrp/awesome-icons.excalidrawlib",
+  "data-science" = "farisology/data-science.excalidrawlib"
+)
+dir.create("inst/stickers", showWarnings = FALSE)
+for (nm in names(stickers)) {
+  fetch(file.path("https://raw.githubusercontent.com/excalidraw/excalidraw-libraries/main/libraries",
+                  stickers[[nm]]), file.path("inst/stickers", paste0(nm, ".excalidrawlib")))
+}
+# inst/stickers/manifest.csv (titles, authors, sources) was written from the
+# repository's libraries.json.
+
+# The Open Peeps generator (inst/js/peeps.js) and the editor bundle
+# (inst/htmlwidgets/lib/excalidraw-widget) are built with: cd srcjs && npm run build
