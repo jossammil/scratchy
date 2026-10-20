@@ -20,8 +20,9 @@ v8_context <- function() {
                   "iframe", "embeddable")
 
 # Sketchy geometry for each drawable element: a list (one entry per element)
-# of parts, each with `kind` ("stroke" or "fill"), `color`, `width`, `rule`
-# and `paths` (a list of numeric vectors x1, y1, x2, y2, ... in scene px).
+# of parts, each with `kind` ("stroke" or "fill"), `role` ("outline" for the
+# element's line work, "fill" for its interior), `color`, `width`, `rule` and
+# `paths` (a list of numeric vectors x1, y1, x2, y2, ... in scene px).
 rough_parts <- function(elements, canvas_bg = "#ffffff", tolerance = 1) {
   if (length(elements) == 0) return(list())
   json <- as.character(to_json(unname(elements)))

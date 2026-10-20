@@ -598,15 +598,16 @@ var ExcShapes = (function () {
       if (!paths.length) return;
       if (set.type === "path") {
         if (!o.stroke || o.stroke === "none" || isTransparent(o.stroke)) return;
-        parts.push({ kind: "stroke", color: o.stroke, width: o.strokeWidth,
+        parts.push({ kind: "stroke", role: "outline", color: o.stroke, width: o.strokeWidth,
                      paths: dashPaths(paths, o.strokeLineDash) });
       } else if (set.type === "fillPath") {
         if (!o.fill) return;
-        parts.push({ kind: "fill", color: o.fill, rule: evenOdd ? "evenodd" : "winding", paths: paths });
+        parts.push({ kind: "fill", role: "fill", color: o.fill, rule: evenOdd ? "evenodd" : "winding",
+                     paths: paths });
       } else if (set.type === "fillSketch") {
         if (!o.fill) return;
         var fw = o.fillWeight < 0 ? o.strokeWidth / 2 : o.fillWeight;
-        parts.push({ kind: "stroke", color: o.fill, width: fw, paths: paths });
+        parts.push({ kind: "stroke", role: "fill", color: o.fill, width: fw, paths: paths });
       }
     });
     return parts;
@@ -618,7 +619,9 @@ var ExcShapes = (function () {
     var parts = [];
     shapes.forEach(function (sh) {
       if (sh.polygon) {
-        if (sh.polygon.length > 4) parts.push({ kind: "fill", color: sh.fill, rule: "winding", paths: [sh.polygon] });
+        if (sh.polygon.length > 4) {
+          parts.push({ kind: "fill", role: "outline", color: sh.fill, rule: "winding", paths: [sh.polygon] });
+        }
       } else {
         parts = parts.concat(drawableParts(sh, tol));
       }

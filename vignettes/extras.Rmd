@@ -86,6 +86,30 @@ exc_mermaid("flowchart LR\n  A[Data] --> B[Sketch it] --> C[Share]") |> plot()
 exc_d2("data -> sketch -> share") |> plot()
 ```
 
+## Drawings that draw themselves
+
+`exc_animate()` saves a scene as an SVG that sketches itself, element by
+element in z-order: strokes are traced, fills fade in after their outline and
+text is written letter by letter. The SVG plays in any browser, also as an
+`<img>` in a web page, slide or README.
+
+```{r}
+chart <- as_excalidraw(ggplot(mpg, aes(class)) + geom_bar())
+svg <- tempfile(fileext = ".svg")
+exc_animate(chart, svg, duration = 5, loop = TRUE)
+```
+
+```{r, echo = FALSE}
+htmltools::img(src = knitr::image_uri(svg), alt = "A bar chart drawing itself", style = "width: 100%")
+```
+
+Save to `.gif` to record the animation in headless Chrome instead (it needs
+the chromote package, and gifski or magick to put the frames together):
+
+```{r, eval = FALSE}
+exc_animate(chart, "chart.gif", loop = TRUE)
+```
+
 ## More fonts
 
 ```{r}

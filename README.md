@@ -7,6 +7,7 @@ It draws them offline in R with the same rough.js engine, seeds and handwriting
 fonts that Excalidraw uses, so you get:
 
 - hand-drawn PNG, SVG and PDF images for reports and Quarto documents;
+- animated SVGs and GIFs of the drawing sketching itself;
 - `.excalidraw` files to open and adjust by hand at excalidraw.com, in VS Code or in Obsidian;
 - the real Excalidraw editor inside RStudio and Shiny;
 - a point-and-click app, **Sketch Studio**;
@@ -43,6 +44,7 @@ s <- as_excalidraw(p) |>                           # an editable drawing...
   exc_callout("only 5 of these", x = "2seater", y = 5)
 
 exc_save(s, "cars.png", scale = 2)                # PNG, SVG (fonts embedded) or PDF
+exc_animate(s, "cars.svg")                        # an SVG (or GIF) that draws itself
 write_excalidraw(s, "cars.excalidraw")            # open at excalidraw.com
 write_excalidraw(s, "cars.excalidraw.svg")        # an image that stays editable
 write_excalidraw(s, "cars.excalidraw.md")         # for Obsidian's Excalidraw plugin

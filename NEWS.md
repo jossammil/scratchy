@@ -8,6 +8,9 @@ First version.
   and SVG/PNG images with the scene embedded.
 * Offline rendering with rough.js and Excalidraw's shape logic (in V8) to
   PNG, JPEG, SVG and PDF; paper backgrounds and style presets.
+* `exc_animate()` saves a scene as an SVG that draws itself (strokes traced in
+  z-order, fills fading in, text written letter by letter), or as a GIF
+  recorded in headless Chrome.
 * `as_excalidraw()` and `sketch()` for ggplot2 and base graphics;
   `theme_excalidraw()` and Excalidraw colour scales; annotations placed with
   data values.

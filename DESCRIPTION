@@ -35,9 +35,11 @@ Imports:
     xml2
 Suggests:
     chromote,
+    gifski,
     httpuv,
     jpeg,
     knitr,
+    magick,
     miniUI,
     officer,
     png,

@@ -85,11 +85,12 @@ glyph_outline_cached <- function(index, path, font_index, size) {
   o
 }
 
-# Glyph outlines in scene px: list(x, y, id) with one id per contour, drawn as
-# a single path with the winding rule. Colour emoji come back as `rasters`:
-# pre-rendered bitmaps with their box in local px.
+# Glyph outlines in scene px: list(x, y, id, glyph) with one id per contour,
+# drawn as a single path with the winding rule, and `glyph` numbering the
+# characters in writing order. Colour emoji come back as `rasters`:
+# pre-rendered bitmaps with their box in local px (and their glyph number).
 text_outlines <- function(lay) {
-  xs <- list(); ys <- list(); ids <- list(); n <- 0L
+  xs <- list(); ys <- list(); ids <- list(); glyphs <- list(); n <- 0L; ng <- 0L
   rasters <- list()
   for (i in seq_along(lay$lines)) {
     line <- lay$lines[[i]]
@@ -102,6 +103,8 @@ text_outlines <- function(lay) {
       if (!is.na(ch) && !is.null(lay$emoji[[ch]])) {
         r <- glyph_box(ch, sh$font_path[g], sh$font_index[g], lay$size)
         if (!is.null(r)) {
+          ng <- ng + 1L
+          r$glyph <- ng
           r$raster <- lay$emoji[[ch]]
           r$x <- x0 + sh$x_offset[g] + r$x
           r$y <- lay$baselines[i] - r$y
@@ -111,12 +114,14 @@ text_outlines <- function(lay) {
       }
       o <- glyph_outline_cached(sh$index[g], sh$font_path[g], sh$font_index[g], lay$size)
       if (nrow(o) == 0) next
+      ng <- ng + 1L
       for (ct in unique(o$contour)) {
         sel <- o$contour == ct
         n <- n + 1L
         xs[[n]] <- x0 + sh$x_offset[g] + o$x[sel]
         ys[[n]] <- lay$baselines[i] - o$y[sel]
         ids[[n]] <- rep(n, sum(sel))
+        glyphs[[n]] <- rep(ng, sum(sel))
       }
     }
   }
@@ -131,6 +136,7 @@ text_outlines <- function(lay) {
     out$x <- p$x
     out$y <- p$y
     out$id <- unlist(ids)
+    out$glyph <- unlist(glyphs)
   }
   if (n == 0 && length(rasters) == 0) return(NULL)
   out

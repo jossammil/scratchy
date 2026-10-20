@@ -27,11 +27,15 @@ paper_spec <- function(paper) {
   c(list(name = paper), spec)
 }
 
-paper_grobs <- function(p, cv, s) {
+# Paper markings in scene px: "segments" (x0, y0, x1, y1, width) and "circles"
+# (x, y, r), shared by the grid renderer and the animated SVG.
+paper_shapes <- function(p, cv) {
   if (is.null(p)) return(list())
   x0 <- cv[["x0"]]; y0 <- cv[["y0"]]; x1 <- x0 + cv[["w"]]; y1 <- y0 + cv[["h"]]
   out <- list()
-  native <- function(v) grid::unit(v, "native")
+  segments <- function(x0, y0, x1, y1, col, width = 1) {
+    list(type = "segments", x0 = x0, y0 = y0, x1 = x1, y1 = y1, col = col, width = width)
+  }
   if (!is.null(p$grid)) {
     xs <- seq(ceiling(x0 / p$grid) * p$grid, x1, by = p$grid)
     ys <- seq(ceiling(y0 / p$grid) * p$grid, y1, by = p$grid)
@@ -39,11 +43,10 @@ paper_grobs <- function(p, cv, s) {
     major_y <- (round(ys / p$grid) %% p$major) == 0
     for (major in c(FALSE, TRUE)) {
       vx <- xs[major_x == major]; vy <- ys[major_y == major]
+      col <- if (major) p$major_col else p$minor_col
       out <- c(out, list(
-        grid::segmentsGrob(native(vx), native(rep(-y0, length(vx))), native(vx), native(rep(-y1, length(vx))),
-                           gp = grid::gpar(col = if (major) p$major_col else p$minor_col, lwd = s * 96)),
-        grid::segmentsGrob(native(rep(x0, length(vy))), native(-vy), native(rep(x1, length(vy))), native(-vy),
-                           gp = grid::gpar(col = if (major) p$major_col else p$minor_col, lwd = s * 96))
+        segments(vx, rep(y0, length(vx)), vx, rep(y1, length(vx)), col),
+        segments(rep(x0, length(vy)), vy, rep(x1, length(vy)), vy, col)
       ))
     }
   }
@@ -51,16 +54,13 @@ paper_grobs <- function(p, cv, s) {
     xs <- seq(ceiling(x0 / p$dots) * p$dots, x1, by = p$dots)
     ys <- seq(ceiling(y0 / p$dots) * p$dots, y1, by = p$dots)
     g <- expand.grid(x = xs, y = ys)
-    out <- c(out, list(grid::circleGrob(native(g$x), native(-g$y), r = grid::unit(1.2 * s, "inches"),
-                                        gp = grid::gpar(fill = p$dot_col, col = NA))))
+    out <- c(out, list(list(type = "circles", x = g$x, y = g$y, r = 1.2, col = p$dot_col)))
   }
   if (!is.null(p$rule)) {
     ys <- seq(y0 + p$rule, y1, by = p$rule)
     out <- c(out, list(
-      grid::segmentsGrob(native(rep(x0, length(ys))), native(-ys), native(rep(x1, length(ys))), native(-ys),
-                         gp = grid::gpar(col = p$rule_col, lwd = s * 96)),
-      grid::segmentsGrob(native(x0 + p$margin), native(-y0), native(x0 + p$margin), native(-y1),
-                         gp = grid::gpar(col = p$margin_col, lwd = 1.5 * s * 96))
+      segments(rep(x0, length(ys)), ys, rep(x1, length(ys)), ys, p$rule_col),
+      segments(x0 + p$margin, y0, x0 + p$margin, y1, p$margin_col, 1.5)
     ))
   }
   if (!is.null(p$speckle_col)) {
@@ -69,8 +69,20 @@ paper_grobs <- function(p, cv, s) {
     set.seed(7)
     sx <- stats::runif(n, x0, x1); sy <- stats::runif(n, y0, y1); sr <- stats::runif(n, 0.4, 1.4)
     if (!is.null(old)) assign(".Random.seed", old, globalenv())
-    out <- c(out, list(grid::circleGrob(native(sx), native(-sy), r = grid::unit(sr * s, "inches"),
-                                        gp = grid::gpar(fill = p$speckle_col, col = NA))))
+    out <- c(out, list(list(type = "circles", x = sx, y = sy, r = sr, col = p$speckle_col)))
   }
   out
+}
+
+paper_grobs <- function(p, cv, s) {
+  native <- function(v) grid::unit(v, "native")
+  lapply(paper_shapes(p, cv), function(sh) {
+    if (sh$type == "segments") {
+      grid::segmentsGrob(native(sh$x0), native(-sh$y0), native(sh$x1), native(-sh$y1),
+                         gp = grid::gpar(col = sh$col, lwd = sh$width * s * 96))
+    } else {
+      grid::circleGrob(native(sh$x), native(-sh$y), r = grid::unit(sh$r * s, "inches"),
+                       gp = grid::gpar(fill = sh$col, col = NA))
+    }
+  })
 }

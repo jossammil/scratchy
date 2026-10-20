@@ -259,11 +259,16 @@ frame_grob <- function(it, s, mode) {
                                  gp = grid::gpar(col = .frame_style$strokeColor, fill = NA,
                                                  lwd = .frame_style$strokeWidth * s * 96))
   if (is.null(it$name) || !nzchar(it$name)) return(outline)
-  lbl <- list(text = it$name, x = b[1], y = b[2] - .frame_style$nameOffsetY - 14 * 1.25,
-              width = b[3], height = 14 * 1.25, fontSize = 14, fontFamily = 2,
-              lineHeight = 1.25, textAlign = "left", strokeColor = .frame_style$nameColor,
-              angle = 0)
-  grid::gTree(children = grid::gList(outline, text_grob(text_layout(lbl), s, mode, 1)))
+  grid::gTree(children = grid::gList(outline, text_grob(text_layout(frame_label(it)), s, mode, 1)))
+}
+
+# A frame's name, as a text element above its top-left corner.
+frame_label <- function(it) {
+  b <- it$box
+  list(text = it$name, x = b[1], y = b[2] - .frame_style$nameOffsetY - 14 * 1.25,
+       width = b[3], height = 14 * 1.25, fontSize = 14, fontFamily = 2,
+       lineHeight = 1.25, textAlign = "left", strokeColor = .frame_style$nameColor,
+       angle = 0)
 }
 
 #' @export
