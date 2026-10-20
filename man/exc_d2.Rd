@@ -4,12 +4,23 @@
 \alias{exc_d2}
 \title{Diagrams from D2 in sketch mode}
 \usage{
-exc_d2(code, sketch = TRUE, theme = NULL, layout = NULL, pad = 20, scale = 1)
+exc_d2(
+  code,
+  sketch = TRUE,
+  font = "Excalifont",
+  theme = NULL,
+  layout = NULL,
+  pad = 20,
+  scale = 1
+)
 }
 \arguments{
 \item{code}{D2 diagram text, such as \code{"idea -> sketch -> chart"}.}
 
 \item{sketch}{Use D2's hand-drawn style.}
+
+\item{font}{Font for the labels (see \code{\link[=exc_fonts]{exc_fonts()}}), or \code{NULL} for D2's
+default (Source Sans Pro).}
 
 \item{theme}{D2 theme id (see \verb{d2 themes}).}
 
@@ -28,6 +39,13 @@ Renders \href{https://d2lang.com}{D2} diagram text with D2's hand-drawn
 (so you can annotate it, place it next to charts or save it). Needs the
 \code{d2} command-line tool (on macOS: \verb{brew install d2}). For diagrams made of
 editable Excalidraw shapes, use \code{\link[=exc_mermaid]{exc_mermaid()}} instead.
+}
+\details{
+The labels use a handwriting font (Excalifont by default), embedded in the
+SVG so the diagram looks the same in the Excalidraw editor, in browsers
+and in SVG exports. R's own PNG and PDF output draws SVG images with rsvg,
+which ignores embedded fonts: there the labels use the font only if it is
+installed on the computer (see \code{\link[=exc_install_fonts]{exc_install_fonts()}}).
 }
 \examples{
 \dontrun{

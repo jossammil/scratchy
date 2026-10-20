@@ -80,6 +80,19 @@ test_that("image slots and batch rendering work", {
 
 test_that("D2 diagrams render when d2 is installed", {
   skip_if(!nzchar(Sys.which("d2")), "d2 not installed")
-  s <- exc_d2("a -> b")
+  svg_of <- function(s) rawToChar(jsonlite::base64_dec(sub("^data:[^,]*,", "", s$files[[1]]$dataURL)))
+  s <- exc_d2("a -> b: label")
   expect_equal(s$elements[[1]]$type, "image")
+  expect_equal(s$files[[1]]$mimeType, "image/svg+xml")
+  expect_gt(s$elements[[1]]$width, 10)
+  # labels use the handwriting font, embedded and named after its family
+  svg <- svg_of(s)
+  expect_match(svg, '"Excalifont"', fixed = TRUE)
+  expect_false(grepl("d2-[0-9]+-font-", svg))
+  expect_match(svg_of(exc_d2("a -> b", font = NULL)), "d2-[0-9]+-font-")
+  expect_error(exc_d2("a -> b", font = "Helvetica"), "bundled with excalidrawer")
+  err <- tryCatch(exc_d2("a -> -> {"), error = function(e) conditionMessage(e))
+  expect_match(err, "couldn't draw the diagram")
+  expect_false(grepl("info:", err, fixed = TRUE))
+  expect_false(grepl(tempdir(), err, fixed = TRUE))
 })
