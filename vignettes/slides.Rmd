@@ -1,0 +1,77 @@
+---
+title: "Hand-drawn slides"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Hand-drawn slides}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
+```
+
+## Quarto
+
+`use_excalidraw_slides()` copies the `excalidraw` Quarto extension into a
+folder and adds a demo deck:
+
+```{r}
+library(excalidrawer)
+use_excalidraw_slides("talk")
+```
+
+```bash
+quarto render talk/slides.qmd
+```
+
+The deck uses `format: excalidraw-revealjs`, which brings:
+
+- Excalifont headings and text, Excalidraw's colours, sketchy code blocks and
+  callouts;
+- figures sized for slides, drawn with ragg so the handwriting fonts appear;
+- `excalidraw: paper:` in the YAML for `dots`, `graph`, `lines`, `kraft`,
+  `blueprint` or `chalkboard` paper;
+- sticky notes: `[Remember to smile]{.sticky-note}` (also `.blue`, `.pink`,
+  `.green`);
+- boxes with a rough border: `::: {.sketch-box}` (add `data-fill="#a5d8ff"`
+  for a hachure fill);
+- hand-drawn marks on words: `[word]{.rn-underline}`, `.rn-circle`,
+  `.rn-box`, `.rn-highlight`, `.rn-strike`, `.rn-cross`, `.rn-bracket`. Add
+  `.fragment` to draw a mark on click.
+
+In R chunks, print `sketch()` objects or `plot()` scenes. Use
+`background = FALSE` to let the paper show through.
+
+```{r}
+sketch(p, background = FALSE)
+as_excalidraw(p) |> exc_note("look!", x = "suv", y = 50) |> plot(background = FALSE)
+```
+
+Print the rendered deck to PDF (one slide per page) with headless Chrome:
+
+```{r}
+exc_slides_pdf("talk/slides.html")
+```
+
+## PowerPoint
+
+`exc_pptx()` writes one slide per chart, scene, or Excalidraw frame. Drawings
+are placed as editable vector shapes:
+
+```{r}
+exc_pptx(list(p, s), "talk.pptx", titles = c("What people drive", "SUVs win"))
+```
+
+Text is drawn as shapes by default so it looks right on any computer. For
+editable text, use `text = "font"` and install the fonts where PowerPoint can
+find them:
+
+```{r}
+exc_install_fonts()
+exc_pptx(s, "editable.pptx", text = "font")
+```
+
+A scene made of Excalidraw frames becomes a deck with one slide per frame,
+titled with the frame names, so you can lay out slides on an Excalidraw canvas
+and export them.

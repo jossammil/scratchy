@@ -10,7 +10,7 @@
   "tags: [excalidraw]",
   "",
   "---",
-  paste0("==⚠  Switch to EXCALIDRAW VIEW in the MORE OPTIONS menu of this document. ⚠== ",
+  paste0("==\u26a0  Switch to EXCALIDRAW VIEW in the MORE OPTIONS menu of this document. \u26a0== ",
          "You can decompress Drawing data with the command palette: 'Decompress current Excalidraw file'. ",
          "For more info check in plugin settings under 'Saving'"),
   "",

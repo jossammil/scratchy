@@ -42,6 +42,8 @@ exc_proxy_mermaid(proxy, code, font_size = 20)
 
 \item{session}{The Shiny session.}
 
+\item{proxy}{A proxy from \code{excalidraw_proxy()}.}
+
 \item{scene}{A scene, elements, or anything \code{\link[=as_excalidraw]{as_excalidraw()}} accepts.}
 
 \item{keep_app_state}{Keep the editor's current canvas settings.}

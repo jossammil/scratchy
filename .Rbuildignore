@@ -5,3 +5,8 @@
 ^README\.Rmd$
 ^node_modules$
 ^\.claude$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^doc$
+^Meta$

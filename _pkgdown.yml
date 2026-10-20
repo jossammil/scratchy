@@ -1,0 +1,87 @@
+url: ~
+template:
+  bootstrap: 5
+  bslib:
+    bg: "#fdfcf7"
+    fg: "#1e1e1e"
+    primary: "#1971c2"
+    base_font: {google: "Nunito"}
+    heading_font: {google: "Caveat"}
+    code_font: {google: "JetBrains Mono"}
+navbar:
+  structure:
+    left: [intro, reference, articles, news]
+articles:
+  - title: Guides
+    contents:
+      - excalidrawer
+      - ggplot
+      - slides
+      - extras
+reference:
+  - title: Scenes and elements
+    contents:
+      - exc_scene
+      - exc_add
+      - exc_rect
+      - exc_text
+      - exc_line
+      - exc_image
+      - exc_frame
+      - exc_group
+      - exc_modify
+      - as.data.frame.exc_scene
+      - exc_bbox
+      - exc_translate
+  - title: Style
+    contents:
+      - exc_style
+      - exc_set_style
+      - exc_preset
+      - exc_restyle
+      - exc_papers
+      - exc_fonts
+      - exc_font_fetch
+      - register_fonts
+      - exc_install_fonts
+      - excalidraw_colors
+      - exc_color
+  - title: Files
+    contents:
+      - read_excalidraw
+      - write_excalidraw
+      - read_excalidraw_lib
+      - exc_library
+      - exc_scene_from_json
+  - title: Drawing and saving
+    contents:
+      - exc_save
+      - exc_grob
+  - title: ggplot2 and base graphics
+    contents:
+      - as_excalidraw
+      - sketch
+      - theme_excalidraw
+      - scale_fill_excalidraw
+      - exc_data_to_px
+      - annotations
+  - title: Stickers, people, templates, diagrams
+    contents:
+      - exc_stickers
+      - exc_peep
+      - exc_template_fill
+      - exc_template_example
+      - exc_mermaid
+      - exc_d2
+  - title: Editor, Shiny and the app
+    contents:
+      - excalidraw
+      - excalidrawOutput
+      - excalidraw_proxy
+      - exc_edit
+      - run_sketch_studio
+  - title: Slides
+    contents:
+      - use_excalidraw_slides
+      - exc_slides_pdf
+      - exc_pptx

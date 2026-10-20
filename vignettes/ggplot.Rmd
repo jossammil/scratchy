@@ -1,0 +1,90 @@
+---
+title: "ggplot2 charts, hand-drawn"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ggplot2 charts, hand-drawn}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", dev = "ragg_png", dpi = 110,
+                      fig.width = 7, fig.height = 4.4, out.width = "100%")
+library(excalidrawer)
+library(ggplot2)
+```
+
+## Two ways in
+
+`sketch()` draws any plot in Excalidraw style, at the size of whatever device
+it lands on, so it works in the plot pane, in knitr chunks and with `ggsave()`.
+
+```{r}
+p <- ggplot(mpg, aes(class, fill = drv)) + geom_bar() +
+  scale_fill_excalidraw() + labs(title = "Drive train by class", x = NULL)
+sketch(p)
+```
+
+```{r, eval = FALSE}
+ggsave("drive.png", sketch(p), width = 8, height = 5)
+```
+
+`as_excalidraw()` returns the scene itself, ready to annotate, restyle, save
+or open in Excalidraw:
+
+```{r}
+s <- as_excalidraw(p)
+s
+```
+
+By default plots get `theme_excalidraw()` (handwriting font, ink axes, no
+grey panel). Pass `theme = NULL` to keep your own theme. Other options:
+`fill_style`, `roughness`, `font`, `outline`, `preset` and `seed`.
+
+```{r}
+as_excalidraw(p, fill_style = "cross-hatch", roughness = "cartoonist", font = "Virgil") |>
+  plot()
+```
+
+## Annotations with data values
+
+Scenes made from a ggplot remember how data values map to positions, so
+annotations can point at the data. Categories map to their centre; wrap a
+number in `I()` to give pixels instead.
+
+```{r}
+cars <- ggplot(mpg, aes(class)) + geom_bar(fill = "#a5d8ff") + labs(x = NULL, y = "cars")
+as_excalidraw(cars) |>
+  exc_title("What do people drive?") |>
+  exc_mark(x = "suv", y = c(0, 62), type = "box") |>
+  exc_mark(x = "compact", y = 47, type = "circle") |>
+  exc_note("SUVs win!", x = "midsize", y = 52, to = c("suv", 50)) |>
+  exc_callout("only 5 of these", x = "2seater", y = 5, dx = 30, dy = -70) |>
+  plot()
+```
+
+`exc_mark()` types: `"circle"`, `"box"`, `"underline"`, `"highlight"`,
+`"strike"`, `"bracket"`, `"cross"`.
+
+## Colours
+
+```{r}
+excalidraw_colors("stroke", 6)
+excalidraw_colors("background", 6)
+```
+
+`scale_fill_excalidraw()` uses the light fills and `scale_colour_excalidraw()`
+the strong strokes; the `_c` versions run through the shades of one hue.
+
+## Base graphics
+
+```{r}
+sketch(~ hist(faithful$waiting, col = "#ffd8a8", main = "Waiting time", xlab = "minutes"))
+```
+
+## Presets
+
+```{r}
+sketch(ggplot(mpg, aes(displ, hwy, colour = drv)) + geom_point(size = 2.5) +
+         scale_colour_excalidraw(), preset = "blueprint")
+```

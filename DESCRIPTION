@@ -42,9 +42,11 @@ Suggests:
     officer,
     png,
     ragg (>= 1.5.0),
+    rmarkdown,
     rsvg,
     rvg,
     testthat (>= 3.0.0),
     vdiffr,
     withr
 Config/testthat/edition: 3
+VignetteBuilder: knitr

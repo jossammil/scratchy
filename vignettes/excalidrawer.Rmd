@@ -1,0 +1,95 @@
+---
+title: "Getting started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting started}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(collapse = TRUE, comment = "#>", dev = "ragg_png", dpi = 110,
+                      fig.width = 7, fig.height = 3.5, out.width = "100%")
+library(excalidrawer)
+set.seed(1)
+```
+
+excalidrawer works with Excalidraw *scenes*: lists of shapes, text and arrows,
+stored exactly as Excalidraw stores them. You can build scenes in R, convert
+plots into them, read them from files, draw them, and open them in the
+Excalidraw editor.
+
+## Shapes, text and arrows
+
+Positions and sizes are in pixels, like in Excalidraw (96 per inch, with y
+going down).
+
+```{r}
+s <- exc_scene(
+  exc_rect(0, 0, 160, 80, label = "Idea", fill = "yellow", fill_style = "solid", rounded = TRUE),
+  exc_arrow(c(170, 300), c(40, 40), label = "becomes"),
+  exc_ellipse(310, 0, 160, 90, label = "Chart", fill = "blue", fill_style = "hachure"),
+  exc_diamond(500, -5, 120, 100, fill = "red", fill_style = "cross-hatch"),
+  exc_text("Sketchy!", 0, 120, font_size = 36),
+  exc_line(c(220, 300, 260), c(130, 130, 190), closed = TRUE, fill = "green")
+)
+s
+plot(s)
+```
+
+Style arguments follow Excalidraw's own menus:
+
+| Argument | Values |
+|---|---|
+| `stroke`, `fill` | hex colours, R colours, or Excalidraw hue names (`"blue"`, `"red"`, ...) |
+| `fill_style` | `"hachure"`, `"cross-hatch"`, `"solid"`, `"zigzag"` |
+| `stroke_width` | `"thin"`, `"bold"`, `"extra_bold"` or a number |
+| `stroke_style` | `"solid"`, `"dashed"`, `"dotted"` |
+| `roughness` | `"architect"` (0), `"artist"` (1), `"cartoonist"` (2) |
+| `font` | see `exc_fonts()` |
+| `font_size` | Excalidraw's presets are 16, 20, 28 and 36 |
+
+Every element has a `seed` that fixes its wobble. Seeds come from R's random
+number generator, so `set.seed()` makes drawings reproducible; change a
+single element's `seed` to "re-roll" its look.
+
+## Changing a scene
+
+`as.data.frame()` gives one row per element, and `exc_modify()` changes the
+elements that match a condition:
+
+```{r}
+head(as.data.frame(s)[, c("type", "x", "y", "width", "height", "text")])
+s2 <- exc_modify(s, type == "text", font_size = 24, stroke = "blue")
+```
+
+## Saving
+
+```{r, eval = FALSE}
+exc_save(s, "drawing.png", scale = 2)   # sharp PNG
+exc_save(s, "drawing.svg")              # SVG with the fonts embedded
+exc_save(s, "drawing.pdf")              # PDF, text as outlines
+exc_save(s, "drawing.png", paper = "graph")
+
+write_excalidraw(s, "drawing.excalidraw")      # excalidraw.com, VS Code
+write_excalidraw(s, "drawing.excalidraw.md")   # Obsidian Excalidraw plugin
+write_excalidraw(s, "drawing.excalidraw.svg")  # an image that reopens as a drawing
+read_excalidraw("drawing.excalidraw.svg")
+```
+
+## Editing by hand
+
+`exc_edit()` opens the scene in the real Excalidraw editor; click **Done**
+to get the edited scene back. `excalidraw()` shows a scene in the editor as an
+htmlwidget, in the RStudio viewer, R Markdown or Shiny.
+
+```{r, eval = FALSE}
+s <- exc_edit(s)
+excalidraw(s, mode = "view")
+```
+
+## Presets and paper
+
+```{r}
+exc_restyle(s, "chalkboard") |> plot()
+```

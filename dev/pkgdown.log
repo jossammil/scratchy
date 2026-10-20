@@ -1,0 +1,105 @@
+── Installing package excalidrawer into temporary library ──────────────────────
+── Building pkgdown site for package excalidrawer ──────────────────────────────
+Reading from: /Users/jsm/data_projects/excalidrawer
+Writing to: /Users/jsm/data_projects/excalidrawer/docs
+── Sitrep ──────────────────────────────────────────────────────────────────────
+✖ URLs not ok.
+  In _pkgdown.yml, url is missing.
+  See details in `vignette(pkgdown::metadata)`.
+✔ Favicons ok.
+✔ Open graph metadata ok.
+✔ Articles metadata ok.
+✔ Reference metadata ok.
+── Initialising site ───────────────────────────────────────────────────────────
+── Building home ───────────────────────────────────────────────────────────────
+Reading LICENSE.md
+Reading README.md
+Writing `404.html`
+── Building function reference ─────────────────────────────────────────────────
+Reading man/annotations.Rd
+Reading man/as.data.frame.exc_scene.Rd
+Reading man/as_excalidraw.Rd
+Reading man/exc_add.Rd
+Reading man/exc_bbox.Rd
+Reading man/exc_color.Rd
+Reading man/exc_d2.Rd
+Reading man/exc_data_to_px.Rd
+Reading man/exc_edit.Rd
+Reading man/exc_font_fetch.Rd
+Reading man/exc_fonts.Rd
+Reading man/exc_frame.Rd
+Reading man/exc_grob.Rd
+Reading man/exc_group.Rd
+Reading man/exc_image.Rd
+Reading man/exc_install_fonts.Rd
+Reading man/exc_library.Rd
+Reading man/exc_line.Rd
+Reading man/exc_mermaid.Rd
+Reading man/exc_modify.Rd
+Reading man/exc_papers.Rd
+Reading man/exc_peep.Rd
+Reading man/exc_pptx.Rd
+Reading man/exc_preset.Rd
+Reading man/exc_rect.Rd
+Reading man/exc_restyle.Rd
+Reading man/exc_save.Rd
+Reading man/exc_scene.Rd
+Reading man/exc_scene_from_json.Rd
+Reading man/exc_set_style.Rd
+Reading man/exc_slides_pdf.Rd
+Reading man/exc_stickers.Rd
+Reading man/exc_style.Rd
+Reading man/exc_template_example.Rd
+Reading man/exc_template_fill.Rd
+Reading man/exc_text.Rd
+Reading man/exc_translate.Rd
+Reading man/excalidraw.Rd
+Reading man/excalidrawOutput.Rd
+Reading man/excalidraw_colors.Rd
+Reading man/excalidraw_proxy.Rd
+Reading man/excalidrawer-package.Rd
+Reading man/read_excalidraw.Rd
+Reading man/read_excalidraw_lib.Rd
+Reading man/register_fonts.Rd
+Reading man/run_sketch_studio.Rd
+Reading man/scale_fill_excalidraw.Rd
+Reading man/sketch.Rd
+Reading man/theme_excalidraw.Rd
+Reading man/use_excalidraw_slides.Rd
+Reading man/write_excalidraw.Rd
+── Building articles ───────────────────────────────────────────────────────────
+Reading vignettes/excalidrawer.Rmd
+Writing `articles/excalidrawer.html`
+✖ Missing alt-text in 'vignettes/excalidrawer.Rmd'
+• excalidrawer_files/figure-html/unnamed-chunk-1-1.png
+• excalidrawer_files/figure-html/unnamed-chunk-1-2.png
+• excalidrawer_files/figure-html/unnamed-chunk-5-1.png
+ℹ Learn more in `vignette(pkgdown::accessibility)`.
+Reading vignettes/extras.Rmd
+Writing `articles/extras.html`
+✖ Missing alt-text in 'vignettes/extras.Rmd'
+• extras_files/figure-html/unnamed-chunk-2-1.png
+• extras_files/figure-html/unnamed-chunk-3-1.png
+• extras_files/figure-html/unnamed-chunk-4-1.png
+• extras_files/figure-html/unnamed-chunk-5-1.png
+ℹ Learn more in `vignette(pkgdown::accessibility)`.
+Reading vignettes/ggplot.Rmd
+Writing `articles/ggplot.html`
+✖ Missing alt-text in 'vignettes/ggplot.Rmd'
+• ggplot_files/figure-html/unnamed-chunk-1-1.png
+• ggplot_files/figure-html/unnamed-chunk-3-1.png
+• ggplot_files/figure-html/unnamed-chunk-4-1.png
+• ggplot_files/figure-html/unnamed-chunk-5-1.png
+• ggplot_files/figure-html/unnamed-chunk-7-1.png
+• ggplot_files/figure-html/unnamed-chunk-8-1.png
+ℹ Learn more in `vignette(pkgdown::accessibility)`.
+Reading vignettes/slides.Rmd
+Writing `articles/slides.html`
+── Building news ───────────────────────────────────────────────────────────────
+Writing `news/index.html`
+── Building sitemap ────────────────────────────────────────────────────────────
+Writing `sitemap.xml`
+── Building search index ───────────────────────────────────────────────────────
+── Checking for problems ───────────────────────────────────────────────────────
+── Finished building pkgdown site for package excalidrawer ─────────────────────
+── Finished building pkgdown site for package excalidrawer ─────────────────────

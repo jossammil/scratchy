@@ -137,6 +137,7 @@ as_scene_json <- function(x) {
 }
 
 #' @rdname excalidraw_proxy
+#' @param proxy A proxy from `excalidraw_proxy()`.
 #' @param scene A scene, elements, or anything [as_excalidraw()] accepts.
 #' @param keep_app_state Keep the editor's current canvas settings.
 #' @export

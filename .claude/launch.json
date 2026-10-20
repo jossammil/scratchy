@@ -34,18 +34,18 @@
       "port": 8767
     },
     {
-      "name": "deck-test",
+      "name": "docs-site",
       "runtimeExecutable": "python3",
       "runtimeArgs": [
         "-m",
         "http.server",
-        "8768",
+        "8769",
         "--bind",
         "127.0.0.1",
         "--directory",
-        "/private/tmp/claude-501/-Users-jsm-data-projects-excalidrawer/15f51627-7640-4664-86e9-cc69ce354010/scratchpad/deck"
+        "docs"
       ],
-      "port": 8768
+      "port": 8769
     }
   ]
 }
