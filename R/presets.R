@@ -77,7 +77,9 @@ exc_restyle <- function(scene, preset = "whiteboard", ...) {
     }
     e$roughness <- rough
     if (e$type != "freedraw") e$strokeWidth <- sw
-    if (!is_transparent(e$backgroundColor)) e$fillStyle <- fs
+    # small shapes (scatter points, legend dots) stay solid
+    small <- e$type == "ellipse" && max(e$width, e$height) < 16
+    if (!is_transparent(e$backgroundColor) && !small) e$fillStyle <- fs
     if (!is.null(p$bowing)) e$customData$excalidrawer$bowing <- p$bowing
     e
   })

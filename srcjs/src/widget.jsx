@@ -21,6 +21,20 @@ import "@excalidraw/excalidraw/index.css";
 window.EXCALIDRAW_ASSET_PATH = new URL("./", import.meta.url).href;
 
 const apis = new Map();
+// Messages that arrive before an editor has finished loading wait here.
+const pending = new Map();
+
+const dispatch = (msg) => {
+  const api = apis.get(msg.id);
+  const fn = handlers[msg.method];
+  if (!fn) return;
+  if (!api) {
+    if (!pending.has(msg.id)) pending.set(msg.id, []);
+    pending.get(msg.id).push(msg);
+    return;
+  }
+  fn(api, msg.args || {}, msg.id);
+};
 
 const parseScene = (scene) => {
   const data = typeof scene === "string" ? JSON.parse(scene) : scene || {};
@@ -162,11 +176,7 @@ const handlers = {
 };
 
 if (window.Shiny && window.Shiny.addCustomMessageHandler) {
-  window.Shiny.addCustomMessageHandler("excalidrawer-proxy", (msg) => {
-    const api = apis.get(msg.id);
-    const fn = handlers[msg.method];
-    if (api && fn) fn(api, msg.args || {}, msg.id);
-  });
+  window.Shiny.addCustomMessageHandler("excalidrawer-proxy", dispatch);
 }
 
 function Editor({ x, id }) {
@@ -201,8 +211,15 @@ function Editor({ x, id }) {
       <Excalidraw
         initialData={initialData}
         excalidrawAPI={(api) => {
+          if (!api) return;
           apis.set(id, api);
-          if (window.Shiny) setTimeout(() => report(api.getSceneElements(), api.getAppState(), api.getFiles()), 0);
+          const queued = pending.get(id) || [];
+          pending.delete(id);
+          // Let the editor finish its first render before applying queued commands.
+          setTimeout(() => {
+            queued.forEach(dispatch);
+            if (window.Shiny) report(api.getSceneElements(), api.getAppState(), api.getFiles());
+          }, 50);
         }}
         onChange={onChange}
         viewModeEnabled={x.mode === "view"}

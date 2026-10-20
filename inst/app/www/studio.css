@@ -1,0 +1,42 @@
+/* Sketch Studio: a hand-drawn look for the controls around the canvas. */
+@font-face {
+  font-family: "Excalifont";
+  src: url("../excalidrawer-fonts/Excalifont-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Nunito";
+  src: url("../excalidrawer-fonts/Nunito-Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Nunito";
+  font-weight: bold;
+  src: url("../excalidrawer-fonts/Nunito-Bold.ttf") format("truetype");
+}
+@font-face {
+  font-family: "Cascadia Code";
+  src: url("../excalidrawer-fonts/CascadiaCode-Regular.ttf") format("truetype");
+}
+
+.studio-title { font-family: "Excalifont", cursive; font-size: 1.7rem; }
+.studio-title small { font-family: "Nunito", sans-serif; font-size: 0.9rem; color: #868e96; }
+
+/* wobbly, hand-drawn borders */
+.btn, .form-control, .form-select, .irs-handle, .shiny-input-container .input-group {
+  border: 2px solid #1e1e1e !important;
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px !important;
+}
+.btn { font-family: "Excalifont", cursive; background: #fff; color: #1e1e1e; }
+.btn:hover, .btn:focus { background: #e7f5ff; color: #1e1e1e; transform: rotate(-0.6deg); }
+.btn-outline-primary { background: #a5d8ff; }
+.card, .bslib-card {
+  border: 2px solid #1e1e1e !important;
+  border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px !important;
+  box-shadow: 3px 4px 0 rgba(30, 30, 30, 0.15);
+}
+.accordion-button { font-family: "Excalifont", cursive; font-size: 1.15rem; }
+.accordion-item { border-style: dashed !important; }
+.nav-link { font-family: "Excalifont", cursive; font-size: 1.05rem; }
+label.control-label, .form-label { font-weight: bold; }
+.shiny-image-output img { border: 1px dashed #ced4da; border-radius: 8px; background: #fff; }
+pre { font-family: "Cascadia Code", monospace; background: #f8f9fa; border-radius: 8px; }
+.excalidraw .App-menu_top { font-family: inherit; }

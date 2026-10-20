@@ -23,6 +23,15 @@
         "devtools::load_all('.', quiet = TRUE); shiny::runApp('dev/shiny-test', port = 8766, launch.browser = FALSE)"
       ],
       "port": 8766
+    },
+    {
+      "name": "sketch-studio",
+      "runtimeExecutable": "Rscript",
+      "runtimeArgs": [
+        "-e",
+        "devtools::load_all('.', quiet = TRUE); shiny::runApp(run_sketch_studio(launch.browser = FALSE), port = 8767, launch.browser = FALSE)"
+      ],
+      "port": 8767
     }
   ]
 }
