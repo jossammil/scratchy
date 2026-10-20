@@ -48,3 +48,14 @@ svg_to_png <- function(svg_file, png_file, zoom = 2) {
   b$screenshot(png_file, selector = "svg", scale = zoom, show = FALSE)
   invisible(png_file)
 }
+
+# Load a file through Excalidraw's own loadFromBlob (decodes embedded scenes).
+excalidraw_check_file <- function(path) {
+  b <- excalidraw_check_session()
+  mime <- switch(tolower(tools::file_ext(path)), svg = "image/svg+xml", png = "image/png",
+                 "application/json")
+  b64 <- gsub("\n", "", jsonlite::base64_enc(readBin(path, "raw", file.info(path)$size)))
+  js <- sprintf("window.checkFile(%s, %s)", jsonlite::toJSON(b64, auto_unbox = TRUE),
+                jsonlite::toJSON(mime, auto_unbox = TRUE))
+  b$Runtime$evaluate(js, awaitPromise = TRUE, returnByValue = TRUE)$result$value
+}

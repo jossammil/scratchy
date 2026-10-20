@@ -15,6 +15,10 @@
 #' @param background Draw the background colour (`FALSE` = transparent).
 #' @param paper Optional paper background; see [exc_papers()].
 #' @param text Text drawing mode; see [exc_grob()].
+#' @param embed_scene For SVG and PNG, also store the scene inside the image
+#'   so it can be reopened as an editable drawing (like Excalidraw's "Embed
+#'   scene" export). On by default for `.excalidraw.svg` / `.excalidraw.png`
+#'   file names.
 #' @return `file`, invisibly.
 #' @export
 #' @examples
@@ -23,7 +27,8 @@
 #' f <- tempfile(fileext = ".png")
 #' exc_save(s, f, scale = 2)
 exc_save <- function(scene, file, scale = 1, padding = 10, background = TRUE,
-                     paper = NULL, text = c("auto", "outline", "font")) {
+                     paper = NULL, text = c("auto", "outline", "font"),
+                     embed_scene = grepl("\\.excalidraw\\.(svg|png)$", tolower(file))) {
   check_scene(scene)
   text <- match.arg(text)
   ext <- tolower(tools::file_ext(file))
@@ -31,9 +36,16 @@ exc_save <- function(scene, file, scale = 1, padding = 10, background = TRUE,
   w_in <- g$canvas[["w"]] / 96 * scale
   h_in <- g$canvas[["h"]] / 96 * scale
   open_device(ext, file, w_in, h_in, scale, scene)
-  on.exit(grDevices::dev.off(), add = TRUE)
-  grid::grid.newpage()
-  grid::grid.draw(g)
+  dev <- grDevices::dev.cur()
+  tryCatch({
+    grid::grid.newpage()
+    grid::grid.draw(g)
+  }, finally = grDevices::dev.off(dev))
+  if (isTRUE(embed_scene)) {
+    if (ext == "svg") embed_scene_svg(file, scene)
+    else if (ext == "png") embed_scene_png(file, scene)
+    else cli::cli_warn("Scenes can only be embedded in SVG and PNG files.")
+  }
   invisible(file)
 }
 

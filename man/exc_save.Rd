@@ -11,7 +11,8 @@ exc_save(
   padding = 10,
   background = TRUE,
   paper = NULL,
-  text = c("auto", "outline", "font")
+  text = c("auto", "outline", "font"),
+  embed_scene = grepl("\\\\.excalidraw\\\\.(svg|png)$", tolower(file))
 )
 }
 \arguments{
@@ -29,6 +30,11 @@ sharper "retina" images. For vector formats it scales the page size.}
 \item{paper}{Optional paper background; see \code{\link[=exc_papers]{exc_papers()}}.}
 
 \item{text}{Text drawing mode; see \code{\link[=exc_grob]{exc_grob()}}.}
+
+\item{embed_scene}{For SVG and PNG, also store the scene inside the image
+so it can be reopened as an editable drawing (like Excalidraw's "Embed
+scene" export). On by default for \code{.excalidraw.svg} / \code{.excalidraw.png}
+file names.}
 }
 \value{
 \code{file}, invisibly.

@@ -214,8 +214,23 @@ text_grob <- function(lay, s, mode, alpha) {
   if (mode == "outline") {
     o <- text_outlines(lay)
     if (is.null(o)) return(NULL)
-    return(grid::pathGrob(o$x, -o$y, id = o$id, rule = "winding", default.units = "native",
-                          gp = grid::gpar(fill = col, col = NA)))
+    kids <- list()
+    if (!is.null(o$x)) {
+      kids[[1]] <- grid::pathGrob(o$x, -o$y, id = o$id, rule = "winding", default.units = "native",
+                                  gp = grid::gpar(fill = col, col = NA))
+    }
+    for (r in o$rasters) {
+      kids[[length(kids) + 1]] <- if (lay$angle == 0) {
+        grid::rasterGrob(r$raster, x = r$cx, y = -r$cy, width = r$w, height = r$h,
+                         default.units = "native", interpolate = TRUE)
+      } else {
+        grid::rasterGrob(r$raster, interpolate = TRUE, vp = grid::viewport(
+          x = grid::unit(r$cx, "native"), y = grid::unit(-r$cy, "native"),
+          width = grid::unit(r$w, "native"), height = grid::unit(r$h, "native"),
+          angle = -lay$angle * 180 / pi))
+      }
+    }
+    return(grid::gTree(children = do.call(grid::gList, kids)))
   }
   a <- text_anchors(lay)
   grid::textGrob(lay$lines, x = a$x, y = -a$y, hjust = a$hjust, vjust = 0, rot = a$rot,

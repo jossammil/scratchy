@@ -37,6 +37,36 @@
       console.error = origError;
     }
   };
+  // Load a file the way excalidraw.com does (drag and drop / open).
+  window.checkFile = async (b64, mime) => {
+    try {
+      const bin = atob(b64);
+      const bytes = new Uint8Array(bin.length);
+      for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+      const blob = new Blob([bytes], { type: mime });
+      const scene = await EX.loadFromBlob(blob, null, null);
+      return { ok: true, n: scene.elements.filter((e) => !e.isDeleted).length,
+               types: scene.elements.map((e) => e.type),
+               texts: scene.elements.filter((e) => e.type === "text").map((e) => e.text) };
+    } catch (e) {
+      return { ok: false, message: String(e && e.stack || e) };
+    }
+  };
+  // Export with the scene embedded, as Excalidraw's "Embed scene" option does.
+  window.exportEmbedded = async (json, type) => {
+    const data = EX.restore(JSON.parse(json), null, null);
+    const appState = { ...data.appState, exportEmbedScene: true, exportBackground: true };
+    if (type === "svg") {
+      const svg = await EX.exportToSvg({ elements: data.elements, appState, files: data.files || {} });
+      return btoa(unescape(encodeURIComponent(svg.outerHTML)));
+    }
+    const blob = await EX.exportToBlob({ elements: data.elements, appState, files: data.files || {},
+                                         mimeType: "image/png" });
+    const buf = new Uint8Array(await blob.arrayBuffer());
+    let bin = "";
+    for (let i = 0; i < buf.length; i++) bin += String.fromCharCode(buf[i]);
+    return btoa(bin);
+  };
   window.excalidrawReady = true;
 </script>
 </body>

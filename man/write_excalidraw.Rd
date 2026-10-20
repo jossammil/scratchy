@@ -4,14 +4,20 @@
 \alias{write_excalidraw}
 \title{Write a scene to a file}
 \usage{
-write_excalidraw(scene, path, pretty = TRUE)
+write_excalidraw(scene, path, pretty = TRUE, compress = TRUE, ...)
 }
 \arguments{
 \item{scene}{An \code{exc_scene}.}
 
 \item{path}{File path.}
 
-\item{pretty}{Indent the JSON.}
+\item{pretty}{Indent the JSON (JSON and Obsidian files).}
+
+\item{compress}{For Obsidian files, store the drawing compressed, as the
+plugin does by default.}
+
+\item{...}{For images, options passed to \code{\link[=exc_save]{exc_save()}} such as \code{scale} or
+\code{paper}.}
 }
 \value{
 \code{path}, invisibly.
@@ -21,10 +27,21 @@ The format follows the file extension:
 \itemize{
 \item \code{.excalidraw} or \code{.json}: Excalidraw's JSON format, for excalidraw.com
 and the VS Code extension.
+\item \code{.excalidraw.md}: a drawing for the Obsidian Excalidraw plugin. Images
+are saved in a folder next to it.
+\item \code{.excalidraw.svg}, \code{.excalidraw.png} (or any \code{.svg} / \code{.png}): a
+rendered image with the scene embedded, so it can be opened again as an
+editable drawing in excalidraw.com, VS Code or with \code{\link[=read_excalidraw]{read_excalidraw()}}.
 }
 }
 \examples{
+s <- exc_scene(exc_rect(0, 0, 100, 60, label = "hi"))
 f <- tempfile(fileext = ".excalidraw")
-write_excalidraw(exc_scene(exc_rect(0, 0, 100, 60, label = "hi")), f)
+write_excalidraw(s, f)
 read_excalidraw(f)
+
+# an image that stays editable
+f2 <- tempfile(fileext = ".excalidraw.png")
+write_excalidraw(s, f2, scale = 2)
+read_excalidraw(f2)
 }

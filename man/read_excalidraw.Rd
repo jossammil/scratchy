@@ -13,5 +13,8 @@ read_excalidraw(path)
 An \code{exc_scene}.
 }
 \description{
-Reads Excalidraw JSON files (\code{.excalidraw}, \code{.json}).
+Reads Excalidraw JSON files (\code{.excalidraw}, \code{.json}), Obsidian drawings
+(\code{.excalidraw.md}), and SVG or PNG images with an embedded scene (such as
+Excalidraw exports made with "Embed scene", or files from
+\code{\link[=write_excalidraw]{write_excalidraw()}}).
 }

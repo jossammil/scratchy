@@ -3,29 +3,50 @@
 #' The format follows the file extension:
 #' * `.excalidraw` or `.json`: Excalidraw's JSON format, for excalidraw.com
 #'   and the VS Code extension.
+#' * `.excalidraw.md`: a drawing for the Obsidian Excalidraw plugin. Images
+#'   are saved in a folder next to it.
+#' * `.excalidraw.svg`, `.excalidraw.png` (or any `.svg` / `.png`): a
+#'   rendered image with the scene embedded, so it can be opened again as an
+#'   editable drawing in excalidraw.com, VS Code or with [read_excalidraw()].
 #'
 #' @param scene An `exc_scene`.
 #' @param path File path.
-#' @param pretty Indent the JSON.
+#' @param pretty Indent the JSON (JSON and Obsidian files).
+#' @param compress For Obsidian files, store the drawing compressed, as the
+#'   plugin does by default.
+#' @param ... For images, options passed to [exc_save()] such as `scale` or
+#'   `paper`.
 #' @return `path`, invisibly.
 #' @export
 #' @examples
+#' s <- exc_scene(exc_rect(0, 0, 100, 60, label = "hi"))
 #' f <- tempfile(fileext = ".excalidraw")
-#' write_excalidraw(exc_scene(exc_rect(0, 0, 100, 60, label = "hi")), f)
+#' write_excalidraw(s, f)
 #' read_excalidraw(f)
-write_excalidraw <- function(scene, path, pretty = TRUE) {
+#'
+#' # an image that stays editable
+#' f2 <- tempfile(fileext = ".excalidraw.png")
+#' write_excalidraw(s, f2, scale = 2)
+#' read_excalidraw(f2)
+write_excalidraw <- function(scene, path, pretty = TRUE, compress = TRUE, ...) {
   check_scene(scene)
   format <- file_format(path)
   switch(format,
     json = writeLines(scene_to_json(scene, pretty = pretty), path, useBytes = TRUE),
-    cli::cli_abort("Writing {.val {format}} files isn't supported yet.")
+    obsidian = write_obsidian(scene, path, compress = compress),
+    svg = , png = exc_save(scene, path, embed_scene = TRUE, ...),
+    library = cli::cli_abort("Use {.fn write_excalidraw_lib} for library files."),
+    cli::cli_abort("Writing {.val {format}} files isn't supported.")
   )
   invisible(path)
 }
 
 #' Read a scene from a file
 #'
-#' Reads Excalidraw JSON files (`.excalidraw`, `.json`).
+#' Reads Excalidraw JSON files (`.excalidraw`, `.json`), Obsidian drawings
+#' (`.excalidraw.md`), and SVG or PNG images with an embedded scene (such as
+#' Excalidraw exports made with "Embed scene", or files from
+#' [write_excalidraw()]).
 #'
 #' @param path File path.
 #' @return An `exc_scene`.
@@ -35,7 +56,11 @@ read_excalidraw <- function(path) {
   format <- file_format(path)
   switch(format,
     json = scene_from_json(paste(readLines(path, warn = FALSE, encoding = "UTF-8"), collapse = "\n")),
-    cli::cli_abort("Reading {.val {format}} files isn't supported yet.")
+    obsidian = read_obsidian(path),
+    svg = read_scene_svg(path),
+    png = read_scene_png(path),
+    library = cli::cli_abort("Use {.fn read_excalidraw_lib} for library files."),
+    cli::cli_abort("Reading {.val {format}} files isn't supported.")
   )
 }
 
