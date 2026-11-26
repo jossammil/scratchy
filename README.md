@@ -161,7 +161,7 @@ The same editor runs without R:
   Peeps people, the style presets, Mermaid diagrams (offline), self-drawing
   animated SVGs, and Obsidian `.excalidraw.md` files. Drawings stay in your
   browser, and it keeps working offline once loaded.
-- **[denr](https://github.com/jossammil/pocket-r)**, the R workspace that runs in the
+- **[denr](https://github.com/jossammil/denr)**, the R workspace that runs in the
   browser, has it as its **Sketch** panel: open and save `.excalidraw` files in
   the workspace, put drawings into Quarto notes, and turn a ggplot into an
   editable hand-drawn chart with one tap.
