@@ -1,14 +1,23 @@
 // Builds the Excalidraw editor bundle into inst/htmlwidgets/lib/excalidraw-widget.
 //   cd srcjs && npm install && npm run build
 import * as esbuild from "esbuild";
-import { cpSync, mkdirSync, readdirSync, rmSync, writeFileSync } from "node:fs";
+import { cpSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+
+// One version for the R package and the bundle: DESCRIPTION's.
+const version = readFileSync("../DESCRIPTION", "utf8").match(/^Version:\s*(\S+)/m)[1];
+const pkg = JSON.parse(readFileSync("package.json", "utf8"));
+if (pkg.version !== version) {
+  console.error(`srcjs/package.json is ${pkg.version} but DESCRIPTION is ${version}; make them match.`);
+  process.exit(1);
+}
+const excalidraw = JSON.parse(readFileSync("node_modules/@excalidraw/excalidraw/package.json", "utf8")).version;
 
 const out = "../inst/htmlwidgets/lib/excalidraw-widget";
 rmSync(out, { recursive: true, force: true });
 mkdirSync(out, { recursive: true });
 
 await esbuild.build({
-  entryPoints: { "excalidraw-widget": "src/widget.jsx" },
+  entryPoints: { "excalidraw-widget": "src/index.js" },
   bundle: true,
   minify: true,
   format: "esm",
@@ -21,7 +30,9 @@ await esbuild.build({
   define: {
     "process.env.NODE_ENV": '"production"',
     "process.env.IS_PREACT": '"false"',
+    __EXCALIDRAWER_VERSION__: JSON.stringify(version),
   },
+  banner: { js: `/*! excalidrawer ${version} (MIT). Bundles Excalidraw ${excalidraw} (MIT), React (MIT) and their dependencies: see excalidraw-widget.js.LEGAL.txt and the package's inst/COPYRIGHTS. */` },
   loader: { ".woff2": "file", ".ttf": "file", ".png": "file", ".svg": "file" },
   legalComments: "external",
   logLevel: "info",
@@ -52,4 +63,7 @@ writeFileSync(`${out}/headless.html`, `<!doctype html>
 <body><script type="module" src="excalidraw-widget.js"></script></body></html>
 `);
 
-console.log("built", out);
+// What denr and the site read to know which editor they have.
+writeFileSync(`${out}/VERSION.json`, JSON.stringify({ excalidrawer: version, excalidraw }, null, 2) + "\n");
+
+console.log("built", out, version);
