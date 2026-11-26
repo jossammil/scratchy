@@ -36,13 +36,27 @@ google <- list(
   c("architectsdaughter", "ArchitectsDaughter-Regular.ttf", "ArchitectsDaughter-Regular.ttf"),
   c("gochihand", "GochiHand-Regular.ttf", "GochiHand-Regular.ttf"),
   c("nunito", "Nunito%5Bwght%5D.ttf", "Nunito-VF.ttf"),
-  c("lilitaone", "LilitaOne-Regular.ttf", "LilitaOne-Regular.ttf"),
-  c("cascadiacode", "CascadiaCode%5Bwght%5D.ttf", "CascadiaCode-VF.ttf")
+  c("lilitaone", "LilitaOne-Regular.ttf", "LilitaOne-Regular.ttf")
 )
 for (g in google) {
   fetch(file.path(gf, g[1], g[2]), file.path(fonts_dir, g[3]))
   fetch(file.path(gf, g[1], "OFL.txt"), file.path(lic_dir, paste0(g[1], "-OFL.txt")))
 }
+
+# Cascadia Code: Microsoft's own static Regular and Bold from its release, used
+# as they are. (Making them from the variable font would be a Modified Version
+# under the OFL, which may not keep the Reserved Font Name "Cascadia Code".)
+cascadia_zip <- tempfile(fileext = ".zip")
+fetch("https://github.com/microsoft/cascadia-code/releases/download/v2407.24/CascadiaCode-2407.24.zip",
+      cascadia_zip)
+for (style in c("Regular", "Bold")) {
+  utils::unzip(cascadia_zip, files = sprintf("ttf/static/CascadiaCode-%s.ttf", style),
+               exdir = tempdir(), junkpaths = TRUE)
+  file.copy(file.path(tempdir(), sprintf("CascadiaCode-%s.ttf", style)),
+            file.path(fonts_dir, sprintf("CascadiaCode-%s.ttf", style)), overwrite = TRUE)
+}
+fetch("https://raw.githubusercontent.com/microsoft/cascadia-code/main/OFL.txt",
+      file.path(lic_dir, "cascadiacode-OFL.txt"))
 
 # Excalifont's licence text lives in its name table; write it out next to the others.
 ofl_body <- readLines(file.path(lic_dir, "patrickhand-OFL.txt"), warn = FALSE)

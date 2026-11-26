@@ -16,6 +16,9 @@ First public version, on GitHub with a browser version of the editor.
   where cairo can't load, as on macOS without XQuartz.
 * GIFs from `exc_animate()` play the animation even on computers set to
   reduce motion (the recording emulates no preference).
+* Cascadia Code is now Microsoft's own static Regular and Bold, unmodified,
+  instead of instances made from the variable font (its name is reserved
+  under the OFL). Text looks and measures the same.
 * shiny and bslib moved to Suggests: only Sketch Studio and `exc_edit()` use
   them, so the package installs faster (also in webR).
 * Sketch Studio offers the Penguins data only on R 4.5 and later, where

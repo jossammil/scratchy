@@ -1,7 +1,9 @@
 """Convert bundled fonts into formats R's FreeType-based devices can read.
 
 - WOFF2 (Excalifont, Virgil) -> TTF. The WOFF2 originals stay for web use.
-- Variable fonts (Caveat, Nunito, Cascadia Code) -> static Regular and Bold.
+- Variable fonts (Caveat, Nunito) -> static Regular and Bold. Cascadia Code
+  comes as Microsoft's own static files instead (its name is reserved under
+  the OFL, so it must not be modified and keep the name).
 
 Usage: python3 data-raw/fonts.py inst/fonts
 """
@@ -59,4 +61,3 @@ woff2_to_ttf("Excalifont-Regular")
 woff2_to_ttf("Virgil")
 instantiate("Caveat-VF.ttf", "Caveat", "Caveat")
 instantiate("Nunito-VF.ttf", "Nunito", "Nunito")
-instantiate("CascadiaCode-VF.ttf", "Cascadia Code", "CascadiaCode")

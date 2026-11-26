@@ -20,12 +20,15 @@ inst/fonts/
   Excalifont: Copyright (c) 2024 Excalidraw. SIL Open Font License 1.1.
   Virgil: Copyright (c) 2021 Ellinor Rapp, Reserved Font Name "Virgil". SIL OFL 1.1.
   Comic Shanns: Copyright (c) 2018 Shannon Miwa. MIT License.
-  Caveat, Patrick Hand, Architects Daughter, Gochi Hand, Nunito, Lilita One and
-  Cascadia Code: SIL Open Font License 1.1 (from Google Fonts).
+  Caveat, Patrick Hand, Architects Daughter, Gochi Hand, Nunito and Lilita One:
+  SIL Open Font License 1.1 (from Google Fonts).
+  Cascadia Code: Copyright (c) 2019 Microsoft Corporation, Reserved Font Name
+  "Cascadia Code". SIL OFL 1.1 (from Microsoft's release).
   Licence texts are in inst/fonts/LICENSES/. Excalifont and Virgil are also
   included as TrueType files converted from the original WOFF2 so that R's
-  graphics devices can read them; the Caveat, Nunito and Cascadia Code
-  variable fonts are included as static Regular and Bold instances.
+  graphics devices can read them; the Caveat and Nunito variable fonts are
+  included as static Regular and Bold instances. Cascadia Code is
+  Microsoft's own static Regular and Bold (release 2407.24), unmodified.
 
 inst/stickers/
   Excalidraw libraries from https://libraries.excalidraw.com (repository
