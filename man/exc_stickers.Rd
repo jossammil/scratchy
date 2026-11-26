@@ -41,7 +41,7 @@ such as \code{stroke}, \code{fill} or \code{roughness}.}
 and its number; draw it with \code{plot()}.
 }
 \description{
-excalidrawer bundles a dozen community libraries from
+scratchy bundles a dozen community libraries from
 \url{https://libraries.excalidraw.com} (all MIT licensed): R and RStudio
 icons, stick figures, storytelling faces, speech bubbles, sticky notes,
 stars, hearts, emojis, data-viz icons, hand-drawn signs, general icons and

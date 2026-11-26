@@ -1,6 +1,6 @@
 #' Sketch Studio: a point-and-click app for hand-drawn charts
 #'
-#' A Shiny app built on excalidrawer:
+#' A Shiny app built on scratchy:
 #' 1. **Data**: pick a built-in dataset, upload a CSV or paste from a
 #'    spreadsheet.
 #' 2. **Chart**: choose a chart type and what goes on each axis.
@@ -32,8 +32,8 @@ studio_fonts <- c("Excalifont", "Virgil", "Comic Shanns", "Nunito", "Lilita One"
                   "Architects Daughter *" = "Architects Daughter", "Gochi Hand *" = "Gochi Hand")
 
 studio_ui <- function() {
-  shiny::addResourcePath("excalidrawer-fonts", pkg_file("fonts"))
-  shiny::addResourcePath("excalidrawer-studio", pkg_file("app", "www"))
+  shiny::addResourcePath("scratchy-fonts", pkg_file("fonts"))
+  shiny::addResourcePath("scratchy-studio", pkg_file("app", "www"))
   theme <- bslib::bs_theme(
     version = 5, bg = "#fdfcf7", fg = "#1e1e1e", primary = "#1971c2", secondary = "#868e96",
     success = "#2f9e44", danger = "#e03131", warning = "#f08c00",
@@ -43,10 +43,10 @@ studio_ui <- function() {
   faces <- tryCatch(exc_peep_options()$face, error = function(e) "smile")
   bslib::page_sidebar(
     title = shiny::tags$span(class = "studio-title", "Sketch Studio",
-                             shiny::tags$small(" hand-drawn charts with excalidrawer")),
+                             shiny::tags$small(" hand-drawn charts with scratchy")),
     window_title = "Sketch Studio",
     theme = theme,
-    shiny::tags$head(shiny::tags$link(rel = "stylesheet", href = "excalidrawer-studio/studio.css")),
+    shiny::tags$head(shiny::tags$link(rel = "stylesheet", href = "scratchy-studio/studio.css")),
     sidebar = bslib::sidebar(
       width = 340, open = "always",
       bslib::accordion(
@@ -266,7 +266,7 @@ studio_server <- function(input, output, session) {
   })
   full_code <- shiny::reactive({
     paste0(
-      "library(ggplot2)\nlibrary(excalidrawer)\n\n", data_code(), "\n\n",
+      "library(ggplot2)\nlibrary(scratchy)\n\n", data_code(), "\n\n",
       "p <- ", code(), "\n\n",
       sprintf("s <- as_excalidraw(p, width = 820, height = 520, theme = NULL, fill_style = %s,\n                   roughness = %s, font = %s, seed = %s)\n",
               deparse(input$fill_style), input$roughness, deparse(input$font), seed()),

@@ -65,7 +65,7 @@ test_that("panel clipping removes out-of-range geometry", {
     coord_cartesian(xlim = as.Date(c("2000-01-01", "2005-01-01")))
   s <- as_excalidraw(p)
   rect <- s$meta$coord[[1]]$rect
-  lines <- Filter(function(e) e$type == "line" && identical(e$customData$excalidrawer$role, "data"), s$elements)
+  lines <- Filter(function(e) e$type == "line" && identical(e$customData$scratchy$role, "data"), s$elements)
   xs <- unlist(lapply(lines, function(e) e$x + vapply(e$points, `[`, 1, 1)))
   expect_true(all(xs >= rect[["x0"]] - 0.5 & xs <= rect[["x1"]] + 0.5))
 })

@@ -1,6 +1,6 @@
 ---
 title: "Hand-drawn slides"
-subtitle: "made with excalidrawer"
+subtitle: "made with scratchy"
 author: "Your name"
 format:
   excalidraw-revealjs:
@@ -11,7 +11,7 @@ format:
 ```{r}
 #| include: false
 library(ggplot2)
-library(excalidrawer)
+library(scratchy)
 cars <- ggplot(mpg, aes(class)) +
   geom_bar(fill = "#a5d8ff") +
   labs(x = NULL, y = "cars")
@@ -56,7 +56,7 @@ hachure fill).
 # copy is used when Chrome isn't available.
 flow <- tryCatch(
   exc_mermaid("flowchart LR\n  A[Data] --> B[Sketch it] --> C[Share]\n  B --> D((Smile))"),
-  error = function(e) read_excalidraw(system.file("templates", "flow.excalidraw", package = "excalidrawer"))
+  error = function(e) read_excalidraw(system.file("templates", "flow.excalidraw", package = "scratchy"))
 )
 plot(flow, background = FALSE)
 ```

@@ -53,7 +53,7 @@ test("presets match the R package and restyle like exc_restyle()", () => {
   assert.equal(by.b.fillStyle, "solid");       // no fill, no change
   assert.equal(by.dot.fillStyle, "solid");     // small dots stay solid
   assert.equal(by.t.fontFamily, 5);
-  assert.equal(by.t.customData.excalidrawer.font, "Architects Daughter");
+  assert.equal(by.t.customData.scratchy.font, "Architects Daughter");
   assert.equal(by.img, els[4]);
   assert.ok(textChanged);
   const only = restyleElements(els, "xkcd", new Set(["r"])).elements;

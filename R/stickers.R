@@ -1,6 +1,6 @@
 #' Stickers: hand-drawn icons, people and doodles
 #'
-#' excalidrawer bundles a dozen community libraries from
+#' scratchy bundles a dozen community libraries from
 #' <https://libraries.excalidraw.com> (all MIT licensed): R and RStudio
 #' icons, stick figures, storytelling faces, speech bubbles, sticky notes,
 #' stars, hearts, emojis, data-viz icons, hand-drawn signs, general icons and
@@ -193,7 +193,7 @@ peeps_context <- function() {
 #' @export
 exc_library <- function(path) {
   if (grepl("^https?://", path)) {
-    cache <- tools::R_user_dir("excalidrawer", "cache")
+    cache <- tools::R_user_dir("scratchy", "cache")
     dir.create(cache, recursive = TRUE, showWarnings = FALSE)
     dest <- file.path(cache, paste0(digest_string(path), ".excalidrawlib"))
     if (!file.exists(dest)) utils::download.file(path, dest, mode = "wb", quiet = TRUE)

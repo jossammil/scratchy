@@ -33,7 +33,7 @@ test_that("proxy functions send the right messages", {
   exc_proxy_export(p, "svg", embed = TRUE)
   exc_proxy_mermaid(p, "flowchart LR\n A --> B")
   expect_length(sent, 5)
-  expect_true(all(vapply(sent, function(m) m[[1]] == "excalidrawer-proxy", TRUE)))
+  expect_true(all(vapply(sent, function(m) m[[1]] == "scratchy-proxy", TRUE)))
   expect_equal(sent[[1]][[2]]$id, "mod-canvas")
   expect_equal(sent[[1]][[2]]$method, "add")
   expect_equal(sent[[1]][[2]]$args$placement, "right")
@@ -48,7 +48,7 @@ test_that("proxy functions send the right messages", {
 test_that("charts can be named for later replacement", {
   skip_if_not_installed("ggplot2")
   s <- as_excalidraw(ggplot2::ggplot(mtcars, ggplot2::aes(factor(cyl))) + ggplot2::geom_bar(), id = "main")
-  charts <- unique(vapply(s$elements, function(e) e$customData$excalidrawer$chart, ""))
+  charts <- unique(vapply(s$elements, function(e) e$customData$scratchy$chart, ""))
   expect_equal(charts, "main")
 })
 
@@ -73,10 +73,10 @@ test_that("Mermaid and exact exports run through headless Chrome", {
 test_that("the extras sidebar brings the sticker libraries along", {
   w <- excalidraw(exc_scene())
   deps <- vapply(w$dependencies, `[[`, "", "name")
-  expect_equal(deps, c("excalidraw-widget", "excalidrawer-stickers"))
+  expect_equal(deps, c("excalidraw-widget", "scratchy-stickers"))
   expect_true(w$x$extras)
   st <- w$dependencies[[2]]
-  expect_equal(st$version, as.character(utils::packageVersion("excalidrawer")))
+  expect_equal(st$version, as.character(utils::packageVersion("scratchy")))
   idx <- jsonlite::fromJSON(file.path(st$src$file, "index.json"))
   expect_true(all(file.exists(file.path(st$src$file, idx$file))))
   w2 <- excalidraw(exc_scene(), extras = FALSE)

@@ -32,10 +32,10 @@ export function restyleElements(elements, name, ids = null) {
     if (isDark(n.strokeColor)) n.strokeColor = p.ink;
     if (n.type === "text") {
       n.fontFamily = p.fontFamily;
-      const ex = { ...(n.customData?.excalidrawer || {}) };
+      const ex = { ...(n.customData?.scratchy || {}) };
       if (p.customFont) ex.font = p.customFont; else delete ex.font;
-      n.customData = { ...(n.customData || {}), excalidrawer: ex };
-      if (!Object.keys(ex).length) delete n.customData.excalidrawer;
+      n.customData = { ...(n.customData || {}), scratchy: ex };
+      if (!Object.keys(ex).length) delete n.customData.scratchy;
       return n;
     }
     n.roughness = p.roughness;

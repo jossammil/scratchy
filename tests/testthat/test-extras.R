@@ -7,7 +7,7 @@ test_that("bundled sticker libraries are listed and placeable", {
     exc_sticker("emojis:3", 100, 20, width = 40, stroke = "red")
   els <- s$elements
   expect_gt(length(els), 2)
-  expect_true(all(vapply(els, function(e) e$customData$excalidrawer$role, "") == "annotation"))
+  expect_true(all(vapply(els, function(e) e$customData$scratchy$role, "") == "annotation"))
   girl <- Filter(function(e) length(e$groupIds) && e$x < 95, els)
   bb <- exc_bbox(new_elements(girl), stroke = FALSE)
   expect_equal(unname(bb[c("xmin", "ymin")]), c(10, 20), tolerance = 0.5)
@@ -48,7 +48,7 @@ test_that("templates fill text, charts and images", {
   expect_true("Coffees" %in% texts)
   expect_true("1,234.5" %in% texts)
   expect_false(any(grepl("{{", texts, fixed = TRUE)))
-  chart <- Filter(function(e) identical(e$customData$excalidrawer$chart, "trend"), card$elements)
+  chart <- Filter(function(e) identical(e$customData$scratchy$chart, "trend"), card$elements)
   expect_gt(length(chart), 10)
   slot <- Filter(function(e) e$type == "rectangle" && identical(e$strokeStyle, "dashed"), card$elements)[[1]]
   bb <- exc_bbox(new_elements(chart), stroke = FALSE)
@@ -90,7 +90,7 @@ test_that("D2 diagrams render when d2 is installed", {
   expect_match(svg, '"Excalifont"', fixed = TRUE)
   expect_false(grepl("d2-[0-9]+-font-", svg))
   expect_match(svg_of(exc_d2("a -> b", font = NULL)), "d2-[0-9]+-font-")
-  expect_error(exc_d2("a -> b", font = "Helvetica"), "bundled with excalidrawer")
+  expect_error(exc_d2("a -> b", font = "Helvetica"), "bundled with scratchy")
   err <- tryCatch(exc_d2("a -> -> {"), error = function(e) conditionMessage(e))
   expect_match(err, "couldn't draw the diagram")
   expect_false(grepl("info:", err, fixed = TRUE))

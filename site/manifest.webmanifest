@@ -1,6 +1,6 @@
 {
-  "name": "excalidrawer",
-  "short_name": "excalidrawer",
+  "name": "scratchy",
+  "short_name": "scratchy",
   "description": "Hand-drawn diagrams and charts: Excalidraw with stickers, people, style presets, Mermaid, animated SVGs and Obsidian files. Works offline.",
   "start_url": "./",
   "scope": "./",

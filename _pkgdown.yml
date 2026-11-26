@@ -1,4 +1,4 @@
-url: https://jossammil.github.io/excalidrawer/r/
+url: https://jossammil.github.io/scratchy/r/
 template:
   bootstrap: 5
   bslib:
@@ -14,7 +14,7 @@ navbar:
 articles:
   - title: Guides
     contents:
-      - excalidrawer
+      - scratchy
       - ggplot
       - slides
       - extras

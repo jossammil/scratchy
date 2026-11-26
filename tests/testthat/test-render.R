@@ -81,7 +81,7 @@ test_that("presets restyle elements and remember the paper", {
   expect_true(all(df$strokeColor[df$type == "text"] == "#f1f3f5"))
   expect_true(all(df$roughness[df$type == "rectangle"] == 2))
   t <- Filter(function(e) e$type == "text", s$elements)[[1]]
-  expect_equal(t$customData$excalidrawer$font, "Architects Daughter")
+  expect_equal(t$customData$scratchy$font, "Architects Daughter")
 })
 
 test_that("rendered scenes match snapshots", {

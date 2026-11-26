@@ -69,7 +69,7 @@ base_element <- function(type, x, y, width, height, s, angle = 0, roundness = NU
 
 tag_element <- function(el, ...) {
   tags <- list(...)
-  el$customData$excalidrawer[names(tags)] <- tags
+  el$customData$scratchy[names(tags)] <- tags
   el
 }
 

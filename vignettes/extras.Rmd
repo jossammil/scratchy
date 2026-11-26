@@ -10,7 +10,7 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(collapse = TRUE, comment = "#>", dev = "ragg_png", dpi = 110,
                       fig.width = 7, fig.height = 3, out.width = "100%")
-library(excalidrawer)
+library(scratchy)
 library(ggplot2)
 ```
 

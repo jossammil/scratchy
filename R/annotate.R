@@ -81,7 +81,7 @@ data_box <- function(scene, x, y, panel) {
 
 annotation <- function(els) {
   out <- lapply(unclass(els), function(e) {
-    e$customData$excalidrawer$role <- "annotation"
+    e$customData$scratchy$role <- "annotation"
     e
   })
   new_elements(out, attr(els, "files"))

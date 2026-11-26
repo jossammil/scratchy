@@ -1,5 +1,5 @@
-Package: excalidrawer
-Title: Excalidraw-Style Charts, Drawings and Slides from R
+Package: scratchy
+Title: Hand-Drawn Charts, Drawings and Slides in the 'Excalidraw' Style
 Version: 0.1.0
 Authors@R: c(
     person("Joseph S.", "Miller", , "jossammil@gmail.com", role = c("aut", "cre")),
@@ -16,10 +16,11 @@ Authors@R: c(
 Description: Build, read and write 'Excalidraw' scenes from R, turn 'ggplot2'
     and base graphics into editable hand-drawn drawings, and render them
     offline with the same 'rough.js' engine and handwriting fonts that
-    'Excalidraw' uses. Not affiliated with or endorsed by Excalidraw.
+    'Excalidraw' uses. Includes the 'Excalidraw' editor as an 'htmlwidget'.
+    Not affiliated with or endorsed by Excalidraw.
 License: MIT + file LICENSE
-URL: https://jossammil.github.io/excalidrawer/, https://github.com/jossammil/excalidrawer
-BugReports: https://github.com/jossammil/excalidrawer/issues
+URL: https://jossammil.github.io/scratchy/, https://github.com/jossammil/scratchy
+BugReports: https://github.com/jossammil/scratchy/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2

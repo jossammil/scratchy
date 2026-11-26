@@ -14,8 +14,8 @@ test_that("use_excalidraw_slides() sets up the extension and a deck", {
 test_that("the Quarto deck renders", {
   skip_on_cran()
   skip_if(!nzchar(Sys.which("quarto")), "quarto not installed")
-  skip_if_not(requireNamespace("excalidrawer", quietly = TRUE) &&
-                identical(find.package("excalidrawer"), normalizePath(system.file(package = "excalidrawer"))),
+  skip_if_not(requireNamespace("scratchy", quietly = TRUE) &&
+                identical(find.package("scratchy"), normalizePath(system.file(package = "scratchy"))),
               "package not installed")
   dir <- withr::local_tempdir()
   qmd <- file.path(dir, "deck.qmd")

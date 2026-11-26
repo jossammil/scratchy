@@ -65,14 +65,14 @@ print.exc_style <- function(x, ...) {
 #' old <- exc_set_style(roughness = "cartoonist", stroke = "blue")
 #' exc_set_style() # back to defaults
 exc_set_style <- function(...) {
-  old <- getOption("excalidrawer.style")
+  old <- getOption("scratchy.style")
   args <- list(...)
   if (length(args) == 0) {
-    options(excalidrawer.style = NULL)
+    options(scratchy.style = NULL)
   } else if (length(args) == 1 && inherits(args[[1]], "exc_style")) {
-    options(excalidrawer.style = unclass(args[[1]]))
+    options(scratchy.style = unclass(args[[1]]))
   } else {
-    options(excalidrawer.style = unclass(do.call(exc_style, args)))
+    options(scratchy.style = unclass(do.call(exc_style, args)))
   }
   invisible(old)
 }
@@ -120,7 +120,7 @@ normalize_style <- function(s) {
 # Combine: package defaults < session default < `style` argument < direct args.
 resolve_style <- function(style = NULL, args = list()) {
   s <- .default_style
-  sess <- getOption("excalidrawer.style")
+  sess <- getOption("scratchy.style")
   if (!is.null(sess)) s[names(sess)] <- sess
   if (!is.null(style)) s[names(style)] <- unclass(style)
   args <- normalize_style(rename_style(args))

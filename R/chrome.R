@@ -23,7 +23,7 @@ chrome_session <- function() {
   ready <- FALSE
   for (i in 1:120) {
     ready <- isTRUE(tryCatch(
-      b$Runtime$evaluate("typeof window.excalidrawerHeadless === 'object'")$result$value,
+      b$Runtime$evaluate("typeof window.scratchyHeadless === 'object'")$result$value,
       error = function(e) FALSE))
     if (ready) break
     Sys.sleep(0.25)
@@ -62,7 +62,7 @@ js_arg <- function(x) as.character(jsonlite::toJSON(x, auto_unbox = TRUE, null =
 #'   exc_save("flow.png")
 #' }
 exc_mermaid <- function(code, font_size = 20) {
-  json <- chrome_call(sprintf("window.excalidrawerHeadless.mermaid(%s, %s)", js_arg(code), js_arg(font_size)))
+  json <- chrome_call(sprintf("window.scratchyHeadless.mermaid(%s, %s)", js_arg(code), js_arg(font_size)))
   fit_containers(scene_from_json(json))
 }
 
@@ -112,7 +112,7 @@ fit_containers <- function(scene) {
 excalidraw_export <- function(scene, file, type, scale = 2, padding = 10, background = TRUE,
                               embed = FALSE) {
   opts <- list(type = type, scale = scale, padding = padding, background = background, embed = embed)
-  res <- chrome_call(sprintf("window.excalidrawerHeadless.export(%s, %s)",
+  res <- chrome_call(sprintf("window.scratchyHeadless.export(%s, %s)",
                              js_arg(scene_to_json(scene)), js_arg(opts)))
   if (type == "png") {
     writeBin(jsonlite::base64_dec(res$data), file)

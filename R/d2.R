@@ -75,10 +75,10 @@ d2_font_files <- function(font) {
   if (!is.null(extra)) return(c(family = f$family, plain = extra, bold = extra))
   files <- .font_files[[f$family]]
   if (is.null(files)) {
-    cli::cli_abort(c("{.arg font} must be a font bundled with excalidrawer, not {.val {font}}.",
+    cli::cli_abort(c("{.arg font} must be a font bundled with scratchy, not {.val {font}}.",
                      i = "See {.fn exc_fonts}, or use {.code font = NULL} for D2's own font."))
   }
-  dir <- system.file("fonts", package = "excalidrawer")
+  dir <- system.file("fonts", package = "scratchy")
   plain <- file.path(dir, files[["plain"]])
   bold <- if ("bold" %in% names(files)) file.path(dir, files[["bold"]]) else plain
   c(family = f$family, plain = plain, bold = bold)

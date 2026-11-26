@@ -10,7 +10,7 @@ new_id <- function(n = 1) {
 new_seed <- function(n = 1) sample.int(2147483646L, n, replace = TRUE)
 
 timestamp_ms <- function() {
-  getOption("excalidrawer.timestamp", round(as.numeric(Sys.time()) * 1000))
+  getOption("scratchy.timestamp", round(as.numeric(Sys.time()) * 1000))
 }
 
 # Ordered fractional-index keys ("a0", "a1", ..., "az", "b00", ...), compatible

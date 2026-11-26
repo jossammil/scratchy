@@ -1,12 +1,15 @@
-# excalidrawer 0.1.0
+# scratchy 0.1.0
 
 First public version, on GitHub with a browser version of the editor.
 
-* `excalidraw()` gains an excalidrawer sidebar (`extras = TRUE`, the button
+* Renamed from excalidrawer to scratchy. Drawings tag what R generated in
+  `customData$scratchy` (it was `customData$excalidrawer`).
+
+* `excalidraw()` gains an scratchy sidebar (`extras = TRUE`, the button
   next to Library): the twelve sticker libraries, Open Peeps people, the style
   presets, Mermaid diagrams, and exports to PNG, SVG, editable SVG, a
   self-drawing animated SVG, `.excalidraw` and Obsidian `.excalidraw.md`.
-* The editor's JavaScript is now one core, `Excalidrawer.mount()`, shared by
+* The editor's JavaScript is now one core, `Scratchy.mount()`, shared by
   the R widget, the browser version and denr's Sketch panel.
 * Plots are read from svglite's output with a small built-in parser instead
   of xml2 (now only suggested): xml2's WebAssembly build crashes webR when it
@@ -24,7 +27,7 @@ First public version, on GitHub with a browser version of the editor.
 * Sketch Studio offers the Penguins data only on R 4.5 and later, where
   `datasets::penguins` exists.
 
-# excalidrawer 0.0.0.9000
+# scratchy 0.0.0.9000
 
 First version.
 

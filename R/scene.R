@@ -128,7 +128,7 @@ as.data.frame.exc_scene <- function(x, row.names = NULL, optional = FALSE, ...) 
     containerId = get("containerId", NA_character_),
     frameId = get("frameId", NA_character_),
     groupIds = vapply(els, function(e) paste(unlist(e$groupIds), collapse = ","), ""),
-    role = vapply(els, function(e) e$customData$excalidrawer$role %||% NA_character_, ""),
+    role = vapply(els, function(e) e$customData$scratchy$role %||% NA_character_, ""),
     isDeleted = get("isDeleted", NA),
     stringsAsFactors = FALSE
   )

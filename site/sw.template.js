@@ -1,11 +1,11 @@
-// excalidrawer's service worker, written by srcjs/tools/build-site.mjs.
+// scratchy's service worker, written by srcjs/tools/build-site.mjs.
 // The page and the editor's core are cached at install; everything else
 // (Mermaid, languages, fonts, stickers) is fetched into the cache in the
 // background once the worker is active, and served from it after that.
 const VERSION = "{{VERSION}}";
 const CORE = {{CORE}};
 const REST = {{REST}};
-const CACHE = `excalidrawer-${VERSION}-{{BUILD}}`;
+const CACHE = `scratchy-${VERSION}-{{BUILD}}`;
 
 self.addEventListener("install", (event) => {
   event.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()));
@@ -13,7 +13,7 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("activate", (event) => {
   event.waitUntil((async () => {
-    for (const key of await caches.keys()) if (key.startsWith("excalidrawer-") && key !== CACHE) await caches.delete(key);
+    for (const key of await caches.keys()) if (key.startsWith("scratchy-") && key !== CACHE) await caches.delete(key);
     await self.clients.claim();
     const cache = await caches.open(CACHE);
     // Fill in the rest for offline use, a few at a time; failures just wait for the next visit.

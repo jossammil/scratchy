@@ -72,7 +72,7 @@ jobs:
         run: |
           install.packages(c("remotes", "ragg"))
           remotes::install_github("${{ github.repository }}@${{ github.sha }}", upgrade = "never")
-          library(excalidrawer)
+          library(scratchy)
           s <- exc_scene(exc_rect(0, 0, 160, 80, label = "Idea", fill = "yellow"),
                          exc_arrow(c(170, 270), c(40, 40)))
           out <- file.path(tempdir(), c("idea.png", "idea.svg", "idea.excalidraw"))

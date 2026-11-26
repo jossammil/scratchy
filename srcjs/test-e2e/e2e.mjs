@@ -62,10 +62,10 @@ const errors = [];
 page.on("pageerror", (e) => errors.push(String(e)));
 page.on("console", (m) => { if (m.type() === "error" && !/favicon|Slow network|Permissions policy violation: unload/.test(m.text())) errors.push(m.text()); });
 
-const ready = () => page.waitForFunction(() => window.excalidrawer?.ctrl?.api, null, { timeout: 30000 });
-const scene = () => page.evaluate(() => window.excalidrawer.ctrl.getSceneData().elements.filter((e) => !e.isDeleted));
+const ready = () => page.waitForFunction(() => window.scratchy?.ctrl?.api, null, { timeout: 30000 });
+const scene = () => page.evaluate(() => window.scratchy.ctrl.getSceneData().elements.filter((e) => !e.isDeleted));
 const openTab = async (tab) => {
-  await page.evaluate((tab) => window.excalidrawer.ctrl.api.toggleSidebar({ name: "excalidrawer", tab, force: true }), tab);
+  await page.evaluate((tab) => window.scratchy.ctrl.api.toggleSidebar({ name: "scratchy", tab, force: true }), tab);
   await page.waitForSelector(".exr-sidebar");
 };
 const sidebarButton = (text) => page.locator(".exr-sidebar button", { hasText: text }).first();
@@ -77,9 +77,9 @@ const download = async (text) => {
 await check("loads", async () => {
   await page.goto(url);
   await ready();
-  const v = await page.evaluate(() => window.excalidrawer.version);
-  expect(await page.title() === "Untitled · excalidrawer", `title ${await page.title()}`);
-  return `excalidrawer ${v}`;
+  const v = await page.evaluate(() => window.scratchy.version);
+  expect(await page.title() === "Untitled · scratchy", `title ${await page.title()}`);
+  return `scratchy ${v}`;
 });
 
 await check("draws a rectangle with the mouse", async () => {
@@ -111,14 +111,14 @@ await check("adds a sticker library to Excalidraw's library", async () => {
 await check("adds an Open Peeps person", async () => {
   await openTab("people");
   await sidebarButton("Add person").click();
-  await page.waitForFunction(() => window.excalidrawer.ctrl.getSceneData().elements.some((e) => e.type === "image"), null, { timeout: 10000 });
+  await page.waitForFunction(() => window.scratchy.ctrl.getSceneData().elements.some((e) => e.type === "image"), null, { timeout: 10000 });
 });
 
 await check("applies the chalkboard preset", async () => {
-  await page.evaluate(() => window.excalidrawer.ctrl.api.updateScene({ appState: { selectedElementIds: {} } }));
+  await page.evaluate(() => window.scratchy.ctrl.api.updateScene({ appState: { selectedElementIds: {} } }));
   await openTab("style");
   await sidebarButton("chalkboard").click();
-  const bg = await page.evaluate(() => window.excalidrawer.ctrl.api.getAppState().viewBackgroundColor);
+  const bg = await page.evaluate(() => window.scratchy.ctrl.api.getAppState().viewBackgroundColor);
   expect(bg === "#2f3d33", bg);
   const rough = (await scene()).find((e) => e.type === "rectangle").roughness;
   expect(rough === 2, `roughness ${rough}`);
@@ -128,7 +128,7 @@ await check("converts Mermaid", async () => {
   await openTab("mermaid");
   const before = (await scene()).length;
   await sidebarButton("Add to drawing").click();
-  await page.waitForFunction((n) => window.excalidrawer.ctrl.getSceneData().elements.length > n, before, { timeout: 20000 });
+  await page.waitForFunction((n) => window.scratchy.ctrl.getSceneData().elements.length > n, before, { timeout: 20000 });
   return `${(await scene()).length - before} elements`;
 });
 
@@ -178,14 +178,14 @@ await check("works offline once loaded", async () => {
   });
   await page.waitForFunction(async (want) => {
     const keys = await caches.keys();
-    const c = keys.length && (await caches.open(keys.find((k) => k.startsWith("excalidrawer-"))));
+    const c = keys.length && (await caches.open(keys.find((k) => k.startsWith("scratchy-"))));
     return c && (await c.keys()).length >= want;
   }, want, { timeout: 60000, polling: 500 });
   await context.setOffline(true);
   try {
     await page.reload();
     await ready();
-    const els = await page.evaluate(() => window.excalidrawer.ctrl.mermaid("flowchart LR\n  a --> b").then((x) => x.length));
+    const els = await page.evaluate(() => window.scratchy.ctrl.mermaid("flowchart LR\n  a --> b").then((x) => x.length));
     expect(els > 0, "Mermaid added nothing");
   } finally {
     await context.setOffline(false);

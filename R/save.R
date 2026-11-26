@@ -101,7 +101,7 @@ scene_font_faces <- function(scene) {
   fams <- unique(unlist(lapply(live_elements(scene), function(e) {
     if (e$type == "text") element_font(e)$family else NULL
   })))
-  dir <- system.file("fonts", package = "excalidrawer")
+  dir <- system.file("fonts", package = "scratchy")
   faces <- lapply(fams, function(fam) {
     files <- .font_files[[fam]]
     if (is.null(files)) return(NULL)

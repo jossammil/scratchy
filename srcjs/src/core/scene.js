@@ -7,7 +7,7 @@ export function sceneData(scene) {
   return { type: "excalidraw", elements: [], ...data };
 }
 
-export const chartIdOf = (e) => e?.customData?.excalidrawer?.chart;
+export const chartIdOf = (e) => e?.customData?.scratchy?.chart;
 
 /** Bounding box of the elements that are not deleted, or null. */
 export function elementsBounds(els) {
@@ -30,14 +30,14 @@ export function placeRight(existing, incoming, gap = 60) {
 }
 
 /**
- * Swaps the elements of one generated chart (tagged customData.excalidrawer.chart)
+ * Swaps the elements of one generated chart (tagged customData.scratchy.chart)
  * for a new version in the same place, keeping everything else.
  */
 export function swapChart(existing, incoming, chart) {
   const old = existing.filter((e) => chartIdOf(e) === chart);
   let els = incoming.map((e) => ({
     ...e,
-    customData: { ...(e.customData || {}), excalidrawer: { ...(e.customData?.excalidrawer || {}), chart } },
+    customData: { ...(e.customData || {}), scratchy: { ...(e.customData?.scratchy || {}), chart } },
   }));
   const a = elementsBounds(old), b = elementsBounds(els);
   if (a && b) els = shift(els, a.x0 - b.x0, a.y0 - b.y0);

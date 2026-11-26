@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(excalidrawer)
+library(scratchy)
 
-test_check("excalidrawer")
+test_check("scratchy")

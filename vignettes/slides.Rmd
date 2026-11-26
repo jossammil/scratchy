@@ -17,7 +17,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", eval = FALSE)
 folder and adds a demo deck:
 
 ```{r}
-library(excalidrawer)
+library(scratchy)
 use_excalidraw_slides("talk")
 ```
 

@@ -28,7 +28,7 @@ excalidraw_check_session <- local({
 
 excalidraw_check <- function(scene, svg_file = NULL) {
   b <- excalidraw_check_session()
-  json <- excalidrawer:::scene_to_json(scene)
+  json <- scratchy:::scene_to_json(scene)
   js <- sprintf("window.checkScene(%s)", jsonlite::toJSON(json, auto_unbox = TRUE))
   res <- b$Runtime$evaluate(js, awaitPromise = TRUE, returnByValue = TRUE)$result$value
   if (!is.null(svg_file) && isTRUE(res$ok)) writeLines(res$svg, svg_file)

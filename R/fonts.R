@@ -13,7 +13,7 @@
 #' @return Invisibly, the names of the registered font families.
 #' @export
 register_fonts <- function() {
-  dir <- system.file("fonts", package = "excalidrawer")
+  dir <- system.file("fonts", package = "scratchy")
   if (!nzchar(dir)) return(invisible(character()))
   for (fam in names(.font_files)) {
     files <- file.path(dir, .font_files[[fam]])
@@ -27,7 +27,7 @@ register_fonts <- function() {
   invisible(names(.font_files))
 }
 
-#' Fonts available to excalidrawer
+#' Fonts available to scratchy
 #'
 #' Lists Excalidraw's own fonts and the extra handwriting fonts bundled with
 #' the package. Fonts without an Excalidraw id still work in R; when the file
@@ -79,7 +79,7 @@ exc_font_fetch <- function(name = c("xkcd")) {
     url = "https://github.com/ipython/xkcd-font/raw/master/xkcd-script/font/xkcd-script.ttf",
     file = "xkcd-script.ttf"
   ))[[name]]
-  dir <- tools::R_user_dir("excalidrawer", "data")
+  dir <- tools::R_user_dir("scratchy", "data")
   dir.create(dir, recursive = TRUE, showWarnings = FALSE)
   path <- file.path(dir, spec$file)
   if (!file.exists(path)) {
@@ -97,7 +97,7 @@ register_extra_font <- function(family, path) {
 
 # Fonts downloaded in earlier sessions.
 register_downloaded_fonts <- function() {
-  dir <- tools::R_user_dir("excalidrawer", "data")
+  dir <- tools::R_user_dir("scratchy", "data")
   xkcd <- file.path(dir, "xkcd-script.ttf")
   if (file.exists(xkcd)) try(register_extra_font("xkcd Script", xkcd), silent = TRUE)
 }
@@ -134,7 +134,7 @@ resolve_font <- function(font) {
 
 # The font to draw a text element with, honouring a custom font in customData.
 element_font <- function(el) {
-  custom <- el$customData$excalidrawer$font
+  custom <- el$customData$scratchy$font
   if (!is.null(custom)) return(resolve_font(custom))
   resolve_font(el$fontFamily %||% 5)
 }

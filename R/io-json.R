@@ -92,7 +92,7 @@ scene_payload <- function(scene) {
   list(
     type = "excalidraw",
     version = 2,
-    source = "excalidrawer",
+    source = "scratchy",
     elements = unname(scene$elements),
     appState = as_json_object(scene$appState),
     files = as_json_object(scene$files)
@@ -178,7 +178,7 @@ write_excalidraw_lib <- function(items, path) {
            created = timestamp_ms(), name = nm)
     }, items, nms)
   }
-  payload <- list(type = "excalidrawlib", version = 2, source = "excalidrawer",
+  payload <- list(type = "excalidrawlib", version = 2, source = "scratchy",
                   libraryItems = unname(lib_items))
   writeLines(as.character(to_json(payload, pretty = TRUE)), path, useBytes = TRUE)
   invisible(path)

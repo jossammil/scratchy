@@ -253,7 +253,7 @@ svg_to_scene <- function(svg, opts) {
   els <- state$els
   els <- lapply(els, function(e) {
     e$groupIds <- c(e$groupIds, list(state$chart))
-    e$customData$excalidrawer$chart <- state$chart
+    e$customData$scratchy$chart <- state$chart
     e
   })
   scene <- exc_scene(background = state$background %||% "#ffffff")
@@ -349,7 +349,7 @@ convert_node <- function(node, nm, clip, canvas, opts, state) {
   role <- if (in_panel) "data" else "guide"
   tag <- function(els, r = role) {
     lapply(els, function(e) {
-      e$customData$excalidrawer$role <- r
+      e$customData$scratchy$role <- r
       e
     })
   }

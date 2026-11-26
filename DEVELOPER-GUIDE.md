@@ -1,11 +1,11 @@
-# excalidrawer developer guide
+# scratchy developer guide
 
-How excalidrawer is put together, how to build and test it, and what other
+How scratchy is put together, how to build and test it, and what other
 projects (the website, denr) rely on. For using the package, see README.md.
 
 ## 1. The big picture
 
-excalidrawer is three things built from one repository:
+scratchy is three things built from one repository:
 
 ```
                  ┌──────────────── R package (R/, inst/) ────────────────┐
@@ -15,7 +15,7 @@ excalidrawer is three things built from one repository:
                  └───────────────────────────┼────────────────────────────┘
                                              ▼
                  srcjs/  ──esbuild──▶  inst/htmlwidgets/lib/excalidraw-widget/
-                 Excalidrawer.mount(el, opts) → controller   (one editor core)
+                 Scratchy.mount(el, opts) → controller   (one editor core)
                           │                         │
                           ▼                         ▼
           site-dist/ (GitHub Pages, no R)     denr's Sketch panel (webR)
@@ -25,10 +25,10 @@ excalidrawer is three things built from one repository:
   capturing them with svglite, and renders without a browser using rough.js
   inside V8 (also under webR: V8 there runs on the browser's own engine).
 - **The editor bundle** is the real `@excalidraw/excalidraw` plus
-  excalidrawer's sidebar (stickers, people, presets, Mermaid, exports). It is
+  scratchy's sidebar (stickers, people, presets, Mermaid, exports). It is
   built once and committed, so installing the R package needs no Node.
 - **The website** (`site/`, built into `site-dist/`) and **denr** load that
-  same bundle and call `Excalidrawer.mount()`.
+  same bundle and call `Scratchy.mount()`.
 
 ## 2. Repository map
 
@@ -41,7 +41,7 @@ inst/
   fonts/, stickers/     bundled fonts and sticker libraries (stickers/index.json is BUILT)
   quarto/, templates/   the Quarto slide format and template examples
 srcjs/                  the browser code (not in the R build)
-  src/index.js          bundle entry: exports, globalThis.Excalidrawer
+  src/index.js          bundle entry: exports, globalThis.Scratchy
   src/core/             mount.jsx, scene.js, export.js, mermaid.js, files.js
   src/extras/           sidebar.jsx, restyle.js (+ presets.json, BUILT from R), animate.js,
                         obsidian.js, assets.js (stickers, Open Peeps)
@@ -77,12 +77,12 @@ textshaping, so a scene's text boxes match the editor's.
 
 `excalidraw()` sends `x = { scene, mode, theme, grid, zen, debounce, extras }`.
 `inst/htmlwidgets/excalidraw.js` waits for the ES-module bundle and calls
-`excalidrawerLib.render(el, x)`, which is `mount()` plus the Shiny proxy
+`scratchyLib.render(el, x)`, which is `mount()` plus the Shiny proxy
 (`bridges/htmlwidget.js`). With `extras = TRUE`, R also attaches
-`inst/stickers` as the dependency `excalidrawer-stickers-<version>`, which the
+`inst/stickers` as the dependency `scratchy-stickers-<version>`, which the
 bundle finds next to its own folder.
 
-Shiny messages arrive as `{ id, method, args }` on `excalidrawer-proxy`
+Shiny messages arrive as `{ id, method, args }` on `scratchy-proxy`
 (`update`, `add`, `replaceChart`, `scrollTo`, `set`, `reset`, `export`,
 `mermaid`); results come back as `input$<id>_scene`, `_selection`, `_export`
 and `_mermaid`.
@@ -111,13 +111,13 @@ Options: `scene`, `mode`, `theme`, `zen`, `grid`, `libraryItems`, `langCode`,
 `{ label, onSelect, shortcut }` items for the main menu) and `extras` (`true`
 or `{ stickers: URL, download(name, blob, info), fileName() }`).
 
-`globalThis.Excalidrawer` (and the module's exports) also carry
+`globalThis.Scratchy` (and the module's exports) also carry
 `parseScene`, `exportScene`, `mermaidToScene`, `extras` (animateSvg,
 to/fromObsidian, presets, restyleElements, sticker and Open Peeps helpers)
 and `files` (`readDrawingFile`, `drawingBlob`, `isDrawingName`,
 `drawingStem`).
 
-The website (`site/app.js`) keeps the drawing in IndexedDB (`excalidrawer`
+The website (`site/app.js`) keeps the drawing in IndexedDB (`scratchy`
 database), opens and saves files with the File System Access API when the
 browser has it (downloads otherwise), and registers `sw.js`, which caches
 the core at install and the rest in the background.
@@ -187,31 +187,31 @@ from what is committed, so always commit the rebuilt files.
 - `js.yaml`: unit tests, the committed-bundle check, e2e in Chromium and
   WebKit.
 - `pages.yaml`: `site-dist/` with the pkgdown site in `site-dist/r/`, to
-  https://jossammil.github.io/excalidrawer/.
+  https://jossammil.github.io/scratchy/.
 - R-universe (`jossammil.r-universe.dev`) builds binaries, including the
   WebAssembly build that denr installs.
 
 ## 11. Working with denr
 
 denr (`~/makeit/pocket-r`, the R workspace in the browser) vendors the
-editor bundle the way it vendors Plank: its `scripts/sync-excalidrawer.mjs`
+editor bundle the way it vendors Plank: its `scripts/sync-scratchy.mjs`
 copies `inst/htmlwidgets/lib/excalidraw-widget/`, `inst/stickers/`,
 `inst/COPYRIGHTS` and `LICENSE` and records this repository's commit. Its
 Sketch panel loads the bundle with `import()` and calls
-`Excalidrawer.mount()`; in R, `Draw()` and the Plots panel's Sketch button
-use the excalidrawer package itself, installed from R-universe.
+`Scratchy.mount()`; in R, `Draw()` and the Plots panel's Sketch button
+use the scratchy package itself, installed from R-universe.
 
 **The contract** (change it only together with denr):
 
 - `inst/htmlwidgets/lib/excalidraw-widget/excalidraw-widget.js` is an ES
-  module that sets `globalThis.Excalidrawer` and finds its fonts and chunks
+  module that sets `globalThis.Scratchy` and finds its fonts and chunks
   next to itself.
-- `VERSION.json` there: `{ excalidrawer, excalidraw }`.
+- `VERSION.json` there: `{ scratchy, excalidraw }`.
 - `inst/stickers/index.json` and the `.excalidrawlib` files beside it.
-- The controller members and options in section 5, `Excalidrawer.files` and
-  `Excalidrawer.extras.download`.
+- The controller members and options in section 5, `Scratchy.files` and
+  `Scratchy.extras.download`.
 
-When any of these change, run denr's `npm run sync-excalidrawer`, its unit
+When any of these change, run denr's `npm run sync-scratchy`, its unit
 tests and its `sketch-*` e2e checks.
 
 ## 12. Debugging
@@ -224,13 +224,13 @@ tests and its `sketch-*` e2e checks.
 | Stickers tab empty in R | `extras = FALSE`, or the stickers dependency did not load | check `excalidraw()`'s dependencies |
 | Text boxes too wide/narrow in R | font not registered | `exc_fonts()`; systemfonts must see `inst/fonts` |
 
-Handles: `el.excalidrawer` (the controller) on any mounted element;
-`window.excalidrawer` (`{ ctrl, doc, version }`) on the website.
+Handles: `el.scratchy` (the controller) on any mounted element;
+`window.scratchy` (`{ ctrl, doc, version }`) on the website.
 
 ## 13. Glossary
 
 - **scene**: Excalidraw's JSON (`elements`, `appState`, `files`); `exc_scene` in R.
 - **controller**: what `mount()` returns.
-- **extras**: the excalidrawer sidebar.
-- **chart id**: `customData.excalidrawer.chart`, marking elements generated from one plot.
+- **extras**: the scratchy sidebar.
+- **chart id**: `customData.scratchy.chart`, marking elements generated from one plot.
 - **denr**: the browser R workspace that embeds the editor as its Sketch panel.

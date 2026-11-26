@@ -1,6 +1,6 @@
 # Builds the website and publishes it with GitHub Pages:
-# https://jossammil.github.io/excalidrawer/     the editor (site/, the bundle, the stickers)
-# https://jossammil.github.io/excalidrawer/r/   the R documentation (pkgdown)
+# https://jossammil.github.io/scratchy/     the editor (site/, the bundle, the stickers)
+# https://jossammil.github.io/scratchy/r/   the R documentation (pkgdown)
 name: pages
 
 on:

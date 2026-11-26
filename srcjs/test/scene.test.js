@@ -25,7 +25,7 @@ test("placeRight puts new elements 60px right of the drawing, tops aligned", () 
 });
 
 test("swapChart keeps hand drawings and puts the new chart where the old one was", () => {
-  const tag = { customData: { excalidrawer: { chart: "main" } } };
+  const tag = { customData: { scratchy: { chart: "main" } } };
   const existing = [box("old1", 100, 100, 50, 50, tag), box("hand", 0, 0)];
   const { elements, hadOld } = swapChart(existing, [box("new1", 0, 0, 80, 40)], "main");
   assert.equal(hadOld, true);

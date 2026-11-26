@@ -36,7 +36,7 @@ test_that("the studio server builds a scene and serves downloads", {
     session$elapse(1000)
     s <- scene()
     expect_s3_class(s, "exc_scene")
-    expect_true(all(vapply(s$elements, function(e) e$customData$excalidrawer$chart, "") == "chart"))
+    expect_true(all(vapply(s$elements, function(e) e$customData$scratchy$chart, "") == "chart"))
     expect_match(output$code, "geom_bar", fixed = TRUE)
     png <- output$dl_png
     expect_true(file.exists(png))

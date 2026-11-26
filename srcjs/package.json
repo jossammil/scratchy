@@ -1,8 +1,8 @@
 {
-  "name": "excalidrawer-widget",
+  "name": "scratchy-widget",
   "private": true,
   "version": "0.1.0",
-  "description": "Excalidraw editor bundle for the excalidrawer R package",
+  "description": "Excalidraw editor bundle for the scratchy R package",
   "type": "module",
   "scripts": {
     "build": "node build.mjs",

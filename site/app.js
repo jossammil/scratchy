@@ -1,13 +1,13 @@
-// excalidrawer in the browser: the editor full screen, the drawing kept in
+// scratchy in the browser: the editor full screen, the drawing kept in
 // this browser between visits, files opened and saved on this computer.
-import Excalidrawer from "./editor/excalidraw-widget.js";
+import Scratchy from "./editor/excalidraw-widget.js";
 
-const { mount, files: F } = Excalidrawer;
+const { mount, files: F } = Scratchy;
 const boot = document.getElementById("boot");
 
 // --- a tiny key-value store in IndexedDB (drawings can hold big images) ---
 const db = new Promise((resolve, reject) => {
-  const req = indexedDB.open("excalidrawer", 1);
+  const req = indexedDB.open("scratchy", 1);
   req.onupgradeneeded = () => req.result.createObjectStore("kv");
   req.onsuccess = () => resolve(req.result);
   req.onerror = () => reject(req.error);
@@ -35,11 +35,11 @@ const PICKER_TYPES = [{
 }];
 
 function setTitle() {
-  document.title = `${doc.dirty ? "• " : ""}${F.drawingStem(doc.name)} · excalidrawer`;
+  document.title = `${doc.dirty ? "• " : ""}${F.drawingStem(doc.name)} · scratchy`;
 }
 
 function download(name, blob) {
-  Excalidrawer.extras.download(name, blob);
+  Scratchy.extras.download(name, blob);
 }
 
 let ctrl;
@@ -63,7 +63,7 @@ try {
       { label: "Open…", shortcut: "Ctrl+O", onSelect: openFile },
       { label: "Save", shortcut: "Ctrl+S", onSelect: save },
       { label: "Save as…", shortcut: "Ctrl+Shift+S", onSelect: saveAs },
-      { label: "About excalidrawer", onSelect: () => document.getElementById("about").showModal() },
+      { label: "About scratchy", onSelect: () => document.getElementById("about").showModal() },
     ],
     debounce: 300,
     onChange(json, { elements, appState }) {
@@ -175,7 +175,7 @@ window.addEventListener("keydown", (e) => {
 
 // Obsidian files dropped on the canvas: Excalidraw itself handles the rest.
 document.getElementById("app").addEventListener("drop", (e) => {
-  const file = [...(e.dataTransfer?.files || [])].find((f) => Excalidrawer.extras.isObsidian(f.name));
+  const file = [...(e.dataTransfer?.files || [])].find((f) => Scratchy.extras.isObsidian(f.name));
   if (!file) return;
   e.preventDefault();
   e.stopPropagation();
@@ -199,4 +199,4 @@ if ("serviceWorker" in navigator && (location.protocol === "https:" || location.
   navigator.serviceWorker.register("sw.js").catch(() => {});
 }
 
-window.excalidrawer = { ctrl, doc, version: Excalidrawer.version };
+window.scratchy = { ctrl, doc, version: Scratchy.version };

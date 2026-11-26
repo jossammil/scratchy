@@ -11,7 +11,7 @@ face <- function(family, path, weight = "normal") {
           family, weight, b64)
 }
 css <- c(
-  "/* Fonts for the excalidraw Quarto format (OFL-1.1; see the excalidrawer package). */\n",
+  "/* Fonts for the excalidraw Quarto format (OFL-1.1; see the scratchy package). */\n",
   face("Excalifont", "inst/fonts/Excalifont-Regular.woff2"),
   face("Virgil", "inst/fonts/Virgil.woff2"),
   face("Nunito", file.path(woff2_dir, "Nunito-Regular.woff2")),

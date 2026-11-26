@@ -40,7 +40,7 @@ points_to_xy <- function(points) {
 }
 
 pkg_file <- function(...) {
-  path <- system.file(..., package = "excalidrawer")
+  path <- system.file(..., package = "scratchy")
   if (!nzchar(path)) cli::cli_abort("Can't find {.file {file.path(...)}} in the installed package.")
   path
 }

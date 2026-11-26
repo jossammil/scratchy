@@ -78,7 +78,7 @@ prepare_for_js <- function(drawables, all) {
     list()
   }
   lapply(drawables, function(e) {
-    bowing <- e$customData$excalidrawer$bowing
+    bowing <- e$customData$scratchy$bowing
     if (!is.null(bowing)) e$bowing <- bowing
     t <- if (e$type == "arrow") by_container[[e$id]] else NULL
     if (is.null(t) || !nzchar(trimws(t$text %||% ""))) return(e)

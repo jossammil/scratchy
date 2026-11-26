@@ -1,4 +1,4 @@
-// The excalidrawer sidebar: stickers, people, style presets, Mermaid and
+// The scratchy sidebar: stickers, people, style presets, Mermaid and
 // exports (animated SVG, Obsidian), inside Excalidraw's own Sidebar.
 import React, { useEffect, useState } from "react";
 import { Sidebar, CaptureUpdateAction, exportToSvg, restoreElements } from "@excalidraw/excalidraw";
@@ -7,7 +7,7 @@ import { animateSvg } from "./animate.js";
 import { toObsidian } from "./obsidian.js";
 import { stickerIndex, stickerLibrary, peepOptions, peepSvg, svgImageScene } from "./assets.js";
 
-export const SIDEBAR = "excalidrawer";
+export const SIDEBAR = "scratchy";
 
 const CSS = `
 .exr-pane{padding:.25rem .75rem 1rem;display:flex;flex-direction:column;gap:.6rem;overflow:auto;font-size:.875rem;color:var(--text-primary-color)}
@@ -206,7 +206,7 @@ const icon = (
 
 export function ExtrasTrigger({ cfg = {} }) {
   return <Sidebar.Trigger name={SIDEBAR} tab={cfg.stickers ? "stickers" : "people"}
-                          title="excalidrawer: stickers, people, styles, Mermaid, exports" icon={icon} />;
+                          title="scratchy: stickers, people, styles, Mermaid, exports" icon={icon} />;
 }
 
 /** cfg: { stickers: base URL of the sticker libraries (or false), download(name, blob, info), fileName() }. */

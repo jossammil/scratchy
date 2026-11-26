@@ -2,7 +2,7 @@
 % Please edit documentation in R/fonts.R
 \name{exc_fonts}
 \alias{exc_fonts}
-\title{Fonts available to excalidrawer}
+\title{Fonts available to scratchy}
 \usage{
 exc_fonts()
 }

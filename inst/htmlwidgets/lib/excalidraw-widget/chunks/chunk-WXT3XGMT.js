@@ -1,0 +1,2 @@
+/*! scratchy 0.1.0 (MIT). Bundles Excalidraw 0.18.1 (MIT), React (MIT) and their dependencies: see excalidraw-widget.js.LEGAL.txt and the package's inst/COPYRIGHTS. */
+import{h as o}from"./chunk-2XGEWUXL.js";import{a as m}from"./chunk-GGXDJGS7.js";var g=m((t,e)=>{let n;return e==="sandbox"&&(n=o("#i"+t)),(e==="sandbox"?o(n.nodes()[0].contentDocument.body):o("body")).select(`[id="${t}"]`)},"getDiagramElement");export{g as a};

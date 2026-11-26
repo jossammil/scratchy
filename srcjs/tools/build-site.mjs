@@ -17,8 +17,8 @@ const out = at("site-dist");
 const version = readFileSync(at("DESCRIPTION"), "utf8").match(/^Version:\s*(\S+)/m)[1];
 const lib = at("inst/htmlwidgets/lib/excalidraw-widget");
 const built = JSON.parse(readFileSync(join(lib, "VERSION.json"), "utf8"));
-if (built.excalidrawer !== version) {
-  console.error(`The editor bundle is ${built.excalidrawer} but DESCRIPTION is ${version}: run npm run build in srcjs first.`);
+if (built.scratchy !== version) {
+  console.error(`The editor bundle is ${built.scratchy} but DESCRIPTION is ${version}: run npm run build in srcjs first.`);
   process.exit(1);
 }
 
@@ -70,5 +70,5 @@ writeFileSync(join(out, "sw.js"), fill(readFileSync(at("site/sw.template.js"), "
   .replace("{{REST}}", JSON.stringify(REST)));
 
 const size = (files) => (files.reduce((a, f) => a + (f === "./" ? 0 : statSync(join(out, f)).size), 0) / 1e6).toFixed(1);
-console.log(`site-dist: excalidrawer ${version} (Excalidraw ${built.excalidraw}); ` +
+console.log(`site-dist: scratchy ${version} (Excalidraw ${built.excalidraw}); ` +
             `${CORE.length} files (${size(CORE)} MB) cached at install, ${REST.length} more (${size(REST)} MB) in the background`);

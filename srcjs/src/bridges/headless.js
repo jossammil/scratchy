@@ -4,10 +4,10 @@ import { parseScene } from "../core/mount.jsx";
 import { exportScene } from "../core/export.js";
 import { mermaidToScene } from "../core/mermaid.js";
 
-window.excalidrawerHeadless = {
+window.scratchyHeadless = {
   async mermaid(code, fontSize) {
     const s = await mermaidToScene(code, fontSize);
-    return JSON.stringify({ type: "excalidraw", version: 2, source: "excalidrawer",
+    return JSON.stringify({ type: "excalidraw", version: 2, source: "scratchy",
                             elements: s.elements, appState: {}, files: s.files });
   },
   async export(sceneJson, opts) {

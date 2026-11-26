@@ -16,7 +16,7 @@ A Shiny app object; printing it (or calling the function at the
 console) runs the app.
 }
 \description{
-A Shiny app built on excalidrawer:
+A Shiny app built on scratchy:
 \enumerate{
 \item \strong{Data}: pick a built-in dataset, upload a CSV or paste from a
 spreadsheet.

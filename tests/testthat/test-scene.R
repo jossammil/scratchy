@@ -56,7 +56,7 @@ test_that("text measures with the real font", {
 test_that("custom fonts are recorded for R and fall back in Excalidraw", {
   t <- exc_text("hi", 0, 0, font = "Caveat")[[1]]
   expect_equal(t$fontFamily, 5)
-  expect_equal(t$customData$excalidrawer$font, "Caveat")
+  expect_equal(t$customData$scratchy$font, "Caveat")
   expect_equal(exc_text("hi", 0, 0, font = "Virgil")[[1]]$fontFamily, 1)
   expect_error(exc_text("hi", 0, 0, font = "Nope"), "Unknown font")
 })

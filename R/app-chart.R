@@ -65,7 +65,7 @@ studio_code <- function(spec, data_name = "data") {
 }
 
 studio_plot <- function(code, data) {
-  env <- new.env(parent = asNamespace("excalidrawer"))
+  env <- new.env(parent = asNamespace("scratchy"))
   env$data <- data
   for (f in getNamespaceExports("ggplot2")) {
     if (!exists(f, env, inherits = FALSE)) assign(f, getExportedValue("ggplot2", f), env)

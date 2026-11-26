@@ -71,8 +71,8 @@ exc_restyle <- function(scene, preset = "whiteboard", ...) {
     if (!is.null(e$strokeColor) && is_dark(e$strokeColor)) e$strokeColor <- p$ink
     if (e$type == "text") {
       e$fontFamily <- font$id
-      e$customData$excalidrawer$font <- font$custom
-      if (is.null(font$custom) && !is.null(e$customData$excalidrawer)) e$customData$excalidrawer$font <- NULL
+      e$customData$scratchy$font <- font$custom
+      if (is.null(font$custom) && !is.null(e$customData$scratchy)) e$customData$scratchy$font <- NULL
       return(refit_text(e))
     }
     e$roughness <- rough
@@ -80,7 +80,7 @@ exc_restyle <- function(scene, preset = "whiteboard", ...) {
     # small shapes (scatter points, legend dots) stay solid
     small <- e$type == "ellipse" && max(e$width, e$height) < 16
     if (!is_transparent(e$backgroundColor) && !small) e$fillStyle <- fs
-    if (!is.null(p$bowing)) e$customData$excalidrawer$bowing <- p$bowing
+    if (!is.null(p$bowing)) e$customData$scratchy$bowing <- p$bowing
     e
   })
   scene$appState$viewBackgroundColor <- p$background

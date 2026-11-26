@@ -19,7 +19,7 @@
 #' @param elementId Optional element id.
 #' @param debounce Milliseconds to wait after the last edit before sending
 #'   the scene to Shiny.
-#' @param extras Add the excalidrawer sidebar (the button next to Library):
+#' @param extras Add the scratchy sidebar (the button next to Library):
 #'   the bundled sticker libraries, Open Peeps people, the style presets of
 #'   [exc_preset()], Mermaid diagrams, and exports to PNG, SVG, animated SVG,
 #'   `.excalidraw` and Obsidian `.excalidraw.md`.
@@ -39,7 +39,7 @@ excalidraw <- function(scene = exc_scene(), mode = c("edit", "view"), theme = c(
     "excalidraw",
     x = list(scene = scene_to_json(scene), mode = mode, theme = theme, grid = grid,
              zen = zen, debounce = debounce, extras = isTRUE(extras)),
-    width = width, height = height, package = "excalidrawer", elementId = elementId,
+    width = width, height = height, package = "scratchy", elementId = elementId,
     dependencies = c(list(excalidraw_dependency()), if (isTRUE(extras)) list(stickers_dependency())),
     sizingPolicy = htmlwidgets::sizingPolicy(
       defaultWidth = "100%", defaultHeight = 600, padding = 0,
@@ -60,11 +60,11 @@ excalidraw_dependency <- function() {
 }
 
 # The sticker libraries for the editor's sidebar. The bundle finds them next to
-# its own folder, as excalidrawer-stickers-<package version>/.
+# its own folder, as scratchy-stickers-<package version>/.
 stickers_dependency <- function() {
   htmltools::htmlDependency(
-    name = "excalidrawer-stickers",
-    version = as.character(utils::packageVersion("excalidrawer")),
+    name = "scratchy-stickers",
+    version = as.character(utils::packageVersion("scratchy")),
     src = c(file = pkg_file("stickers")),
     all_files = TRUE
   )
@@ -87,7 +87,7 @@ stickers_dependency <- function() {
 #' @return A Shiny output or render function.
 #' @export
 excalidrawOutput <- function(outputId, width = "100%", height = "600px") {
-  htmlwidgets::shinyWidgetOutput(outputId, "excalidraw", width, height, package = "excalidrawer")
+  htmlwidgets::shinyWidgetOutput(outputId, "excalidraw", width, height, package = "scratchy")
 }
 
 #' @rdname excalidrawOutput
@@ -140,7 +140,7 @@ excalidraw_proxy <- function(outputId, session = shiny::getDefaultReactiveDomain
 
 proxy_send <- function(proxy, method, args = list()) {
   if (!inherits(proxy, "excalidraw_proxy")) cli::cli_abort("{.arg proxy} must come from {.fn excalidraw_proxy}.")
-  proxy$session$sendCustomMessage("excalidrawer-proxy",
+  proxy$session$sendCustomMessage("scratchy-proxy",
                                   list(id = proxy$id, method = method, args = args))
   invisible(proxy)
 }

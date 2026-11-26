@@ -1,16 +1,18 @@
-# excalidrawer <img src="man/figures/stickers.png" align="right" width="220" alt="" />
+# scratchy <img src="man/figures/stickers.png" align="right" width="220" alt="" />
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/jossammil/excalidrawer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jossammil/excalidrawer/actions/workflows/R-CMD-check.yaml)
-[![js](https://github.com/jossammil/excalidrawer/actions/workflows/js.yaml/badge.svg)](https://github.com/jossammil/excalidrawer/actions/workflows/js.yaml)
+[![R-CMD-check](https://github.com/jossammil/scratchy/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jossammil/scratchy/actions/workflows/R-CMD-check.yaml)
+[![js](https://github.com/jossammil/scratchy/actions/workflows/js.yaml/badge.svg)](https://github.com/jossammil/scratchy/actions/workflows/js.yaml)
 <!-- badges: end -->
 
 **Hand-drawn charts, drawings and slides from R, in the style of [Excalidraw](https://excalidraw.com).**
+scratchy reads and writes Excalidraw files and includes the Excalidraw editor (MIT-licensed); it
+was called excalidrawer before its first release.
 
-**[Try the editor in your browser](https://jossammil.github.io/excalidrawer/)**: no install, no
-server, works offline · [R documentation](https://jossammil.github.io/excalidrawer/r/)
+**[Try the editor in your browser](https://jossammil.github.io/scratchy/)**: no install, no
+server, works offline · [R documentation](https://jossammil.github.io/scratchy/r/)
 
-excalidrawer turns ggplot2 and base R plots into **editable Excalidraw drawings**.
+scratchy turns ggplot2 and base R plots into **editable Excalidraw drawings**.
 It draws them offline in R with the same rough.js engine, seeds and handwriting
 fonts that Excalidraw uses, so you get:
 
@@ -28,10 +30,10 @@ fonts that Excalidraw uses, so you get:
 ## Install
 
 ```r
-install.packages("excalidrawer",
+install.packages("scratchy",
                  repos = c("https://jossammil.r-universe.dev", "https://cloud.r-project.org"))
 # or
-remotes::install_github("jossammil/excalidrawer")
+remotes::install_github("jossammil/scratchy")
 ```
 
 The JavaScript is prebuilt and committed, so neither Node nor Rtools is needed.
@@ -45,7 +47,7 @@ Write normal ggplot2 code, then sketch it or turn it into an Excalidraw scene:
 
 ```r
 library(ggplot2)
-library(excalidrawer)
+library(scratchy)
 
 p <- ggplot(mpg, aes(class)) + geom_bar(fill = "#a5d8ff") +
   labs(title = "What do people drive?", x = NULL, y = "cars")
@@ -154,8 +156,8 @@ as editable vector shapes.
 
 The same editor runs without R:
 
-- **[jossammil.github.io/excalidrawer](https://jossammil.github.io/excalidrawer/)** is the
-  Excalidraw editor with excalidrawer's extras: the twelve sticker libraries, Open
+- **[jossammil.github.io/scratchy](https://jossammil.github.io/scratchy/)** is the
+  Excalidraw editor with scratchy's extras: the twelve sticker libraries, Open
   Peeps people, the style presets, Mermaid diagrams (offline), self-drawing
   animated SVGs, and Obsidian `.excalidraw.md` files. Drawings stay in your
   browser, and it keeps working offline once loaded.

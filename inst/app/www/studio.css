@@ -1,20 +1,20 @@
 /* Sketch Studio: a hand-drawn look for the controls around the canvas. */
 @font-face {
   font-family: "Excalifont";
-  src: url("../excalidrawer-fonts/Excalifont-Regular.woff2") format("woff2");
+  src: url("../scratchy-fonts/Excalifont-Regular.woff2") format("woff2");
 }
 @font-face {
   font-family: "Nunito";
-  src: url("../excalidrawer-fonts/Nunito-Regular.ttf") format("truetype");
+  src: url("../scratchy-fonts/Nunito-Regular.ttf") format("truetype");
 }
 @font-face {
   font-family: "Nunito";
   font-weight: bold;
-  src: url("../excalidrawer-fonts/Nunito-Bold.ttf") format("truetype");
+  src: url("../scratchy-fonts/Nunito-Bold.ttf") format("truetype");
 }
 @font-face {
   font-family: "Cascadia Code";
-  src: url("../excalidrawer-fonts/CascadiaCode-Regular.ttf") format("truetype");
+  src: url("../scratchy-fonts/CascadiaCode-Regular.ttf") format("truetype");
 }
 
 .studio-title { font-family: "Excalifont", cursive; font-size: 1.7rem; }

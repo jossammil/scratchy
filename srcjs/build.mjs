@@ -30,9 +30,9 @@ await esbuild.build({
   define: {
     "process.env.NODE_ENV": '"production"',
     "process.env.IS_PREACT": '"false"',
-    __EXCALIDRAWER_VERSION__: JSON.stringify(version),
+    __SCRATCHY_VERSION__: JSON.stringify(version),
   },
-  banner: { js: `/*! excalidrawer ${version} (MIT). Bundles Excalidraw ${excalidraw} (MIT), React (MIT) and their dependencies: see excalidraw-widget.js.LEGAL.txt and the package's inst/COPYRIGHTS. */` },
+  banner: { js: `/*! scratchy ${version} (MIT). Bundles Excalidraw ${excalidraw} (MIT), React (MIT) and their dependencies: see excalidraw-widget.js.LEGAL.txt and the package's inst/COPYRIGHTS. */` },
   loader: { ".woff2": "file", ".ttf": "file", ".png": "file", ".svg": "file" },
   legalComments: "external",
   logLevel: "info",
@@ -94,6 +94,6 @@ const stickers = rows.map((r) => {
 writeFileSync("../inst/stickers/index.json", JSON.stringify(stickers, null, 2) + "\n");
 
 // What denr and the site read to know which editor they have.
-writeFileSync(`${out}/VERSION.json`, JSON.stringify({ excalidrawer: version, excalidraw }, null, 2) + "\n");
+writeFileSync(`${out}/VERSION.json`, JSON.stringify({ scratchy: version, excalidraw }, null, 2) + "\n");
 
 console.log("built", out, version);

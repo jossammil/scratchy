@@ -38,7 +38,7 @@ function Editor({ opts, ctrl, onApi, onChange }) {
     };
   }, []);
   return (
-    <div className="excalidrawer-editor" style={{ height: "100%", width: "100%" }}>
+    <div className="scratchy-editor" style={{ height: "100%", width: "100%" }}>
       <Excalidraw
         initialData={initialData}
         excalidrawAPI={(api) => api && onApi(api)}
@@ -82,7 +82,7 @@ const mounted = new WeakMap();
  *         libraryItems, langCode, canvasActions, debounce (ms, default 400),
  *         onChange(json, { elements, appState, files }), onSelection(ids),
  *         extras: true or { stickers: URL of the sticker libraries, download(name, blob, info),
- *                 fileName() } for the excalidrawer sidebar,
+ *                 fileName() } for the scratchy sidebar,
  *         menu: [{ label, onSelect(ctrl), shortcut } | { separator: true }]: items at
  *               the top of the main menu (canvasActions.loadScene = false hides Open),
  *         name: the drawing's name, used by Excalidraw's own export dialogs }.
@@ -184,7 +184,7 @@ export function mount(el, opts = {}) {
       listeners.clear();
       root.unmount();
       mounted.delete(el);
-      if (el.excalidrawer === ctrl) delete el.excalidrawer;
+      if (el.scratchy === ctrl) delete el.scratchy;
     },
   };
 
@@ -202,6 +202,6 @@ export function mount(el, opts = {}) {
   const root = createRoot(el);
   root.render(<Editor opts={opts} ctrl={ctrl} onApi={onApi} onChange={onChange} />);
   mounted.set(el, ctrl);
-  el.excalidrawer = ctrl;
+  el.scratchy = ctrl;
   return ctrl;
 }

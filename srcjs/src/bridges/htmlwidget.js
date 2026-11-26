@@ -47,7 +47,7 @@ const dispatch = (msg) => {
 };
 
 if (window.Shiny && window.Shiny.addCustomMessageHandler) {
-  window.Shiny.addCustomMessageHandler("excalidrawer-proxy", dispatch);
+  window.Shiny.addCustomMessageHandler("scratchy-proxy", dispatch);
 }
 
 /** renderValue() of the htmlwidget binding (inst/htmlwidgets/excalidraw.js). */
@@ -57,7 +57,7 @@ export function render(el, x) {
     scene: x.scene, mode: x.mode, theme: x.theme, zen: x.zen, grid: x.grid, debounce: x.debounce,
     // R attaches the sticker libraries as their own dependency, which is
     // served next to the editor's folder.
-    extras: x.extras ? { stickers: new URL(`../excalidrawer-stickers-${__EXCALIDRAWER_VERSION__}/`, window.EXCALIDRAW_ASSET_PATH).href } : false,
+    extras: x.extras ? { stickers: new URL(`../scratchy-stickers-${__SCRATCHY_VERSION__}/`, window.EXCALIDRAW_ASSET_PATH).href } : false,
     onChange: (json) => shinyInput(id, "scene", json),
     onSelection: (ids) => shinyInput(id, "selection", ids),
   });
@@ -73,5 +73,5 @@ export function render(el, x) {
   return c;
 }
 
-window.excalidrawerLib = { render };
-if (window.__excalidrawerResolve) window.__excalidrawerResolve({ render });
+window.scratchyLib = { render };
+if (window.__scratchyResolve) window.__scratchyResolve({ render });
