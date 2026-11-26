@@ -19,6 +19,10 @@
 #' @param elementId Optional element id.
 #' @param debounce Milliseconds to wait after the last edit before sending
 #'   the scene to Shiny.
+#' @param extras Add the excalidrawer sidebar (the button next to Library):
+#'   the bundled sticker libraries, Open Peeps people, the style presets of
+#'   [exc_preset()], Mermaid diagrams, and exports to PNG, SVG, animated SVG,
+#'   `.excalidraw` and Obsidian `.excalidraw.md`.
 #' @return An htmlwidget.
 #' @export
 #' @examples
@@ -27,16 +31,16 @@
 #' }
 excalidraw <- function(scene = exc_scene(), mode = c("edit", "view"), theme = c("light", "dark"),
                        grid = FALSE, zen = FALSE, width = NULL, height = NULL,
-                       elementId = NULL, debounce = 400) {
+                       elementId = NULL, debounce = 400, extras = TRUE) {
   mode <- match.arg(mode)
   theme <- match.arg(theme)
   scene <- as_excalidraw(scene)
   htmlwidgets::createWidget(
     "excalidraw",
     x = list(scene = scene_to_json(scene), mode = mode, theme = theme, grid = grid,
-             zen = zen, debounce = debounce),
+             zen = zen, debounce = debounce, extras = isTRUE(extras)),
     width = width, height = height, package = "excalidrawer", elementId = elementId,
-    dependencies = list(excalidraw_dependency()),
+    dependencies = c(list(excalidraw_dependency()), if (isTRUE(extras)) list(stickers_dependency())),
     sizingPolicy = htmlwidgets::sizingPolicy(
       defaultWidth = "100%", defaultHeight = 600, padding = 0,
       viewer.fill = TRUE, browser.fill = TRUE, knitr.figure = FALSE
@@ -51,6 +55,17 @@ excalidraw_dependency <- function() {
     src = c(file = pkg_file("htmlwidgets", "lib", "excalidraw-widget")),
     script = list(src = "excalidraw-widget.js", type = "module"),
     stylesheet = "excalidraw-widget.css",
+    all_files = TRUE
+  )
+}
+
+# The sticker libraries for the editor's sidebar. The bundle finds them next to
+# its own folder, as excalidrawer-stickers-<package version>/.
+stickers_dependency <- function() {
+  htmltools::htmlDependency(
+    name = "excalidrawer-stickers",
+    version = as.character(utils::packageVersion("excalidrawer")),
+    src = c(file = pkg_file("stickers")),
     all_files = TRUE
   )
 }

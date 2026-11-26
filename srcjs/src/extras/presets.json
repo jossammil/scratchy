@@ -1,0 +1,132 @@
+{
+  "presets": {
+    "whiteboard": {
+      "roughness": 1,
+      "font": "Excalifont",
+      "fontFamily": 5,
+      "customFont": null,
+      "ink": "#1e1e1e",
+      "background": "#ffffff",
+      "fillStyle": "hachure",
+      "strokeWidth": 2,
+      "bowing": null
+    },
+    "xkcd": {
+      "roughness": 2,
+      "font": "Comic Shanns",
+      "fontFamily": 8,
+      "customFont": null,
+      "ink": "#1e1e1e",
+      "background": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 2,
+      "bowing": 3
+    },
+    "blueprint": {
+      "roughness": 1,
+      "font": "Virgil",
+      "fontFamily": 1,
+      "customFont": null,
+      "ink": "#f8f9fa",
+      "background": "#1d4f86",
+      "fillStyle": "cross-hatch",
+      "strokeWidth": 2,
+      "bowing": null
+    },
+    "chalkboard": {
+      "roughness": 2,
+      "font": "Architects Daughter",
+      "fontFamily": 5,
+      "customFont": "Architects Daughter",
+      "ink": "#f1f3f5",
+      "background": "#2f3d33",
+      "fillStyle": "hachure",
+      "strokeWidth": 2,
+      "bowing": null
+    },
+    "pencil": {
+      "roughness": 1,
+      "font": "Patrick Hand",
+      "fontFamily": 5,
+      "customFont": "Patrick Hand",
+      "ink": "#495057",
+      "background": "#ffffff",
+      "fillStyle": "hachure",
+      "strokeWidth": 1,
+      "bowing": null
+    },
+    "marker": {
+      "roughness": 1,
+      "font": "Lilita One",
+      "fontFamily": 7,
+      "customFont": null,
+      "ink": "#1e1e1e",
+      "background": "#ffffff",
+      "fillStyle": "solid",
+      "strokeWidth": 4,
+      "bowing": null
+    }
+  },
+  "fonts": [
+    {
+      "name": "Virgil",
+      "fontFamily": 1,
+      "editor": true
+    },
+    {
+      "name": "Helvetica",
+      "fontFamily": 2,
+      "editor": true
+    },
+    {
+      "name": "Cascadia",
+      "fontFamily": 3,
+      "editor": true
+    },
+    {
+      "name": "Excalifont",
+      "fontFamily": 5,
+      "editor": true
+    },
+    {
+      "name": "Nunito",
+      "fontFamily": 6,
+      "editor": true
+    },
+    {
+      "name": "Lilita One",
+      "fontFamily": 7,
+      "editor": true
+    },
+    {
+      "name": "Comic Shanns",
+      "fontFamily": 8,
+      "editor": true
+    },
+    {
+      "name": "Liberation Sans",
+      "fontFamily": 9,
+      "editor": true
+    },
+    {
+      "name": "Caveat",
+      "fontFamily": 5,
+      "editor": false
+    },
+    {
+      "name": "Patrick Hand",
+      "fontFamily": 5,
+      "editor": false
+    },
+    {
+      "name": "Architects Daughter",
+      "fontFamily": 5,
+      "editor": false
+    },
+    {
+      "name": "Gochi Hand",
+      "fontFamily": 5,
+      "editor": false
+    }
+  ]
+}

@@ -13,7 +13,8 @@ excalidraw(
   width = NULL,
   height = NULL,
   elementId = NULL,
-  debounce = 400
+  debounce = 400,
+  extras = TRUE
 )
 }
 \arguments{
@@ -34,6 +35,11 @@ as a ggplot).}
 
 \item{debounce}{Milliseconds to wait after the last edit before sending
 the scene to Shiny.}
+
+\item{extras}{Add the excalidrawer sidebar (the button next to Library):
+the bundled sticker libraries, Open Peeps people, the style presets of
+\code{\link[=exc_preset]{exc_preset()}}, Mermaid diagrams, and exports to PNG, SVG, animated SVG,
+\code{.excalidraw} and Obsidian \code{.excalidraw.md}.}
 }
 \value{
 An htmlwidget.

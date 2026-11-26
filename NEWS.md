@@ -2,6 +2,12 @@
 
 First public version, on GitHub with a browser version of the editor.
 
+* `excalidraw()` gains an excalidrawer sidebar (`extras = TRUE`, the button
+  next to Library): the twelve sticker libraries, Open Peeps people, the style
+  presets, Mermaid diagrams, and exports to PNG, SVG, editable SVG, a
+  self-drawing animated SVG, `.excalidraw` and Obsidian `.excalidraw.md`.
+* The editor's JavaScript is now one core, `Excalidrawer.mount()`, shared by
+  the R widget, the browser version and denr's Sketch panel.
 * shiny and bslib moved to Suggests: only Sketch Studio and `exc_edit()` use
   them, so the package installs faster (also in webR).
 * Sketch Studio offers the Penguins data only on R 4.5 and later, where

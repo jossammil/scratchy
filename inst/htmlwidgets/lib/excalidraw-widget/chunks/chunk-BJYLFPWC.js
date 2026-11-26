@@ -1,0 +1,2 @@
+/*! excalidrawer 0.1.0 (MIT). Bundles Excalidraw 0.18.1 (MIT), React (MIT) and their dependencies: see excalidraw-widget.js.LEGAL.txt and the package's inst/COPYRIGHTS. */
+import{_ as s}from"./chunk-IVF45O66.js";import{h as e}from"./chunk-ZQ4LSVYH.js";import{a as n}from"./chunk-Z6OMJ732.js";var a=n(t=>{let{securityLevel:c}=s(),o=e("body");if(c==="sandbox"){let m=e(`#i${t}`).node()?.contentDocument??document;o=e(m.body)}return o.select(`#${t}`)},"selectSvgElement");export{a};

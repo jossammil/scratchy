@@ -208,7 +208,7 @@ studio_server <- function(input, output, session) {
 
   # The editor is rendered once; the chart arrives (and is later swapped)
   # through the proxy so hand-drawn additions are never lost.
-  output$canvas <- renderExcalidraw(excalidraw(exc_scene()))
+  output$canvas <- renderExcalidraw(excalidraw(exc_scene(), extras = FALSE))
   proxy <- excalidraw_proxy("canvas")
   shiny::observeEvent(scene(), {
     exc_proxy_replace_chart(proxy, scene(), chart = "chart")

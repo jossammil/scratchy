@@ -14,11 +14,13 @@ import {
 import { sceneData, placeRight, swapChart, debounce } from "./scene.js";
 import { exportScene } from "./export.js";
 import { mermaidToScene } from "./mermaid.js";
+import { ExtrasSidebar, ExtrasTrigger } from "../extras/sidebar.jsx";
 
 /** Scene JSON (text or object) -> { elements, appState, files }, repaired by Excalidraw. */
 export const parseScene = (scene) => restore(sceneData(scene), null, null);
 
 function Editor({ opts, ctrl, onApi, onChange }) {
+  const extras = opts.extras ? (opts.extras === true ? {} : opts.extras) : null;
   const initialData = useMemo(() => {
     const s = parseScene(opts.scene);
     return {
@@ -43,6 +45,7 @@ function Editor({ opts, ctrl, onApi, onChange }) {
         onChange={onChange}
         viewModeEnabled={opts.mode === "view"}
         langCode={opts.langCode}
+        renderTopRightUI={extras ? () => <ExtrasTrigger cfg={extras} /> : undefined}
         UIOptions={{ canvasActions: { saveToActiveFile: false, loadScene: opts.mode !== "view", ...(opts.canvasActions || {}) } }}
       >
         <MainMenu>
@@ -55,7 +58,7 @@ function Editor({ opts, ctrl, onApi, onChange }) {
           <MainMenu.DefaultItems.ToggleTheme />
           <MainMenu.DefaultItems.ChangeCanvasBackground />
         </MainMenu>
-        {opts.extras ? opts.extras(ctrl) : null}
+        {extras ? <ExtrasSidebar ctrl={ctrl} cfg={extras} /> : null}
       </Excalidraw>
     </div>
   );
@@ -67,7 +70,9 @@ const mounted = new WeakMap();
  * opts: { scene, mode: "edit" | "view", theme: "light" | "dark", zen, grid,
  *         libraryItems, langCode, canvasActions, debounce (ms, default 400),
  *         onChange(json, { elements, appState, files }), onSelection(ids),
- *         extras(ctrl) and menuItems(ctrl): extra React content }.
+ *         extras: true or { stickers: URL of the sticker libraries, download(name, blob, info),
+ *                 fileName() } for the excalidrawer sidebar,
+ *         menuItems(ctrl): extra React items for the main menu }.
  * Methods that change the scene wait for the editor to be ready, so they can
  * be called straight away.
  */

@@ -69,3 +69,17 @@ test_that("Mermaid and exact exports run through headless Chrome", {
   exc_save(m, svg_file, engine = "excalidraw")
   expect_s3_class(read_excalidraw(svg_file), "exc_scene")
 })
+
+test_that("the extras sidebar brings the sticker libraries along", {
+  w <- excalidraw(exc_scene())
+  deps <- vapply(w$dependencies, `[[`, "", "name")
+  expect_equal(deps, c("excalidraw-widget", "excalidrawer-stickers"))
+  expect_true(w$x$extras)
+  st <- w$dependencies[[2]]
+  expect_equal(st$version, as.character(utils::packageVersion("excalidrawer")))
+  idx <- jsonlite::fromJSON(file.path(st$src$file, "index.json"))
+  expect_true(all(file.exists(file.path(st$src$file, idx$file))))
+  w2 <- excalidraw(exc_scene(), extras = FALSE)
+  expect_length(w2$dependencies, 1)
+  expect_false(w2$x$extras)
+})

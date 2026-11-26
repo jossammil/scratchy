@@ -1,0 +1,110 @@
+[
+  {
+    "library": "bubbles",
+    "title": "Bubbles",
+    "author": "Oscar Capraro",
+    "description": "A collection of simple speech and thought bubbles.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/ocapraro/bubbles.excalidrawlib",
+    "file": "bubbles.excalidrawlib"
+  },
+  {
+    "library": "data-science",
+    "title": "Data Science logos",
+    "author": "Fares Hasan, Sarhan Samat",
+    "description": "A collection of data science tool icons. Inlcuding: Airflow, Jupyter, Pandas, Numpy, Tensorflow, Scikit-learn, Keras.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/farisology/data-science.excalidrawlib",
+    "file": "data-science.excalidrawlib"
+  },
+  {
+    "library": "data-viz",
+    "title": "Data Viz",
+    "author": "dbs-sticky",
+    "description": "Collection of charts commonly used in data visualisations.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/dbssticky/data-viz.excalidrawlib",
+    "file": "data-viz.excalidrawlib"
+  },
+  {
+    "library": "emojis",
+    "title": "Emojis",
+    "author": "Anumitha Apollo",
+    "description": "A collection of emojis.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/anumithaapollo12/emojis.excalidrawlib",
+    "file": "emojis.excalidrawlib"
+  },
+  {
+    "library": "hearts",
+    "title": "Hearts",
+    "author": "dwelle",
+    "description": "Collection of hearts.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/dwelle/hearts.excalidrawlib",
+    "file": "hearts.excalidrawlib"
+  },
+  {
+    "library": "icons",
+    "title": "Awesome Icons",
+    "author": "ferminrp",
+    "description": "A growing collection of do whatever you want icons.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/ferminrp/awesome-icons.excalidrawlib",
+    "file": "icons.excalidrawlib"
+  },
+  {
+    "library": "r-icons",
+    "title": "R Icons",
+    "author": "Jumping Rivers",
+    "description": "R and RStudio icons.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/jumpingrivers/r.excalidrawlib",
+    "file": "r-icons.excalidrawlib"
+  },
+  {
+    "library": "signs",
+    "title": "some-handdrawn-signs",
+    "author": "Marc",
+    "description": "Some useful handdrawn signs, ugly and imperfect as they should be.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/kwirke/some-handdrawn-signs.excalidrawlib",
+    "file": "signs.excalidrawlib"
+  },
+  {
+    "library": "stars",
+    "title": "Stars",
+    "author": "Lipis",
+    "description": "Collection of regular stars.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/lipis/stars.excalidrawlib",
+    "file": "stars.excalidrawlib"
+  },
+  {
+    "library": "stick-figures",
+    "title": "Stick Figures",
+    "author": "Youri Tjang",
+    "description": "Collection of stick figures.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/youritjang/stick-figures.excalidrawlib",
+    "file": "stick-figures.excalidrawlib"
+  },
+  {
+    "library": "sticky-notes",
+    "title": "Sticky Notes",
+    "author": "ferminrp",
+    "description": "Post its in every color for your design thinking sessions.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/ferminrp/post-it.excalidrawlib",
+    "file": "sticky-notes.excalidrawlib"
+  },
+  {
+    "library": "storytelling",
+    "title": "Storytelling",
+    "author": "drwnio.polyrand.net",
+    "description": "Drawings representing emotions or whatever you want. Perfect to add some fun or stories to your diagrams.",
+    "license": "MIT",
+    "source": "https://libraries.excalidraw.com/libraries/drwnio/storytelling.excalidrawlib",
+    "file": "storytelling.excalidrawlib"
+  }
+]

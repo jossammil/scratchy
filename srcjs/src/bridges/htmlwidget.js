@@ -55,6 +55,9 @@ export function render(el, x) {
   const id = el.id;
   const c = mount(el, {
     scene: x.scene, mode: x.mode, theme: x.theme, zen: x.zen, grid: x.grid, debounce: x.debounce,
+    // R attaches the sticker libraries as their own dependency, which is
+    // served next to the editor's folder.
+    extras: x.extras ? { stickers: new URL(`../excalidrawer-stickers-${__EXCALIDRAWER_VERSION__}/`, window.EXCALIDRAW_ASSET_PATH).href } : false,
     onChange: (json) => shinyInput(id, "scene", json),
     onSelection: (ids) => shinyInput(id, "selection", ids),
   });

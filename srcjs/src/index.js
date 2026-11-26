@@ -6,6 +6,11 @@ import "@excalidraw/excalidraw/index.css";
 import { mount, parseScene } from "./core/mount.jsx";
 import { exportScene } from "./core/export.js";
 import { mermaidToScene } from "./core/mermaid.js";
+import { animateSvg } from "./extras/animate.js";
+import { toObsidian, fromObsidian, isObsidian } from "./extras/obsidian.js";
+import { presets, restyleElements } from "./extras/restyle.js";
+import { stickerIndex, stickerLibrary, peepSvg, peepOptions, svgImageScene } from "./extras/assets.js";
+import { defaultDownload } from "./extras/sidebar.jsx";
 import "./bridges/htmlwidget.js";
 import "./bridges/headless.js";
 
@@ -14,8 +19,12 @@ import "./bridges/headless.js";
 window.EXCALIDRAW_ASSET_PATH = new URL("./", import.meta.url).href;
 
 export const version = __EXCALIDRAWER_VERSION__;
+export const extras = {
+  animateSvg, toObsidian, fromObsidian, isObsidian, presets, restyleElements,
+  stickerIndex, stickerLibrary, peepSvg, peepOptions, svgImageScene, download: defaultDownload,
+};
 export { mount, parseScene, exportScene, mermaidToScene };
 
-const Excalidrawer = { version, mount, parseScene, exportScene, mermaidToScene };
+const Excalidrawer = { version, mount, parseScene, exportScene, mermaidToScene, extras };
 globalThis.Excalidrawer = Excalidrawer;
 export default Excalidrawer;

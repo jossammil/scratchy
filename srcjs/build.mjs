@@ -63,6 +63,36 @@ writeFileSync(`${out}/headless.html`, `<!doctype html>
 <body><script type="module" src="excalidraw-widget.js"></script></body></html>
 `);
 
+// The sticker libraries' list for the browser, from inst/stickers/manifest.csv.
+function parseCsv(text) {
+  const rows = [];
+  let row = [], field = "", quoted = false;
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i];
+    if (quoted) {
+      if (ch === '"' && text[i + 1] === '"') { field += '"'; i++; }
+      else if (ch === '"') quoted = false;
+      else field += ch;
+    } else if (ch === '"') quoted = true;
+    else if (ch === ",") { row.push(field); field = ""; }
+    else if (ch === "\n" || ch === "\r") {
+      if (ch === "\r" && text[i + 1] === "\n") i++;
+      row.push(field); field = "";
+      if (row.some((f) => f !== "")) rows.push(row);
+      row = [];
+    } else field += ch;
+  }
+  if (field !== "" || row.length) { row.push(field); rows.push(row); }
+  return rows;
+}
+const [head, ...rows] = parseCsv(readFileSync("../inst/stickers/manifest.csv", "utf8"));
+const stickers = rows.map((r) => {
+  const o = Object.fromEntries(head.map((h, i) => [h, r[i]]));
+  return { library: o.library, title: o.title, author: o.author, description: o.description,
+           license: o.license, source: o.source, file: `${o.library}.excalidrawlib` };
+});
+writeFileSync("../inst/stickers/index.json", JSON.stringify(stickers, null, 2) + "\n");
+
 // What denr and the site read to know which editor they have.
 writeFileSync(`${out}/VERSION.json`, JSON.stringify({ excalidrawer: version, excalidraw }, null, 2) + "\n");
 

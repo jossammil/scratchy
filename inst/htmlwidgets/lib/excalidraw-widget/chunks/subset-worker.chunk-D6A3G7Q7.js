@@ -1,2 +1,0 @@
-/*! excalidrawer 0.1.0 (MIT). Bundles Excalidraw 0.18.1 (MIT), React (MIT) and their dependencies: see excalidraw-widget.js.LEGAL.txt and the package's inst/COPYRIGHTS. */
-import{a as r,c as e}from"./chunk-UOSGFTIC.js";import"./chunk-F37HQOFG.js";import"./chunk-QFOJGOVH.js";import"./chunk-SLUHNAQO.js";var i=import.meta.url?new URL(import.meta.url):void 0;typeof window>"u"&&typeof self<"u"&&(self.onmessage=async a=>{switch(a.data.command){case r.Subset:let t=await e(a.data.arrayBuffer,a.data.codePoints);self.postMessage(t,{transfer:[t]});break}});export{i as WorkerUrl};
