@@ -92,3 +92,13 @@ test_that("rendered scenes match snapshots", {
     plot(exc_restyle(s, "blueprint"), text = "outline")
   })
 })
+
+test_that("PDFs fall back to R's pdf() device when cairo can't open", {
+  f <- withr::local_tempfile(fileext = ".pdf")
+  # As on macOS without XQuartz: cairo_pdf() prints a message and opens nothing.
+  open_pdf(f, 3, 2, cairo = function(...) message("failed to load cairo DLL"))
+  expect_equal(names(grDevices::dev.cur()), "pdf")
+  grid::grid.draw(exc_grob(exc_scene(exc_rect(0, 0, 100, 50, label = "PDF"))))
+  grDevices::dev.off()
+  expect_identical(readBin(f, "raw", 4), charToRaw("%PDF"))
+})

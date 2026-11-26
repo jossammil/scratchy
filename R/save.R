@@ -76,9 +76,24 @@ open_device <- function(ext, file, w_in, h_in, scale, scene) {
       svglite::svglite(file, width = w_in, height = h_in, bg = "transparent",
                        web_fonts = scene_font_faces(scene), fix_text_size = FALSE)
     },
-    pdf = grDevices::cairo_pdf(file, width = w_in, height = h_in, bg = "transparent"),
+    pdf = open_pdf(file, w_in, h_in),
     cli::cli_abort("Can't save {.val {ext}} files. Use png, jpg, svg or pdf.")
   )
+}
+
+# cairo_pdf() where cairo works; otherwise (macOS without XQuartz, some
+# minimal builds) R's own pdf() device, which gets text as glyph outlines.
+# cairo_pdf() can fail without an error, only a message, so check that a
+# device really opened.
+open_pdf <- function(file, w_in, h_in, cairo = grDevices::cairo_pdf) {
+  before <- grDevices::dev.cur()
+  ok <- tryCatch({
+    suppressWarnings(suppressMessages(utils::capture.output(
+      cairo(file, width = w_in, height = h_in, bg = "transparent"), type = "message")))
+    grDevices::dev.cur() != before && names(grDevices::dev.cur()) != "null device"
+  }, error = function(e) FALSE)
+  if (!ok) grDevices::pdf(file, width = w_in, height = h_in, bg = "transparent", useDingbats = FALSE)
+  invisible()
 }
 
 # Embedded @font-face rules for the fonts a scene's text uses.

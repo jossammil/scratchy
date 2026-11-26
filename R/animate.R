@@ -594,6 +594,9 @@ capture_frames <- function(svg_file, times, width, height, scale, transparent, d
   b$Emulation$setDeviceMetricsOverride(width = width, height = height, deviceScaleFactor = scale,
                                        mobile = FALSE)
   if (transparent) b$Emulation$setDefaultBackgroundColorOverride(color = list(r = 0, g = 0, b = 0, a = 0))
+  # The SVG shows the finished drawing to viewers who ask for reduced motion;
+  # the recording must play it whatever this computer's setting is.
+  b$Emulation$setEmulatedMedia(features = list(list(name = "prefers-reduced-motion", value = "no-preference")))
   b$go_to(file_url(svg_file))
   js <- function(code) {
     res <- b$Runtime$evaluate(code, awaitPromise = TRUE, returnByValue = TRUE)
