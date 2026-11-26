@@ -56,7 +56,7 @@ as_excalidraw.ggplot <- function(x, width = 800, height = 500, theme = theme_exc
                                  fill_style = "hachure", roughness = "artist", outline = TRUE,
                                  font = "Excalifont", snap = TRUE, preset = NULL, seed = 1,
                                  max_elements = 5000, id = NULL, ...) {
-  rlang::check_installed(c("ggplot2", "svglite", "xml2"))
+  rlang::check_installed(c("ggplot2", "svglite"))
   p <- x
   if (!is.null(preset)) theme <- theme_excalidraw(preset = preset)
   if (!is.null(theme)) p <- p + theme
@@ -105,7 +105,7 @@ as_excalidraw.function <- function(x, width = 800, height = 500, fill_style = "h
                                    roughness = "artist", outline = TRUE, font = "Excalifont",
                                    snap = TRUE, preset = NULL, seed = 1, max_elements = 5000,
                                    id = NULL, ...) {
-  rlang::check_installed(c("svglite", "xml2"))
+  rlang::check_installed("svglite")
   fam <- if (is.null(font)) "" else resolve_font(font)$family
   cap <- capture_svg(function() {
     old <- graphics::par(family = fam)
@@ -232,16 +232,15 @@ coord_mapping <- function(build, locs) {
 .svg_k <- 96 / 72
 
 svg_to_scene <- function(svg, opts) {
-  doc <- xml2::read_xml(svg)
-  xml2::xml_ns_strip(doc)
+  doc <- svg_parse(svg)
   clips <- list()
-  for (cp in xml2::xml_find_all(doc, "//clipPath")) {
-    r <- xml2::xml_find_first(cp, "./rect")
-    if (!inherits(r, "xml_missing")) {
-      clips[[xml2::xml_attr(cp, "id")]] <- num_attrs(r, c("x", "y", "width", "height")) * .svg_k
+  for (cp in sx_find_all(doc, "clipPath")) {
+    r <- sx_child(cp, "rect")
+    if (!is.null(r)) {
+      clips[[sx_attr(cp, "id")]] <- num_attrs(r, c("x", "y", "width", "height")) * .svg_k
     }
   }
-  vb <- as.numeric(strsplit(xml2::xml_attr(doc, "viewBox"), " ")[[1]])
+  vb <- as.numeric(strsplit(sx_attr(doc, "viewBox"), " ")[[1]])
   canvas <- c(0, 0, vb[3], vb[4]) * .svg_k
   state <- new.env(parent = emptyenv())
   state$els <- list()
@@ -249,7 +248,8 @@ svg_to_scene <- function(svg, opts) {
   state$background <- NULL
   state$chart <- opts$id %||% new_id()
   state$groups <- list()
-  walk_svg(xml2::xml_find_first(doc, "/svg/g"), NULL, canvas, clips, opts, state)
+  top <- sx_child(doc, "g")
+  if (!is.null(top)) walk_svg(top, NULL, canvas, clips, opts, state)
   els <- state$els
   els <- lapply(els, function(e) {
     e$groupIds <- c(e$groupIds, list(state$chart))
@@ -262,15 +262,15 @@ svg_to_scene <- function(svg, opts) {
 
 # Numeric attributes; non-numeric values such as width='100%' become NA.
 num_attrs <- function(node, names) {
-  vapply(names, function(n) suppressWarnings(as.numeric(xml2::xml_attr(node, n))), 1)
+  vapply(names, function(n) suppressWarnings(as.numeric(sx_attr(node, n))), 1)
 }
 
 walk_svg <- function(node, clip, canvas, clips, opts, state) {
-  for (child in xml2::xml_children(node)) {
-    nm <- xml2::xml_name(child)
+  for (child in sx_children(node)) {
+    nm <- sx_name(child)
     if (nm == "defs" || nm == "style" || nm == "clipPath") next
     if (nm == "g") {
-      cp <- xml2::xml_attr(child, "clip-path")
+      cp <- sx_attr(child, "clip-path")
       sub_clip <- clip
       if (!is.na(cp)) sub_clip <- clips[[sub("^url\\(#(.*)\\)$", "\\1", cp)]]
       walk_svg(child, sub_clip, canvas, clips, opts, state)
@@ -339,7 +339,7 @@ dash_style <- function(st, sw) {
 }
 
 convert_node <- function(node, nm, clip, canvas, opts, state) {
-  st <- parse_style(xml2::xml_attr(node, "style"))
+  st <- parse_style(sx_attr(node, "style"))
   stroke <- svg_color(st[["stroke"]] %||% (if (nm == "text") "none" else "#000000"))
   fill <- svg_color(st[["fill"]] %||% (if (nm == "text") "#000000" else "none"))
   sw <- as.numeric(st[["stroke-width"]] %||% 1) * .svg_k
@@ -395,7 +395,7 @@ convert_node <- function(node, nm, clip, canvas, opts, state) {
       pts <- if (nm == "line") {
         matrix(num_attrs(node, c("x1", "y1", "x2", "y2")), ncol = 2, byrow = TRUE)
       } else {
-        parse_points(xml2::xml_attr(node, "points"))
+        parse_points(sx_attr(node, "points"))
       }
       pts <- pts * .svg_k
       pieces <- if (!is.null(clip) && in_panel) clip_polyline(pts, clip) else list(pts)
@@ -412,9 +412,9 @@ convert_node <- function(node, nm, clip, canvas, opts, state) {
     polygon = ,
     path = {
       polys <- if (nm == "polygon") {
-        list(parse_points(xml2::xml_attr(node, "points")))
+        list(parse_points(sx_attr(node, "points")))
       } else {
-        parse_path(xml2::xml_attr(node, "d"))
+        parse_path(sx_attr(node, "d"))
       }
       polys <- lapply(polys, function(m) m * .svg_k)
       if (!is.null(clip) && in_panel) polys <- lapply(polys, clip_polygon, rect = clip)
@@ -442,14 +442,14 @@ convert_node <- function(node, nm, clip, canvas, opts, state) {
 }
 
 convert_text <- function(node, st, fill, opacity, clip, opts, tag) {
-  label <- xml2::xml_text(node)
+  label <- sx_text(node)
   if (!nzchar(trimws(label))) return(list())
   size <- as.numeric(sub("px$", "", st[["font-size"]] %||% "12")) * .svg_k
   family <- gsub("[\"']", "", st[["font-family"]] %||% "")
   font <- opts$font %||% tryCatch(resolve_font(family), error = function(e) resolve_font("Helvetica"))
-  anchor <- xml2::xml_attr(node, "text-anchor")
+  anchor <- sx_attr(node, "text-anchor")
   hj <- switch(if (is.na(anchor)) "start" else anchor, middle = 0.5, end = 1, 0)
-  tr <- xml2::xml_attr(node, "transform")
+  tr <- sx_attr(node, "transform")
   angle <- 0
   if (!is.na(tr)) {
     nums <- as.numeric(regmatches(tr, gregexpr("-?[0-9.]+", tr))[[1]])
@@ -457,8 +457,8 @@ convert_text <- function(node, st, fill, opacity, clip, opts, tag) {
     ay <- nums[2] * .svg_k
     if (length(nums) >= 3) angle <- nums[3]
   } else {
-    ax <- as.numeric(xml2::xml_attr(node, "x")) * .svg_k
-    ay <- as.numeric(xml2::xml_attr(node, "y")) * .svg_k
+    ax <- as.numeric(sx_attr(node, "x")) * .svg_k
+    ay <- as.numeric(sx_attr(node, "y")) * .svg_k
   }
   if (!is.null(clip) && !point_in_rect(ax, ay, clip, tol = 2)) return(list())
   s <- .default_style
@@ -483,8 +483,8 @@ convert_text <- function(node, st, fill, opacity, clip, opts, tag) {
 }
 
 convert_image <- function(node, state, tag) {
-  href <- xml2::xml_attr(node, "href")
-  if (is.na(href)) href <- xml2::xml_attr(node, "xlink:href")
+  href <- sx_attr(node, "href")
+  if (is.na(href)) href <- sx_attr(node, "xlink:href")
   if (is.na(href) || !grepl("^data:", href)) return(list())
   r <- num_attrs(node, c("x", "y", "width", "height")) * .svg_k
   mime <- sub("^data:([^;]+);.*$", "\\1", href)

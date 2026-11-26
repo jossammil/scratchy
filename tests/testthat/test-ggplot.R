@@ -113,3 +113,21 @@ test_that("presets flow through conversion", {
   txt <- Filter(function(e) e$type == "text", s$elements)
   expect_true(all(vapply(txt, function(e) e$fontFamily, 1) == 1))
 })
+
+test_that("the SVG reader agrees with xml2 on svglite's output", {
+  skip_if_not_installed("xml2")
+  p <- ggplot2::ggplot(mtcars, ggplot2::aes(wt, mpg, colour = factor(cyl))) + ggplot2::geom_point() +
+    ggplot2::labs(title = "Fuel & weight <test> été")
+  cap <- capture_svg(function() print(p), 600, 400)
+  mine <- svg_parse(cap$svg)
+  doc <- xml2::read_xml(cap$svg)
+  xml2::xml_ns_strip(doc)
+  count <- function(n) 1L + sum(vapply(n$children, count, 1L))
+  expect_equal(count(mine), length(xml2::xml_find_all(doc, "//*")))
+  expect_equal(sx_attr(mine, "viewBox"), xml2::xml_attr(doc, "viewBox"))
+  texts <- vapply(sx_find_all(mine, "text"), sx_text, "")
+  expect_equal(texts, xml2::xml_text(xml2::xml_find_all(doc, "//text")))
+  expect_true("Fuel & weight <test> été" %in% texts)
+  expect_length(sx_find_all(mine, "clipPath"), length(xml2::xml_find_all(doc, "//clipPath")))
+  expect_true(is.na(sx_attr(mine, "no-such-attribute")))
+})

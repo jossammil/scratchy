@@ -8,6 +8,10 @@ First public version, on GitHub with a browser version of the editor.
   self-drawing animated SVG, `.excalidraw` and Obsidian `.excalidraw.md`.
 * The editor's JavaScript is now one core, `Excalidrawer.mount()`, shared by
   the R widget, the browser version and denr's Sketch panel.
+* Plots are read from svglite's output with a small built-in parser instead
+  of xml2 (now only suggested): xml2's WebAssembly build crashes webR when it
+  reads such SVG twice, which broke `as_excalidraw()` in denr. Conversions
+  are unchanged.
 * shiny and bslib moved to Suggests: only Sketch Studio and `exc_edit()` use
   them, so the package installs faster (also in webR).
 * Sketch Studio offers the Penguins data only on R 4.5 and later, where

@@ -1,3 +1,5 @@
+skip_if_not_installed("xml2")
+
 anim_scene <- function() {
   withr::local_seed(42)
   exc_scene(
