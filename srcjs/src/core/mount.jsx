@@ -45,12 +45,14 @@ function Editor({ opts, ctrl, onApi, onChange }) {
         onChange={onChange}
         viewModeEnabled={opts.mode === "view"}
         langCode={opts.langCode}
+        name={opts.name}
         renderTopRightUI={extras ? () => <ExtrasTrigger cfg={extras} /> : undefined}
         UIOptions={{ canvasActions: { saveToActiveFile: false, loadScene: opts.mode !== "view", ...(opts.canvasActions || {}) } }}
       >
         <MainMenu>
-          {opts.menuItems ? opts.menuItems(ctrl) : null}
-          <MainMenu.DefaultItems.LoadScene />
+          {menuItems(opts.menu, ctrl)}
+          {opts.menu?.length ? <MainMenu.Separator /> : null}
+          {opts.canvasActions?.loadScene === false ? null : <MainMenu.DefaultItems.LoadScene />}
           <MainMenu.DefaultItems.Export />
           <MainMenu.DefaultItems.SaveAsImage />
           <MainMenu.DefaultItems.ClearCanvas />
@@ -64,6 +66,15 @@ function Editor({ opts, ctrl, onApi, onChange }) {
   );
 }
 
+// Host items for the main menu, given as plain objects so callers need no React.
+function menuItems(items, ctrl) {
+  if (!items) return null;
+  if (typeof items === "function") return items(ctrl);
+  return items.map((it, i) => it.separator
+    ? <MainMenu.Separator key={i} />
+    : <MainMenu.Item key={i} onSelect={() => it.onSelect(ctrl)} shortcut={it.shortcut}>{it.label}</MainMenu.Item>);
+}
+
 const mounted = new WeakMap();
 
 /**
@@ -72,7 +83,9 @@ const mounted = new WeakMap();
  *         onChange(json, { elements, appState, files }), onSelection(ids),
  *         extras: true or { stickers: URL of the sticker libraries, download(name, blob, info),
  *                 fileName() } for the excalidrawer sidebar,
- *         menuItems(ctrl): extra React items for the main menu }.
+ *         menu: [{ label, onSelect(ctrl), shortcut } | { separator: true }]: items at
+ *               the top of the main menu (canvasActions.loadScene = false hides Open),
+ *         name: the drawing's name, used by Excalidraw's own export dialogs }.
  * Methods that change the scene wait for the editor to be ready, so they can
  * be called straight away.
  */
@@ -184,7 +197,8 @@ export function mount(el, opts = {}) {
     setTimeout(() => resolveReady(ctrl), 50);
   };
 
-  if (!el.style.position) el.style.position = "relative";
+  // The editor fills its element, which must be positioned; leave fixed/absolute alone.
+  if (getComputedStyle(el).position === "static") el.style.position = "relative";
   const root = createRoot(el);
   root.render(<Editor opts={opts} ctrl={ctrl} onApi={onApi} onChange={onChange} />);
   mounted.set(el, ctrl);

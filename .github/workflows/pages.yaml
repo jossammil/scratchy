@@ -1,0 +1,61 @@
+# Builds the website and publishes it with GitHub Pages:
+# https://jossammil.github.io/excalidrawer/     the editor (site/, the bundle, the stickers)
+# https://jossammil.github.io/excalidrawer/r/   the R documentation (pkgdown)
+name: pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - site/**
+      - srcjs/**
+      - inst/**
+      - R/**
+      - man/**
+      - vignettes/**
+      - _pkgdown.yml
+      - README.md
+      - NEWS.md
+      - DESCRIPTION
+      - .github/workflows/pages.yaml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build the site
+        run: node srcjs/tools/build-site.mjs
+      - uses: r-lib/actions/setup-pandoc@v2
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::pkgdown, local::.
+          needs: website
+      - name: Build the R documentation into site-dist/r
+        shell: Rscript {0}
+        run: pkgdown::build_site_github_pages(new_process = FALSE, install = FALSE, dest_dir = "site-dist/r")
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site-dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

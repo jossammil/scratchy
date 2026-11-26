@@ -32,3 +32,25 @@ jobs:
           git status --porcelain -- ../inst/htmlwidgets/lib ../inst/js ../inst/stickers
           git diff --exit-code -- ../inst/htmlwidgets/lib ../inst/js ../inst/stickers
           test -z "$(git status --porcelain -- ../inst/htmlwidgets/lib ../inst/js ../inst/stickers)"
+
+  e2e:
+    runs-on: macos-latest
+    defaults:
+      run:
+        working-directory: srcjs
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: srcjs/package-lock.json
+      - run: |
+          npm ci
+          npx playwright install chromium webkit
+      - name: Build the site
+        run: npm run site
+      - name: Chromium
+        run: npm run e2e
+      - name: WebKit (Safari engine)
+        run: BROWSER=webkit npm run e2e

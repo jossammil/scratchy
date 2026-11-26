@@ -6,6 +6,7 @@ import "@excalidraw/excalidraw/index.css";
 import { mount, parseScene } from "./core/mount.jsx";
 import { exportScene } from "./core/export.js";
 import { mermaidToScene } from "./core/mermaid.js";
+import { readDrawingFile, drawingBlob, isDrawingName, drawingStem } from "./core/files.js";
 import { animateSvg } from "./extras/animate.js";
 import { toObsidian, fromObsidian, isObsidian } from "./extras/obsidian.js";
 import { presets, restyleElements } from "./extras/restyle.js";
@@ -23,8 +24,9 @@ export const extras = {
   animateSvg, toObsidian, fromObsidian, isObsidian, presets, restyleElements,
   stickerIndex, stickerLibrary, peepSvg, peepOptions, svgImageScene, download: defaultDownload,
 };
+export const files = { readDrawingFile, drawingBlob, isDrawingName, drawingStem };
 export { mount, parseScene, exportScene, mermaidToScene };
 
-const Excalidrawer = { version, mount, parseScene, exportScene, mermaidToScene, extras };
+const Excalidrawer = { version, mount, parseScene, exportScene, mermaidToScene, extras, files };
 globalThis.Excalidrawer = Excalidrawer;
 export default Excalidrawer;

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>excalidrawer</title>
+<meta name="description" content="Hand-drawn diagrams and charts in your browser: the Excalidraw editor with stickers, people, style presets, Mermaid, animated SVGs and Obsidian files. No install, no server, works offline.">
+<meta name="theme-color" content="#fdfcf7">
+<link rel="icon" href="icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="stylesheet" href="editor/excalidraw-widget.css">
+<link rel="stylesheet" href="app.css">
+<link rel="modulepreload" href="editor/excalidraw-widget.js">
+</head>
+<body>
+<main id="app" aria-label="Drawing canvas"></main>
+<p id="boot" role="status">Loading the editor…</p>
+
+<dialog id="about" aria-labelledby="about-title">
+  <form method="dialog">
+    <h1 id="about-title">excalidrawer <small>{{VERSION}}</small></h1>
+    <p>The <a href="https://excalidraw.com" target="_blank" rel="noopener">Excalidraw</a> editor
+      ({{EXCALIDRAW}}) with the extras of the
+      <a href="https://github.com/jossammil/excalidrawer" target="_blank" rel="noopener">excalidrawer</a> R package:
+      sticker libraries, Open Peeps people, style presets, Mermaid diagrams, self-drawing SVGs and
+      Obsidian <code>.excalidraw.md</code> files. Open them from the
+      <span class="exr-badge">✎</span> button next to Library.</p>
+    <p>Everything stays in this browser: your drawing is kept here between visits, and nothing is
+      uploaded. Once loaded, it works offline, and you can install it as an app.</p>
+    <ul>
+      <li><b>Open</b> <kbd>Ctrl</kbd>+<kbd>O</kbd>: <code>.excalidraw</code>, <code>.excalidraw.md</code>,
+        and SVG or PNG images saved with the drawing inside. You can also drop files on the canvas.</li>
+      <li><b>Save</b> <kbd>Ctrl</kbd>+<kbd>S</kbd>, <b>Save as</b> <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>:
+        the format follows the file name.</li>
+    </ul>
+    <p>From R: <code>install.packages("excalidrawer", repos = "https://jossammil.r-universe.dev")</code>
+      turns ggplot2 charts into editable drawings. <a href="r/">R documentation</a> ·
+      <a href="COPYRIGHTS.txt">Credits and licences</a>.</p>
+    <p class="exr-small">Not affiliated with or endorsed by Excalidraw. <i>Frankensteined by MillJS.</i></p>
+    <button value="close" autofocus>Close</button>
+  </form>
+</dialog>
+
+<script type="module" src="app.js?v={{VERSION}}"></script>
+</body>
+</html>
