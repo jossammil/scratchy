@@ -22,7 +22,7 @@
 #' @examples
 #' if (interactive()) run_sketch_studio()
 run_sketch_studio <- function(..., launch.browser = interactive()) {
-  rlang::check_installed("bslib")
+  rlang::check_installed(c("shiny", "bslib"))
   shiny::shinyApp(studio_ui(), studio_server,
                   options = c(list(launch.browser = launch.browser), list(...)))
 }

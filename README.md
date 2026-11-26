@@ -1,6 +1,14 @@
 # excalidrawer <img src="man/figures/stickers.png" align="right" width="220" alt="" />
 
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/jossammil/excalidrawer/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jossammil/excalidrawer/actions/workflows/R-CMD-check.yaml)
+[![js](https://github.com/jossammil/excalidrawer/actions/workflows/js.yaml/badge.svg)](https://github.com/jossammil/excalidrawer/actions/workflows/js.yaml)
+<!-- badges: end -->
+
 **Hand-drawn charts, drawings and slides from R, in the style of [Excalidraw](https://excalidraw.com).**
+
+**[Try the editor in your browser](https://jossammil.github.io/excalidrawer/)**: no install, no
+server, works offline · [R documentation](https://jossammil.github.io/excalidrawer/r/)
 
 excalidrawer turns ggplot2 and base R plots into **editable Excalidraw drawings**.
 It draws them offline in R with the same rough.js engine, seeds and handwriting
@@ -20,9 +28,16 @@ fonts that Excalidraw uses, so you get:
 ## Install
 
 ```r
-# from a local copy of the package
-devtools::install("path/to/excalidrawer")
+install.packages("excalidrawer",
+                 repos = c("https://jossammil.r-universe.dev", "https://cloud.r-project.org"))
+# or
+remotes::install_github("jossammil/excalidrawer")
 ```
+
+The JavaScript is prebuilt and committed, so neither Node nor Rtools is needed.
+Sketch Studio and `exc_edit()` also need shiny, bslib and miniUI; Mermaid
+conversion, exact exports, slides to PDF and GIFs need Chrome (through
+chromote).
 
 ## Charts
 
@@ -135,6 +150,20 @@ as editable vector shapes.
 
 <img src="man/figures/slide-chart.png" width="49%" alt="A slide with an annotated hand-drawn bar chart on dotted paper" /> <img src="man/figures/slide-marks.png" width="49%" alt="A slide with words highlighted, circled, underlined and struck through by hand" />
 
+## In the browser and in denr
+
+The same editor runs without R:
+
+- **[jossammil.github.io/excalidrawer](https://jossammil.github.io/excalidrawer/)** is the
+  Excalidraw editor with excalidrawer's extras: the twelve sticker libraries, Open
+  Peeps people, the style presets, Mermaid diagrams (offline), self-drawing
+  animated SVGs, and Obsidian `.excalidraw.md` files. Drawings stay in your
+  browser, and it keeps working offline once loaded.
+- **[denr](https://github.com/jossammil/pocket-r)**, the R workspace that runs in the
+  browser, has it as its **Sketch** panel: open and save `.excalidraw` files in
+  the workspace, put drawings into Quarto notes, and turn a ggplot into an
+  editable hand-drawn chart with one tap.
+
 ## How it works
 
 The package keeps scenes as Excalidraw's own JSON, so files round-trip with
@@ -158,3 +187,28 @@ Bundled third-party pieces keep their own licences (see `inst/COPYRIGHTS` and
 - Excalifont and Virgil (OFL-1.1)
 - Comic Shanns (MIT)
 - Caveat, Patrick Hand, Architects Daughter, Gochi Hand, Nunito, Lilita One and Cascadia Code (OFL-1.1)
+
+## Development
+
+The R code is in `R/`; the browser code is in `srcjs/` and is built with
+esbuild into `inst/htmlwidgets/lib/excalidraw-widget/` (committed, so Node is
+only needed to change the JavaScript). `DEVELOPER-GUIDE.md` explains how the
+pieces fit.
+
+```bash
+cd srcjs
+npm install
+npm test         # unit tests for the browser code
+npm run build    # rebuild the editor bundle and inst/js/peeps.js
+```
+
+```r
+devtools::test()   # R tests (Chrome-dependent ones skip without Chrome)
+```
+
+GitHub Actions runs `R CMD check` on macOS, Windows and Linux, the JavaScript
+tests, a check that the committed bundle matches its sources, browser tests in
+Chromium and WebKit, and publishes the site.
+
+*Frankensteined by MillJS.*
+

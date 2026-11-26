@@ -1,3 +1,12 @@
+# excalidrawer 0.1.0
+
+First public version, on GitHub with a browser version of the editor.
+
+* shiny and bslib moved to Suggests: only Sketch Studio and `exc_edit()` use
+  them, so the package installs faster (also in webR).
+* Sketch Studio offers the Penguins data only on R 4.5 and later, where
+  `datasets::penguins` exists.
+
 # excalidrawer 0.0.0.9000
 
 First version.

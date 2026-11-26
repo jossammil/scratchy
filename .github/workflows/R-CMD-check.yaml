@@ -1,0 +1,82 @@
+# Checks that the package installs and passes its tests on macOS, Windows and Linux.
+name: R-CMD-check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  R-CMD-check:
+    runs-on: ${{ matrix.config.os }}
+    name: ${{ matrix.config.os }} (R ${{ matrix.config.r }})
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - { os: macos-latest, r: release }
+          - { os: windows-latest, r: release }
+          - { os: ubuntu-latest, r: release }
+          - { os: ubuntu-latest, r: oldrel-1 }
+
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+      R_KEEP_PKG_SOURCE: yes
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: r-lib/actions/setup-pandoc@v2
+
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: ${{ matrix.config.r }}
+          use-public-rspm: true
+
+      - uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: any::rcmdcheck
+          needs: check
+
+      # The bundled fonts and editor make the installed package larger than
+      # CRAN likes, and some font files have long names: both are NOTEs, not
+      # failures.
+      - uses: r-lib/actions/check-r-package@v2
+        with:
+          upload-snapshots: true
+          build_args: 'c("--no-manual")'
+          args: 'c("--no-manual", "--as-cran")'
+          error-on: '"warning"'
+
+  install-from-github:
+    # The way other machines will install it: no Rtools, Xcode or Node needed.
+    runs-on: ${{ matrix.os }}
+    name: install_github on ${{ matrix.os }}
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos-latest, windows-latest]
+    steps:
+      - uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+      - name: Install, then draw and save a scene
+        shell: Rscript {0}
+        run: |
+          install.packages(c("remotes", "ragg"))
+          remotes::install_github("${{ github.repository }}@${{ github.sha }}", upgrade = "never")
+          library(excalidrawer)
+          s <- exc_scene(exc_rect(0, 0, 160, 80, label = "Idea", fill = "yellow"),
+                         exc_arrow(c(170, 270), c(40, 40)))
+          out <- file.path(tempdir(), c("idea.png", "idea.svg", "idea.excalidraw"))
+          exc_save(s, out[1]); exc_save(s, out[2]); write_excalidraw(s, out[3])
+          stopifnot(all(file.exists(out)), file.size(out[1]) > 2000)
+          stopifnot(identical(length(read_excalidraw(out[3])$elements), length(s$elements)))
+          cat("OK:", out, "\n")

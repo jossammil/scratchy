@@ -16,8 +16,29 @@ Start with \code{\link[=exc_scene]{exc_scene()}} and the element constructors su
 
 This package is not affiliated with or endorsed by Excalidraw.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://jossammil.github.io/excalidrawer/}
+  \item \url{https://github.com/jossammil/excalidrawer}
+  \item Report bugs at \url{https://github.com/jossammil/excalidrawer/issues}
+}
+
+}
 \author{
 \strong{Maintainer}: Joseph S. Miller \email{jossammil@gmail.com}
+
+Other contributors:
+\itemize{
+  \item Excalidraw (Excalidraw editor, shape logic ported in inst/js/exc-shapes.js, Excalifont, sticker libraries) [contributor, copyright holder]
+  \item Preet Shihn (rough.js) [contributor, copyright holder]
+  \item Stephen Ruiz (perfect-freehand) [contributor, copyright holder]
+  \item pieroxy (lz-string) [contributor, copyright holder]
+  \item Florian Koerner (DiceBear) [contributor, copyright holder]
+  \item Pablo Stanley (Open Peeps artwork (CC0)) [contributor]
+  \item Ellinor Rapp (Virgil font) [copyright holder]
+  \item Shannon Miwa (Comic Shanns font) [copyright holder]
+}
 
 }
 \keyword{internal}

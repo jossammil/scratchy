@@ -19,7 +19,7 @@ library(ggplot2)
 `sketch()` draws any plot in Excalidraw style, at the size of whatever device
 it lands on, so it works in the plot pane, in knitr chunks and with `ggsave()`.
 
-```{r}
+```{r, fig.alt = "A hand-drawn stacked bar chart titled Drive train by class, bars filled in pastel Excalidraw colours"}
 p <- ggplot(mpg, aes(class, fill = drv)) + geom_bar() +
   scale_fill_excalidraw() + labs(title = "Drive train by class", x = NULL)
 sketch(p)
@@ -32,7 +32,7 @@ ggsave("drive.png", sketch(p), width = 8, height = 5)
 `as_excalidraw()` returns the scene itself, ready to annotate, restyle, save
 or open in Excalidraw:
 
-```{r}
+```{r, fig.alt = "The bar chart as an Excalidraw scene, drawn in hand-drawn style"}
 s <- as_excalidraw(p)
 s
 ```
@@ -41,7 +41,7 @@ By default plots get `theme_excalidraw()` (handwriting font, ink axes, no
 grey panel). Pass `theme = NULL` to keep your own theme. Other options:
 `fill_style`, `roughness`, `font`, `outline`, `preset` and `seed`.
 
-```{r}
+```{r, fig.alt = "The bar chart again with cross-hatched fills, extra-sloppy cartoonist lines and the Virgil font"}
 as_excalidraw(p, fill_style = "cross-hatch", roughness = "cartoonist", font = "Virgil") |>
   plot()
 ```
@@ -52,7 +52,7 @@ Scenes made from a ggplot remember how data values map to positions, so
 annotations can point at the data. Categories map to their centre; wrap a
 number in `I()` to give pixels instead.
 
-```{r}
+```{r, fig.alt = "A hand-drawn bar chart of cars by class titled What do people drive?, with a box around the SUV bar, a circle on compact, a sticky note saying SUVs win! with an arrow, and a callout saying only 5 of these by the 2seater bar"}
 cars <- ggplot(mpg, aes(class)) + geom_bar(fill = "#a5d8ff") + labs(x = NULL, y = "cars")
 as_excalidraw(cars) |>
   exc_title("What do people drive?") |>
@@ -78,13 +78,13 @@ the strong strokes; the `_c` versions run through the shades of one hue.
 
 ## Base graphics
 
-```{r}
+```{r, fig.alt = "A hand-drawn histogram of Old Faithful waiting times in minutes, bars filled in light orange"}
 sketch(~ hist(faithful$waiting, col = "#ffd8a8", main = "Waiting time", xlab = "minutes"))
 ```
 
 ## Presets
 
-```{r}
+```{r, fig.alt = "A hand-drawn scatter plot of highway mileage against engine size, coloured by drive train, in the blueprint preset: white lines on blue"}
 sketch(ggplot(mpg, aes(displ, hwy, colour = drv)) + geom_point(size = 2.5) +
          scale_colour_excalidraw(), preset = "blueprint")
 ```

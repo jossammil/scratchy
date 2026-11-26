@@ -74,14 +74,17 @@ studio_plot <- function(code, data) {
 }
 
 studio_datasets <- function() {
-  list(
+  sets <- list(
     "Cars (mpg)" = function() as.data.frame(ggplot2::mpg),
-    "Penguins" = function() as.data.frame(stats::na.omit(get("penguins", envir = asNamespace("datasets")))),
+    "Penguins" = function() as.data.frame(stats::na.omit(get("penguins", envir = getNamespaceInfo("datasets", "lazydata")))),
     "Economics" = function() as.data.frame(ggplot2::economics),
     "Old Faithful" = function() datasets::faithful,
     "Iris" = function() datasets::iris,
     "Motor cars (mtcars)" = function() cbind(car = rownames(datasets::mtcars), datasets::mtcars)
   )
+  # datasets::penguins arrived in R 4.5.
+  if (!exists("penguins", envir = getNamespaceInfo("datasets", "lazydata"), inherits = FALSE)) sets[["Penguins"]] <- NULL
+  sets
 }
 
 # Default axes: a categorical column with a handful of levels (3-9, the

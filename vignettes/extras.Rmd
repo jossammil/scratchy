@@ -24,11 +24,11 @@ and recolourable.
 table(exc_stickers()$library)
 ```
 
-```{r, fig.height = 4}
+```{r, fig.height = 4, fig.alt = "A sheet of hand-drawn stick figures in five columns, each with its name"}
 exc_sticker_sheet("stick-figures", columns = 5) |> plot()
 ```
 
-```{r}
+```{r, fig.alt = "The title Sticker party above a stick-figure girl, an R logo, a speech bubble and an orange star"}
 exc_scene(exc_text("Sticker party", 0, 0, font_size = 36)) |>
   exc_sticker("stick-figures:Girl", 0, 60, width = 90) |>
   exc_sticker("r-icons:1", 120, 70, width = 90) |>
@@ -46,7 +46,7 @@ Any other library works too: `exc_library("https://...excalidrawlib")` and
 `exc_peep()` draws people in Pablo Stanley's Open Peeps style. Each seed is a
 different person; see `exc_peep_options()` for faces, heads and accessories.
 
-```{r}
+```{r, fig.alt = "Three hand-drawn Open Peeps people side by side, one smiling, one in a light blue top, one with a cheeky face"}
 exc_scene() |>
   exc_peep(0, 0, seed = "Ada", face = "smile") |>
   exc_peep(170, 0, seed = "Grace", clothing = "#a5d8ff") |>
@@ -60,7 +60,7 @@ Design a card or poster in Excalidraw, with `{{column}}` in its text, and
 shapes labelled `{{chart:name}}` or `{{image:name}}` where charts and images
 should go. Then fill it from data:
 
-```{r, fig.height = 3.5}
+```{r, fig.height = 3.5, fig.alt = "A hand-drawn KPI card reading Sketches drawn, 1,204, +18% this month, with a small rising line chart"}
 card <- exc_template_fill(
   exc_template_example(),
   data = list(metric = "Sketches drawn", value = "1,204", change = "+18% this month"),

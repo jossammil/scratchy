@@ -14,3 +14,8 @@ dev/samples/
 dev/widget/
 /doc/
 /Meta/
+Rplots.pdf
+dev/*.log
+site-dist/
+srcjs/test-e2e/shots/
+.claude/settings.local.json

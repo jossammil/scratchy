@@ -10,3 +10,9 @@
 ^pkgdown$
 ^doc$
 ^Meta$
+^Rplots\.pdf$
+^site$
+^site-dist$
+^\.github$
+^DEVELOPER-GUIDE\.md$
+^examples$

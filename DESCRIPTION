@@ -1,20 +1,31 @@
 Package: excalidrawer
 Title: Excalidraw-Style Charts, Drawings and Slides from R
-Version: 0.0.0.9000
-Authors@R:
-    person("Joseph S.", "Miller", , "jossammil@gmail.com", role = c("aut", "cre"))
+Version: 0.1.0
+Authors@R: c(
+    person("Joseph S.", "Miller", , "jossammil@gmail.com", role = c("aut", "cre")),
+    person("Excalidraw", role = c("ctb", "cph"),
+           comment = "Excalidraw editor, shape logic ported in inst/js/exc-shapes.js, Excalifont, sticker libraries"),
+    person("Preet", "Shihn", role = c("ctb", "cph"), comment = "rough.js"),
+    person("Stephen", "Ruiz", role = c("ctb", "cph"), comment = "perfect-freehand"),
+    person("pieroxy", role = c("ctb", "cph"), comment = "lz-string"),
+    person("Florian", "Koerner", role = c("ctb", "cph"), comment = "DiceBear"),
+    person("Pablo", "Stanley", role = "ctb", comment = "Open Peeps artwork (CC0)"),
+    person("Ellinor", "Rapp", role = "cph", comment = "Virgil font"),
+    person("Shannon", "Miwa", role = "cph", comment = "Comic Shanns font")
+  )
 Description: Build, read and write 'Excalidraw' scenes from R, turn 'ggplot2'
     and base graphics into editable hand-drawn drawings, and render them
     offline with the same 'rough.js' engine and handwriting fonts that
     'Excalidraw' uses. Not affiliated with or endorsed by Excalidraw.
 License: MIT + file LICENSE
+URL: https://jossammil.github.io/excalidrawer/, https://github.com/jossammil/excalidrawer
+BugReports: https://github.com/jossammil/excalidrawer/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Depends:
     R (>= 4.1)
 Imports:
-    bslib,
     cli,
     ggplot2 (>= 3.5.0),
     graphics,
@@ -24,7 +35,6 @@ Imports:
     htmlwidgets,
     jsonlite,
     rlang,
-    shiny,
     stats,
     systemfonts (>= 1.3.0),
     textshaping (>= 1.0.5),
@@ -34,6 +44,7 @@ Imports:
     V8,
     xml2
 Suggests:
+    bslib,
     chromote,
     gifski,
     httpuv,
@@ -47,6 +58,7 @@ Suggests:
     rmarkdown,
     rsvg,
     rvg,
+    shiny,
     testthat (>= 3.0.0),
     vdiffr,
     withr

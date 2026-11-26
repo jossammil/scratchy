@@ -24,7 +24,7 @@ Excalidraw editor.
 Positions and sizes are in pixels, like in Excalidraw (96 per inch, with y
 going down).
 
-```{r}
+```{r, fig.alt = c("The scene printed: a yellow rounded box labelled Idea, an arrow labelled becomes, a blue hachured ellipse labelled Chart, a red cross-hatched diamond, the word Sketchy! and a green triangle, all hand-drawn", "The same hand-drawn scene drawn with plot()")}
 s <- exc_scene(
   exc_rect(0, 0, 160, 80, label = "Idea", fill = "yellow", fill_style = "solid", rounded = TRUE),
   exc_arrow(c(170, 300), c(40, 40), label = "becomes"),
@@ -90,6 +90,6 @@ excalidraw(s, mode = "view")
 
 ## Presets and paper
 
-```{r}
+```{r, fig.alt = "The same scene restyled as chalkboard: light strokes on a dark green board"}
 exc_restyle(s, "chalkboard") |> plot()
 ```
