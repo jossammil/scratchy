@@ -40,6 +40,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+          cache: npm
+          cache-dependency-path: srcjs/package-lock.json
+      # The site build bundles the workspace with esbuild and its libraries.
+      - name: Install the build tools
+        run: npm ci
+        working-directory: srcjs
       - name: Build the site
         run: node srcjs/tools/build-site.mjs
       - uses: r-lib/actions/setup-pandoc@v2
