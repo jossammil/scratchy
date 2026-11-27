@@ -287,6 +287,8 @@ export class ProjectManager {
         const board = await this.w.store.patch(session.board.id, { viewport: view });
         return { board, projectRevision: project.revision };
       }
+      if (source === project.source)
+        return this.saveDrawing(project, heading, session, scene, view);
       const result = await this.commit(project, source, {
         preserveDraft: true,
         incoming: { board: session.board, scene },
@@ -301,6 +303,44 @@ export class ProjectManager {
         projectRevision: result.project.revision,
       };
     });
+  }
+  /**
+   * A drawing change that leaves the master untouched writes just this canvas
+   * (no other canvas, no project revision). The scene is passed through the
+   * same layout as a full commit, and handed back only if that changed it.
+   */
+  async saveDrawing(project, heading, session, scene, view) {
+    const shape = (s) =>
+      JSON.stringify(s.elements.map(({ version, versionNonce, updated, ...e }) => e));
+    const laidOut = projectScene(project.id, heading, scene, { resources: project.resourceFiles });
+    const changed = shape(laidOut) !== shape(scene);
+    try {
+      const { board } = await this.w.store.saveProjectCanvas(
+        project.id,
+        project.revision,
+        session.board.id,
+        session.board.revision,
+        changed ? laidOut : scene,
+        view,
+      );
+      return { board, scene: changed ? laidOut : undefined, projectRevision: project.revision };
+    } catch (error) {
+      if (error.code !== "PROJECT_CONFLICT") throw error;
+      // Another window got there first: recover the whole project, as a commit would.
+      const all = await this.scenes(project);
+      const incoming = all.map((x) => ({
+        board: x.board,
+        scene: x.board.id === session.board.id ? scene : x.scene,
+      }));
+      const result = await this.fork(project, project.source, incoming);
+      const board = result.boards.find((b) => b.id === result.boardMap.get(session.board.id));
+      return {
+        board,
+        scene: result.scenes.find((x) => x.board.id === board.id).scene,
+        conflict: true,
+        projectRevision: result.project.revision,
+      };
+    }
   }
   async edit(id, transform, options = {}) {
     return this.enqueue(id, async () => {
@@ -392,6 +432,7 @@ export class ProjectManager {
         p.revision,
         v.document?.source || "",
         v.scenes,
+        { forceVersion: true },
       );
       await this.reconcile(result, v.scenes);
       return result;

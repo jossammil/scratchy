@@ -359,7 +359,13 @@ class Workspace {
             for (const other of this.sessions.values())
               if (other !== s) this.run(() => other.ctrl.set({ theme: this.theme }));
           }
-          this.renderStatus();
+          // Excalidraw reports every pointer move; update the status once a frame.
+          if (!this.statusFrame) {
+            this.statusFrame = requestAnimationFrame(() => {
+              this.statusFrame = null;
+              this.renderStatus();
+            });
+          }
         },
         onLibraryChange: (items) => this.run(() => this.syncLibrary(items)),
       });
@@ -675,7 +681,8 @@ class Workspace {
   }
   renderStatus() {
     const s = this.active;
-    if (s?.ctrl && !s.initializing) s.dirty = s.base !== contentKey(s.ctrl.getScene());
+    // s.dirty is kept by flush() and saveFile(): serializing the scene here
+    // would run on every pointer move.
     const dirty = Boolean(s?.dirty);
     document.title = s
       ? `${dirty ? "• " : ""}${this.boards.get(s.board.id)?.title || s.board.title} · scratchy`
@@ -982,6 +989,7 @@ class Workspace {
     s.handle = handle;
     s.name = name;
     s.base = savedKey;
+    s.dirty = contentKey(s.ctrl.getScene()) !== savedKey;
     await this.store.patch(s.board.id, { fileName: name });
     this.renderStatus();
   }

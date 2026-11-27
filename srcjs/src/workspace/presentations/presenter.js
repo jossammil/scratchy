@@ -50,7 +50,9 @@ export async function present(workspace, deck) {
   dialog.append(image, controls);
   workspace.root.append(dialog);
   dialog.onkeydown = (e) => {
-    if (["ArrowRight", "PageDown", " "].includes(e.key)) {
+    // Space advances unless it is pressing one of the slideshow's buttons.
+    const space = e.key === " " && e.target.tagName !== "BUTTON";
+    if (["ArrowRight", "PageDown"].includes(e.key) || space) {
       e.preventDefault();
       workspace.run(() => show(index + 1));
     }

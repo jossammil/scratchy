@@ -21,6 +21,14 @@ const TABLES = [
   "documents",
   "projectVersions",
 ];
+// Version 4 adds lookup indexes, so history reads stay proportional to one
+// board or project rather than the whole workspace.
+const VERSION = 4;
+const INDEXES = [
+  ["boards", "projectId"],
+  ["revisions", "boardId"],
+  ["projectVersions", "projectId"],
+];
 const request = (r) =>
   new Promise((resolve, reject) => {
     r.onsuccess = () => resolve(r.result);
@@ -32,12 +40,16 @@ export async function openWorkspace({
   changed = () => {},
 } = {}) {
   const db = await new Promise((resolve, reject) => {
-    const r = indexedDB.open(name, 3);
+    const r = indexedDB.open(name, VERSION);
     r.onupgradeneeded = () => {
       if (!r.result.objectStoreNames.contains("kv")) r.result.createObjectStore("kv");
       for (const table of TABLES)
         if (!r.result.objectStoreNames.contains(table))
           r.result.createObjectStore(table, { keyPath: table === "assets" ? "key" : "id" });
+      for (const [table, key] of INDEXES) {
+        const store = r.transaction.objectStore(table);
+        if (!store.indexNames.contains(key)) store.createIndex(key, key);
+      }
     };
     r.onblocked = () =>
       blocked(
@@ -72,6 +84,7 @@ export async function openWorkspace({
     const t = {
       get: (table, key) => request(tx.objectStore(table).get(key)),
       all: (table) => request(tx.objectStore(table).getAll()),
+      by: (table, key, value) => request(tx.objectStore(table).index(key).getAll(value)),
       put: (table, value, key) =>
         request(
           key === undefined
@@ -141,9 +154,9 @@ export async function openWorkspace({
     };
   }
   async function snapshot(t, board) {
-    const versions = (await t.all("revisions"))
-      .filter((r) => r.boardId === board.id)
-      .sort((a, b) => a.createdAt - b.createdAt || a.revision - b.revision);
+    const versions = (await t.by("revisions", "boardId", board.id)).sort(
+      (a, b) => a.createdAt - b.createdAt || a.revision - b.revision,
+    );
     if (versions.at(-1)?.fingerprint === board.fingerprint) return;
     await t.put("revisions", {
       id: uid(),
@@ -157,6 +170,26 @@ export async function openWorkspace({
     for (const old of versions.slice(0, Math.max(0, versions.length + 1 - HISTORY_LIMIT)))
       await t.delete("revisions", old.id);
     board.snapshotAt = Date.now();
+  }
+  // A whole-project version records the project as it was before a change.
+  // Outline and source changes always keep one; drawing-only changes keep one
+  // at most every SNAPSHOT_INTERVAL, as board history does.
+  async function versionProject(t, project, document, { force = false } = {}) {
+    const versions = (await t.by("projectVersions", "projectId", project.id)).sort(
+      (a, b) => a.createdAt - b.createdAt,
+    );
+    const latest = versions.at(-1);
+    if (!force && latest && Date.now() - latest.createdAt < SNAPSHOT_INTERVAL) return;
+    await t.put("projectVersions", {
+      id: uid(),
+      projectId: project.id,
+      createdAt: Date.now(),
+      project,
+      document: document || null,
+      boards: await t.by("boards", "projectId", project.id),
+    });
+    for (const v of versions.slice(0, Math.max(0, versions.length + 1 - HISTORY_LIMIT)))
+      await t.delete("projectVersions", v.id);
   }
   async function gc(t) {
     const used = new Set();
@@ -315,9 +348,9 @@ export async function openWorkspace({
     },
     history(id) {
       return read(["revisions"], async (t) =>
-        (await t.all("revisions"))
-          .filter((r) => r.boardId === id)
-          .sort((a, b) => b.createdAt - a.createdAt || b.revision - a.revision),
+        (await t.by("revisions", "boardId", id)).sort(
+          (a, b) => b.createdAt - a.createdAt || b.revision - a.revision,
+        ),
       );
     },
     version(id) {
@@ -416,15 +449,15 @@ export async function openWorkspace({
           if (p.deletedAt && now - p.deletedAt >= TRASH_RETENTION) {
             await t.delete("projects", p.id);
             await t.delete("documents", p.id);
-            for (const v of await t.all("projectVersions"))
-              if (v.projectId === p.id) await t.delete("projectVersions", v.id);
+            for (const v of await t.by("projectVersions", "projectId", p.id))
+              await t.delete("projectVersions", v.id);
             removed = true;
           }
         for (const b of await t.all("boards"))
           if (b.deletedAt && now - b.deletedAt >= TRASH_RETENTION) {
             await t.delete("boards", b.id);
-            for (const r of await t.all("revisions"))
-              if (r.boardId === b.id) await t.delete("revisions", r.id);
+            for (const r of await t.by("revisions", "boardId", b.id))
+              await t.delete("revisions", r.id);
             removed = true;
           }
         if (removed) {
@@ -484,7 +517,13 @@ export async function openWorkspace({
         await touch(t);
       });
     },
-    async commitProject(project, expectedRevision, source, scenes, { preserveDraft = false } = {}) {
+    async commitProject(
+      project,
+      expectedRevision,
+      source,
+      scenes,
+      { preserveDraft = false, forceVersion = false } = {},
+    ) {
       const packed = await Promise.all(
         scenes.map(async ({ board, scene }) => ({ board, packed: await packScene(scene) })),
       );
@@ -510,24 +549,16 @@ export async function openWorkspace({
         }
         const oldDoc = await t.get("documents", project.id);
         if (old) {
-          const versions = (await t.all("projectVersions"))
-            .filter((v) => v.projectId === old.id)
-            .sort((a, b) => a.createdAt - b.createdAt);
-          await t.put("projectVersions", {
-            id: uid(),
-            projectId: old.id,
-            createdAt: Date.now(),
-            project: old,
-            document: oldDoc || null,
-            boards: (await t.all("boards")).filter((b) => b.projectId === old.id),
-          });
-          for (const v of versions.slice(0, Math.max(0, versions.length + 1 - HISTORY_LIMIT)))
-            await t.delete("projectVersions", v.id);
+          const outlineChanged =
+            source !== oldDoc?.source ||
+            Boolean(project.deletedAt) !== Boolean(old.deletedAt) ||
+            JSON.stringify(project.nodes) !== JSON.stringify(old.nodes);
+          await versionProject(t, old, oldDoc, { force: forceVersion || outlineChanged });
         }
         const ids = new Set(packed.map((x) => x.board.id));
         if (old?.managed)
-          for (const b of await t.all("boards"))
-            if (b.projectId === old.id && !b.deletedAt && !ids.has(b.id)) {
+          for (const b of await t.by("boards", "projectId", old.id))
+            if (!b.deletedAt && !ids.has(b.id)) {
               await snapshot(t, b);
               b.deletedAt = Date.now();
               await t.put("boards", b);
@@ -570,11 +601,42 @@ export async function openWorkspace({
         return { project: next, boards: saved };
       });
     },
+    // A drawing-only change to one canvas of a Markdown project. The master
+    // and the other canvases are unchanged, so only this board is written.
+    async saveProjectCanvas(projectId, projectRevision, boardId, revision, scene, view) {
+      const packed = await packScene(scene);
+      return write(async (t) => {
+        const project = await t.get("projects", projectId),
+          b = await t.get("boards", boardId);
+        const current =
+          project?.revision === projectRevision &&
+          b?.projectId === projectId &&
+          !b.deletedAt &&
+          b.revision === revision;
+        if (!current) {
+          const error = new Error("This project changed in another window.");
+          error.code = "PROJECT_CONFLICT";
+          throw error;
+        }
+        if (b.fingerprint !== packed.fingerprint) {
+          await versionProject(t, project, await t.get("documents", projectId));
+          if (Date.now() - b.snapshotAt >= SNAPSHOT_INTERVAL) await snapshot(t, b);
+          Object.assign(b, recordFor(packed), {
+            revision: b.revision + 1,
+            updatedAt: Date.now(),
+            placeholder: false,
+          });
+        }
+        b.viewport = view || b.viewport;
+        await putAssets(t, packed);
+        await t.put("boards", b);
+        await touch(t);
+        return { board: b };
+      });
+    },
     projectHistory(id) {
       return read(["projectVersions"], async (t) =>
-        (await t.all("projectVersions"))
-          .filter((v) => v.projectId === id)
-          .sort((a, b) => b.createdAt - a.createdAt),
+        (await t.by("projectVersions", "projectId", id)).sort((a, b) => b.createdAt - a.createdAt),
       );
     },
     projectVersion(id) {
@@ -751,9 +813,9 @@ export async function openWorkspace({
           }
         }
         for (const projectId of projectIds.values()) {
-          const history = (await t.all("projectVersions"))
-            .filter((v) => v.projectId === projectId)
-            .sort((a, b) => b.createdAt - a.createdAt);
+          const history = (await t.by("projectVersions", "projectId", projectId)).sort(
+            (a, b) => b.createdAt - a.createdAt,
+          );
           for (const v of history.slice(HISTORY_LIMIT)) await t.delete("projectVersions", v.id);
         }
         const revisions = await t.all("revisions");
@@ -768,9 +830,9 @@ export async function openWorkspace({
         }
         // Imported histories obey the same bound as newly created histories.
         for (const boardId of new Set(boardIds.values())) {
-          const rs = (await t.all("revisions"))
-            .filter((r) => r.boardId === boardId)
-            .sort((a, b) => b.createdAt - a.createdAt || b.revision - a.revision);
+          const rs = (await t.by("revisions", "boardId", boardId)).sort(
+            (a, b) => b.createdAt - a.createdAt || b.revision - a.revision,
+          );
           for (const r of rs.slice(HISTORY_LIMIT)) await t.delete("revisions", r.id);
         }
         const state = await t.get("workspace", "state"),

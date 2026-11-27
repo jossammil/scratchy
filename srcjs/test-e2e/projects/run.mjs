@@ -146,20 +146,18 @@ try {
           ],
         });
         await w.flush();
-        const elements = w.active.ctrl.api
-          .getSceneElements()
-          .map((e) =>
-            e.type === "text" && e.originalText === "Project body."
-              ? {
-                  ...e,
-                  x: 140,
-                  y: 260,
-                  strokeColor: "#e03131",
-                  version: e.version + 1,
-                  versionNonce: e.versionNonce + 1,
-                }
-              : e,
-          );
+        const elements = w.active.ctrl.api.getSceneElements().map((e) =>
+          e.type === "text" && e.originalText === "Project body."
+            ? {
+                ...e,
+                x: 140,
+                y: 260,
+                strokeColor: "#e03131",
+                version: e.version + 1,
+                versionNonce: e.versionNonce + 1,
+              }
+            : e,
+        );
         w.active.ctrl.api.updateScene({ elements, captureUpdate: "IMMEDIATELY" });
         await new Promise(requestAnimationFrame);
         await w.flush();
@@ -710,6 +708,53 @@ try {
       );
     },
   );
+  await check("drawing saves write one canvas and keep project history bounded", async () => {
+    const result = await page.evaluate(async (id) => {
+      const w = window.scratchy.workspace,
+        p = await w.store.project(id);
+      const revisions = async () =>
+        Object.fromEntries(
+          await Promise.all(
+            p.nodes.map(async (n) => [n.boardId, (await w.store.board(n.boardId)).board.revision]),
+          ),
+        );
+      const target = p.nodes[0].boardId;
+      await w.switchTo(target);
+      const before = await revisions(),
+        versions = (await w.store.projectHistory(id)).length;
+      for (let i = 0; i < 4; i++) {
+        await w.active.ctrl.add({
+          elements: [
+            { id: `sketch-${i}`, type: "ellipse", x: 900, y: 100 + i * 60, width: 40, height: 40 },
+          ],
+        });
+        await new Promise(requestAnimationFrame);
+        await w.flush();
+      }
+      const after = await revisions(),
+        latest = await w.store.project(id);
+      return {
+        nodes: p.nodes.length,
+        targetAdvanced: after[target] > before[target],
+        othersUnchanged: p.nodes.every(
+          (n) => n.boardId === target || after[n.boardId] === before[n.boardId],
+        ),
+        projectRevision: [p.revision, latest.revision],
+        newVersions: (await w.store.projectHistory(id)).length - versions,
+        kept: (await w.store.board(target)).scene.elements.filter((e) => e.id.startsWith("sketch-"))
+          .length,
+      };
+    }, projectId);
+    expect(
+      result.nodes > 1 &&
+        result.targetAdvanced &&
+        result.othersUnchanged &&
+        result.projectRevision[0] === result.projectRevision[1] &&
+        result.newVersions <= 1 &&
+        result.kept === 4,
+      JSON.stringify(result),
+    );
+  });
   await check(
     "full recovery ZIP restores projects, drafts, history and Markdown tabs in a fresh browser",
     async () => {
