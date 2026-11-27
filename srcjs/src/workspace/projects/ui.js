@@ -116,6 +116,7 @@ export class ProjectUI {
       clearTimeout(this.timer);
       this.timer = setTimeout(() => w.run(() => this.saveDraft()), 300);
       this.preview();
+      w.renderStatus();
     };
     this.$("master-apply").onclick = () => w.run(() => this.apply());
     this.$("master-force").onclick = () => w.run(() => this.apply(true));
@@ -382,11 +383,17 @@ export class ProjectUI {
     if (this.documentId) {
       this.w.$("ws-empty").hidden = true;
       this.preview();
-      document.title = `${this.current()?.title} · Markdown · scratchy`;
-      this.w.$("ws-save-status").textContent = this.dirty
-        ? "Markdown draft saved in this browser · Apply to update canvases"
-        : "Master Markdown saved in this browser";
     }
+  }
+  /** The window title and save status while a master Markdown tab is shown. */
+  status() {
+    if (!this.documentId) return null;
+    return {
+      title: `${this.current()?.title} · Markdown · scratchy`,
+      text: this.dirty
+        ? "Markdown draft saved in this browser · Apply to update canvases"
+        : "Master Markdown saved in this browser",
+    };
   }
   renderTree() {
     const tree = this.$("project-tree"),

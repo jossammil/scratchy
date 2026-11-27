@@ -688,13 +688,17 @@ class Workspace {
       ? `${dirty ? "• " : ""}${this.boards.get(s.board.id)?.title || s.board.title} · scratchy`
       : "All boards · scratchy";
     const failures = [...this.sessions.values()].some((session) => session.error);
-    const status = !s
-      ? "Choose a board or start a drawing."
-      : s.error
-        ? `Could not save: ${s.error.message}`
-        : s.pending || s.timer
-          ? "Saving in this browser…"
-          : `Saved in this browser${dirty ? " · Changes not saved to a file" : !s.handle ? " · No external file linked" : ""}`;
+    const master = this.projects?.status();
+    if (master) document.title = master.title;
+    const status = master
+      ? master.text
+      : !s
+        ? "Choose a board or start a drawing."
+        : s.error
+          ? `Could not save: ${s.error.message}`
+          : s.pending || s.timer
+            ? "Saving in this browser…"
+            : `Saved in this browser${dirty ? " · Changes not saved to a file" : !s.handle ? " · No external file linked" : ""}`;
     this.$("ws-save-status").textContent = status;
     this.$("ws-save-status").classList.toggle("ws-error", Boolean(s?.error));
     this.$("ws-retry").hidden = !failures;
