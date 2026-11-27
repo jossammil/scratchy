@@ -1,6 +1,6 @@
 # Projects, master Markdown and slides
 
-Implemented on `codex/panels` as the next part of the [multi-board workspace](implementation-plan.md). The persistent project explorer and the All boards collection share the same saved canvases. Open tabs remain independent editing sessions. This is a standalone browser feature; R, Sketch Studio and denr keep their existing interfaces.
+How the website's project explorer, master Markdown and slides work, and the storage rules behind them. The explorer and the All boards collection share the same saved canvases; open tabs remain independent editing sessions. This is a feature of the standalone website: R, Sketch Studio and denr keep their existing interfaces.
 
 ## Using projects
 
@@ -54,15 +54,27 @@ New canvases have a 1280 × 720 slide frame. Slides follow heading order, depth 
 
 Drafts must be applied or discarded before presenting/exporting. Each deck uses one frozen snapshot. Content outside a slide frame is identified for review and clipped at the frame boundary. Full workspace ZIP remains the recovery format for project history, board history, trash, drafts, libraries and tabs. Both ZIP types restore from **All boards → Restore ZIP…**. Old version-one backups still import. Restoring preserves existing projects; conflicts become separate projects with independent canvas IDs, and repeat imports skip identical copies. Ordinary files can also be opened directly; importing `.md` creates a new project. The manifest is the authoritative recovery source, so externally edited exported files should be imported individually rather than edited inside a recovery ZIP.
 
+## Boards, history and backups
+
+Boards have stable IDs, independently versioned content, file references and viewport state. Folders and the workspace layout are separate records. Images are stored once, keyed by SHA-256, so history does not repeat them; Excalidraw's file IDs and metadata are kept when scenes are reassembled, and garbage collection removes images nothing refers to any more.
+
+Saves are per editor session and debounced 300 ms. Switching, closing and backing up capture the editor directly and wait for its save. Only the visible editor receives keyboard commands; inactive open editors keep their Undo, and closed ones are released. Reloading restores tabs lazily with new Undo sessions. External file handles live only in memory and never follow duplicates or restored boards.
+
+Board history keeps the latest 50 versions: a checkpoint every five minutes of changed work, plus one before clearing, restoring or trashing. Viewport and selection changes never make history. Trash expires after 30 days, cleaned up at startup.
+
+Workspace ZIPs use the `scratchy-workspace` format (versions 1 and 2 restore). Current drawings are ordinary `.excalidraw` files; `manifest.json` and `assets/` carry organization, history, trash, libraries and layout. The whole archive is validated (records, relationships, fingerprints, images) before one import transaction. Existing work is kept: identical imports are skipped and conflicting versions get separate IDs. File permissions and Undo stacks are not included.
+
 ## Storage and conflicts
 
-IndexedDB version 3 adds projects, documents and whole-project versions to the existing board, asset and workspace stores. Original `kv` values remain intact. Project changes run through per-project queues and one transaction covering the master, hierarchy, scenes, assets and bounded history (50 versions). Revision comparisons protect both the project and its canvases. Concurrent stale edits recover a whole project rather than splitting a linked canvas from its source. An unchanged stale editor refreshes from the current project.
+IndexedDB version 4 holds boards, folders, revisions, assets, workspace state, projects, documents and whole-project versions, with indexes for boards by project, revisions by board and project versions by project. Upgrading from the single-drawing site (version 1) copies its scene, name and theme into a board in one transaction, together with a marker, so a retry cannot duplicate it; the original `kv` values stay as they were. A blocked upgrade asks other windows to close, and failed saves offer retry and a download of the drawing.
+
+Project changes run through one queue per project. A change to the master (Apply, outline edits, or canvas text flowing back) commits the master, hierarchy, scenes and images in one transaction. A drawing change that leaves the master untouched writes only that canvas. Project history keeps 50 whole-project versions: one before every outline, source, trash or restore change, and otherwise at most one every five minutes of drawing. Revision checks protect both the project and its canvases. Concurrent stale edits recover a whole project rather than splitting a linked canvas from its source, and an unchanged stale editor refreshes from the current project.
 
 If canvases change after a draft begins, the source editor shows the current source beside the draft. Choose **Keep current source** or **Apply this draft**; earlier source and drawings remain in project history. Removing a section preserves the prior project version and trashes its canvases. Whole-project trash expires after 30 days. Source IDs and images survive portable and full backups; file handles and session Undo stacks do not.
 
-Project and presentation code lives in its own `srcjs/src/workspace/projects/` and `presentations/` folders. Export libraries load on demand and are cached for offline use in the service worker's background pass. The shared editor only adds the optional `frameId` export argument. No R signatures changed. The site build includes a generated `workspace/THIRD-PARTY-NOTICES.txt` for bundled dependencies.
+Project and presentation code lives in `srcjs/src/workspace/projects/` and `presentations/`. Export libraries load on demand and are cached for offline use in the service worker's background pass. The shared editor only adds the optional `frameId` export argument. The site build includes a generated `workspace/THIRD-PARTY-NOTICES.txt` for bundled dependencies.
 
-## Verification commands
+## Checks
 
 From `srcjs/`:
 
@@ -72,11 +84,12 @@ WITH_R=1 npm test
 npm run build
 npm run site
 npm run e2e
-BROWSER=webkit npm run e2e
 npm run e2e:workspace
-BROWSER=webkit npm run e2e:workspace
 npm run e2e:projects
-BROWSER=webkit npm run e2e:projects
 ```
 
-From the repository root, run `Rscript -e 'devtools::test()'`. See [verification.md](verification.md) for observed results and environment limits. [roadmap.md](roadmap.md) holds the remaining work.
+Repeat the three browser suites with `BROWSER=webkit`, and run `Rscript -e 'devtools::test()'` from the repository root. CI runs all of them.
+
+## Limits
+
+Browser storage is not an off-device backup, and a browser does not confirm that a downloaded ZIP was kept. Closing a tab abruptly within the 300 ms save delay can lose that last change. Open editors use memory; close unused tabs. Undo is per visit. PowerPoint text is an editable approximation whose metrics depend on the fonts installed on the computer that opens it (choose Arial for portability); PDF uses rendered pages. Quarto/R execution, folder mirroring and richer Markdown are on the [roadmap](roadmap.md).

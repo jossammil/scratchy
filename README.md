@@ -161,14 +161,12 @@ The same editor runs without R:
   Peeps people, the style presets, Mermaid diagrams (offline), self-drawing
   animated SVGs, and Obsidian `.excalidraw.md` files. Named board tabs, folders,
   pins and thumbnails keep drawings together; **All boards** (Cmd/Ctrl+P)
-  searches titles and text inside drawings. Each open board retains its own
-  Undo history during a visit. Drawings stay in your browser and work offline.
-  Version history, 30-day trash, and full workspace ZIP backup/restore help
-  recover work. Browser autosave, saving an external drawing file, and a ZIP
-  backup are separate actions. On the `codex/panels` development branch, a left
-  project explorer adds nested canvases, bidirectional master Markdown, browser
-  slideshows, editable-text PowerPoint, PDF and portable project ZIP.
-  [Project workflow](dev/multi-board/projects-and-slides.md). [Workspace details and roadmap](dev/multi-board/README.md).
+  searches titles and text inside drawings. Version history, a 30-day trash and
+  workspace ZIP backups help recover work. The project explorer turns one
+  Markdown document into nested canvases, edited from either side, and presents
+  them as a slideshow or exports them to PowerPoint (with editable text), PDF or
+  a portable ZIP ([how projects work](https://github.com/jossammil/scratchy/blob/main/dev/multi-board/projects-and-slides.md)).
+  Drawings stay in your browser and work offline.
 - **[denr](https://github.com/jossammil/denr)**, the R workspace that runs in the
   browser, has it as its **Sketch** panel: open and save `.excalidraw` files in
   the workspace, put drawings into Quarto notes, and turn a ggplot into an
