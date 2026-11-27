@@ -117,10 +117,27 @@ to/fromObsidian, presets, restyleElements, sticker and Open Peeps helpers)
 and `files` (`readDrawingFile`, `drawingBlob`, `isDrawingName`,
 `drawingStem`).
 
-The website (`site/app.js`) keeps the drawing in IndexedDB (`scratchy`
+The website (`site/app.js`) keeps drawings in IndexedDB (`scratchy`
 database), opens and saves files with the File System Access API when the
 browser has it (downloads otherwise), and registers `sw.js`, which caches
 the core at install and the rest in the background.
+
+The standalone site now delegates collection management to
+`srcjs/src/workspace/`, built separately into `site-dist/workspace/`. It keeps
+one editor instance per visited open tab, mounts restored tabs lazily, and
+never adds the workspace UI to the R widget or denr. Its IndexedDB v2 adapter
+preserves the legacy `kv` keys and migrates their drawing transactionally.
+History shares image assets; full ZIPs include ordinary drawings and a
+versioned recovery manifest. See `dev/multi-board/` for the earlier plan,
+implementation details, recovery defaults and roadmap.
+
+Additive mount options: `initialViewport: { scrollX, scrollY, zoom }` skips the
+initial fit; `onStateChange({ elements, appState, files })` observes upstream
+changes before the legacy element-version filter; `onLibraryChange(items)`
+persists libraries in hosts that opt in. `controller.set({ name })` rerenders
+the export name without resetting the editor. The existing `onChange` and
+R/Shiny contracts are unchanged. `window.scratchy.ctrl` and `.doc` are getters
+for the active session, and `.workspace` is the standalone host.
 
 ## 6. Libraries and the licence rule
 
@@ -143,6 +160,7 @@ npm test            # unit tests (WITH_R=1 also checks R reads what JS writes)
 npm run build       # inst/htmlwidgets/lib/excalidraw-widget, inst/js/peeps.js, inst/stickers/index.json
 npm run site        # site-dist/
 npm run e2e         # Chromium; BROWSER=webkit for WebKit
+npm run e2e:workspace # multi-board migration, Undo, recovery, search and scale
 ```
 
 ```r
@@ -234,3 +252,22 @@ Handles: `el.scratchy` (the controller) on any mounted element;
 - **extras**: the scratchy sidebar.
 - **chart id**: `customData.scratchy.chart`, marking elements generated from one plot.
 - **denr**: the browser R workspace that embeds the editor as its Sketch panel.
+
+## 14. Standalone projects and slides
+
+The persistent project explorer and master Markdown live under
+`srcjs/src/workspace/projects/`; frame layout, browser presentation and PPTX/PDF
+exports live under `srcjs/src/workspace/presentations/`. See
+[the project workflow and storage contract](dev/multi-board/projects-and-slides.md).
+IndexedDB version 3 retains legacy stores and adds project/document/history stores.
+Source edits use explicit Apply; canvas text sync waits for native text editing to
+finish. Keep project CAS checks, stable node/block IDs and native element
+versionNonce values when changing synchronization. Closed tabs release editors;
+source refreshes preserve live editor Undo and deleted-element tombstones.
+
+`npm run e2e:projects` verifies synchronization, Undo, draft conflicts, editable
+PPTX text, PDF pages, image resources and ZIP recovery in a real browser. Repeat
+with `BROWSER=webkit`. Exporters are dynamic chunks; the site builder includes
+static dependencies in the startup cache and exporters in background caching.
+The shared `Scratchy.exportScene(scene, { frameId })` option fixes the export
+bounds to a native frame; all previous defaults remain.

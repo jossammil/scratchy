@@ -4,7 +4,7 @@ name: js
 
 on:
   push:
-    branches: [main]
+    branches: [main, codex/panels]
   pull_request:
   workflow_dispatch:
 
@@ -51,6 +51,12 @@ jobs:
       - name: Build the site
         run: npm run site
       - name: Chromium
-        run: npm run e2e
+        run: |
+          npm run e2e
+          npm run e2e:workspace
+          npm run e2e:projects
       - name: WebKit (Safari engine)
-        run: BROWSER=webkit npm run e2e
+        run: |
+          BROWSER=webkit npm run e2e
+          BROWSER=webkit npm run e2e:workspace
+          BROWSER=webkit npm run e2e:projects

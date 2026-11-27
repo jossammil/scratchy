@@ -1,5 +1,20 @@
 # scratchy 0.1.0
 
+* The browser workspace adds a persistent project explorer, nested canvases,
+  a bidirectional master Markdown document with saved drafts and whole-project
+  recovery, and portable project ZIP files. Browser slideshows, editable-text
+  PowerPoint and rendered PDF use included canvas frames in heading order.
+* Shared image export accepts an optional `frameId`; existing defaults and R
+  interfaces are unchanged.
+
+* The standalone browser editor gains a multi-board workspace: named tabs,
+  folders, pins, thumbnails and search inside drawings. Open boards keep
+  independent Undo sessions. Version history, 30-day trash and full workspace
+  ZIP backup/restore provide recovery; imports preserve existing work.
+* `Scratchy.mount()` adds optional initial viewport, raw state observation and
+  library-change hooks. `controller.set({ name })` updates export naming
+  without remounting. Existing R and denr callers keep their defaults.
+
 First public version, on GitHub with a browser version of the editor.
 
 * Renamed from excalidrawer to scratchy. Drawings tag what R generated in

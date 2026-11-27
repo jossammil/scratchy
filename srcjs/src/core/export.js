@@ -6,7 +6,7 @@ import { bytesToBase64 } from "./scene.js";
  * scene: { elements, appState, files }.
  * opts: { type: "png" | "svg", scale (png, default 2), padding (10),
  *         background (true), embed (false: put the scene inside the image),
- *         dark (false), as: "base64" (default) | "blob" }.
+ *         dark (false), as: "base64" (default) | "blob", frameId (optional) }.
  * Returns { type, data } (data: base64 PNG or SVG text), or a Blob with as = "blob".
  */
 export async function exportScene({ elements, appState, files }, opts = {}) {
@@ -17,6 +17,11 @@ export async function exportScene({ elements, appState, files }, opts = {}) {
     exportWithDarkMode: !!opts.dark,
   };
   const base = { elements, appState: state, files: files || {}, exportPadding: opts.padding ?? 10 };
+  if (opts.frameId) {
+    const frame = elements.find((e) => e.id === opts.frameId && !e.isDeleted && ["frame", "magicframe"].includes(e.type));
+    if (!frame) throw new Error("The slide frame was not found.");
+    base.exportingFrame = frame;
+  }
   if (opts.type === "png") {
     const scale = opts.scale || 2;
     const blob = await exportToBlob({ ...base, mimeType: "image/png", quality: 1,

@@ -32,9 +32,14 @@ function Editor({ opts, ctrl, onApi, onChange }) {
         zenModeEnabled: !!opts.zen,
         gridModeEnabled: !!opts.grid,
         theme: opts.theme || "light",
+        ...(opts.initialViewport ? {
+          scrollX: opts.initialViewport.scrollX,
+          scrollY: opts.initialViewport.scrollY,
+          zoom: { value: opts.initialViewport.zoom },
+        } : {}),
       },
       libraryItems: opts.libraryItems,
-      scrollToContent: true,
+      scrollToContent: !opts.initialViewport,
     };
   }, []);
   return (
@@ -43,6 +48,8 @@ function Editor({ opts, ctrl, onApi, onChange }) {
         initialData={initialData}
         excalidrawAPI={(api) => api && onApi(api)}
         onChange={onChange}
+        onLibraryChange={opts.onLibraryChange}
+        handleKeyboardGlobally={false}
         viewModeEnabled={opts.mode === "view"}
         langCode={opts.langCode}
         name={opts.name}
@@ -81,6 +88,9 @@ const mounted = new WeakMap();
  * opts: { scene, mode: "edit" | "view", theme: "light" | "dark", zen, grid,
  *         libraryItems, langCode, canvasActions, debounce (ms, default 400),
  *         onChange(json, { elements, appState, files }), onSelection(ids),
+ *         initialViewport: { scrollX, scrollY, zoom } (otherwise fit on load),
+ *         onStateChange({ elements, appState, files }) (unfiltered observation),
+ *         onLibraryChange(items),
  *         extras: true or { stickers: URL of the sticker libraries, download(name, blob, info),
  *                 fileName() } for the scratchy sidebar,
  *         menu: [{ label, onSelect(ctrl), shortcut } | { separator: true }]: items at
@@ -90,6 +100,7 @@ const mounted = new WeakMap();
  * be called straight away.
  */
 export function mount(el, opts = {}) {
+  opts = { ...opts };
   mounted.get(el)?.destroy();
   let api = null;
   let resolveReady;
@@ -106,6 +117,7 @@ export function mount(el, opts = {}) {
   }, opts.debounce ?? 400);
 
   const onChange = (elements, appState, files) => {
+    opts.onStateChange?.({ elements, appState, files });
     const v = getSceneVersion(elements);
     if (v === lastVersion) return;
     lastVersion = v;
@@ -159,7 +171,7 @@ export function mount(el, opts = {}) {
       if (!hadOld) api.scrollToContent(undefined, { fitToContent: true });
     }),
     scrollTo: when(() => api.scrollToContent(undefined, { fitToContent: true, animate: true })),
-    set: when(({ theme, viewMode, zen, grid, background } = {}) => {
+    set: when(({ theme, viewMode, zen, grid, background, name } = {}) => {
       const appState = {};
       if (theme) appState.theme = theme;
       if (viewMode !== undefined) appState.viewModeEnabled = viewMode;
@@ -167,6 +179,10 @@ export function mount(el, opts = {}) {
       if (grid !== undefined) appState.gridModeEnabled = grid;
       if (background) appState.viewBackgroundColor = background;
       api.updateScene({ appState });
+      if (name !== undefined) {
+        opts.name = name;
+        root.render(<Editor opts={opts} ctrl={ctrl} onApi={onApi} onChange={onChange} />);
+      }
     }),
     reset: when(() => api.resetScene()),
     /** See exportScene() for opts. */
