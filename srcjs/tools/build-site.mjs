@@ -9,6 +9,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, rmSync, statS
 import { dirname, join, relative, resolve } from "node:path";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
+import * as esbuild from "esbuild";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const at = (...p) => join(root, ...p);
@@ -32,6 +33,30 @@ if (keepR) { cpSync(keepR, join(out, "r"), { recursive: true }); rmSync(keepR, {
 cpSync(lib, join(out, "editor"), { recursive: true, filter: (src) => !/headless\.html$/.test(src) });
 cpSync(at("inst/stickers"), join(out, "stickers"), { recursive: true, filter: (src) => !/manifest\.csv$/.test(src) });
 for (const f of ["app.js", "app.css", "manifest.webmanifest", "icon-192.png", "icon-512.png"]) cpSync(at("site", f), join(out, f));
+const workspaceBuild = await esbuild.build({
+  entryPoints: [at("srcjs/src/workspace/index.js")], bundle: true, minify: true,
+  format: "esm", splitting: true, chunkNames: "chunks/[name]-[hash]", platform: "browser", target: ["es2020"],
+  outdir: join(out, "workspace"), legalComments: "external", metafile: true,
+});
+// Ship the actual bundled packages' notices, including transitive dependencies.
+const notices = new Map();
+for (const input of Object.keys(workspaceBuild.metafile.inputs).filter((p) => p.includes("node_modules/"))) {
+  let dir = dirname(resolve(input));
+  while (dir !== dirname(dir)) {
+    const metadata = join(dir, "package.json");
+    if (existsSync(metadata)) {
+      const pkg = JSON.parse(readFileSync(metadata, "utf8"));
+      if (pkg.name && pkg.version) {
+        const license = readdirSync(dir).find((name) => /^licen[cs]e(?:\.(?:md|txt))?$/i.test(name));
+        if (license) notices.set(`${pkg.name}@${pkg.version}`, `${pkg.name} ${pkg.version} (${pkg.license || "see license"})\n${pkg.homepage || ""}\n\n${readFileSync(join(dir, license), "utf8")}`);
+        break;
+      }
+    }
+    dir = dirname(dir);
+  }
+}
+writeFileSync(join(out, "workspace/THIRD-PARTY-NOTICES.txt"), [...notices.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([, text]) => text).join("\n\n--------------------\n\n"));
+cpSync(at("srcjs/src/workspace/fflate.LICENSE"), join(out, "workspace/fflate.LICENSE.txt"));
 cpSync(at("inst/COPYRIGHTS"), join(out, "COPYRIGHTS.txt"));
 cpSync(at("LICENSE.md"), join(out, "LICENSE.md"));
 writeFileSync(join(out, ".nojekyll"), "");
@@ -51,13 +76,14 @@ const visit = (rel) => {
   }
 };
 visit("editor/excalidraw-widget.js");
+visit("workspace/index.js");
 
 const walk = (dir) => readdirSync(dir).flatMap((f) => {
   const p = join(dir, f);
   return statSync(p).isDirectory() ? walk(p) : [relative(out, p)];
 });
 const all = walk(out).filter((f) => !f.startsWith("r/") && !/(^|\/)\.nojekyll$|\.LEGAL\.txt$|^sw\.js$/.test(f));
-const CORE = ["./", "index.html", "app.js", "app.css", "manifest.webmanifest", "icon-192.png",
+const CORE = ["./", "index.html", "app.js", "app.css", "workspace/index.css", "manifest.webmanifest", "icon-192.png",
               "editor/excalidraw-widget.css", "editor/VERSION.json", "stickers/index.json", ...core];
 const coreSet = new Set(CORE);
 const REST = all.filter((f) => !coreSet.has(f)).sort();

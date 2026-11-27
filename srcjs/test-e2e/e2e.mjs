@@ -84,9 +84,10 @@ await check("loads", async () => {
 
 await check("draws a rectangle with the mouse", async () => {
   await page.getByTitle(/^Rectangle/).first().click();
-  await page.mouse.move(300, 250);
+  const canvas = await page.locator(".ws-editor:not([hidden])").boundingBox();
+  await page.mouse.move(canvas.x + canvas.width * .45, canvas.y + canvas.height * .4);
   await page.mouse.down();
-  await page.mouse.move(500, 380, { steps: 5 });
+  await page.mouse.move(canvas.x + canvas.width * .65, canvas.y + canvas.height * .6, { steps: 5 });
   await page.mouse.up();
   const els = await scene();
   expect(els.length === 1 && els[0].type === "rectangle", `scene: ${els.map((e) => e.type)}`);

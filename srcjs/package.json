@@ -8,7 +8,9 @@
     "build": "node build.mjs",
     "test": "node --test \"test/*.test.js\"",
     "site": "node tools/build-site.mjs",
-    "e2e": "node test-e2e/e2e.mjs"
+    "e2e": "node test-e2e/e2e.mjs",
+    "e2e:workspace": "node test-e2e/workspace/run.mjs",
+    "e2e:projects": "node test-e2e/projects/run.mjs"
   },
   "dependencies": {
     "@excalidraw/excalidraw": "0.18.1",
@@ -19,7 +21,13 @@
     "@dicebear/core": "^9.4.2",
     "@dicebear/open-peeps": "^9.4.2",
     "esbuild": "^0.25.0",
+    "fflate": "0.8.3",
     "lz-string": "^1.5.0",
-    "playwright": "^1.65.1"
+    "mdast-util-from-markdown": "2.1.0",
+    "mdast-util-to-markdown": "2.2.4",
+    "pdf-lib": "1.17.1",
+    "playwright": "^1.65.1",
+    "pptxgenjs": "4.0.1",
+    "yaml": "2.9.1"
   }
 }

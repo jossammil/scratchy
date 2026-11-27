@@ -159,8 +159,14 @@ The same editor runs without R:
 - **[jossammil.github.io/scratchy](https://jossammil.github.io/scratchy/)** is the
   Excalidraw editor with scratchy's extras: the twelve sticker libraries, Open
   Peeps people, the style presets, Mermaid diagrams (offline), self-drawing
-  animated SVGs, and Obsidian `.excalidraw.md` files. Drawings stay in your
-  browser, and it keeps working offline once loaded.
+  animated SVGs, and Obsidian `.excalidraw.md` files. Named board tabs, folders,
+  pins and thumbnails keep drawings together; **All boards** (Cmd/Ctrl+P)
+  searches titles and text inside drawings. Version history, a 30-day trash and
+  workspace ZIP backups help recover work. The project explorer turns one
+  Markdown document into nested canvases, edited from either side, and presents
+  them as a slideshow or exports them to PowerPoint (with editable text), PDF or
+  a portable ZIP ([how projects work](https://github.com/jossammil/scratchy/blob/main/dev/multi-board/projects-and-slides.md)).
+  Drawings stay in your browser and work offline.
 - **[denr](https://github.com/jossammil/denr)**, the R workspace that runs in the
   browser, has it as its **Sketch** panel: open and save `.excalidraw` files in
   the workspace, put drawings into Quarto notes, and turn a ggplot into an
@@ -184,6 +190,10 @@ Bundled third-party pieces keep their own licences (see `inst/COPYRIGHTS` and
 - rough.js (MIT, Preet Shihn)
 - perfect-freehand (MIT, Steve Ruiz)
 - lz-string (MIT)
+- fflate (MIT; ZIP backup in the standalone browser workspace)
+- mdast utilities (MIT), YAML (ISC), PptxGenJS (MIT), pdf-lib (MIT), and
+  dependencies for the standalone project/slide workflow; the generated site
+  includes `workspace/THIRD-PARTY-NOTICES.txt`.
 - DiceBear with Pablo Stanley's Open Peeps (MIT code, CC0 art)
 - the Excalidraw editor and the excalidraw-libraries stickers (MIT)
 - Excalifont and Virgil (OFL-1.1)

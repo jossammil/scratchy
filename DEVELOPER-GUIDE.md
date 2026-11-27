@@ -117,10 +117,47 @@ to/fromObsidian, presets, restyleElements, sticker and Open Peeps helpers)
 and `files` (`readDrawingFile`, `drawingBlob`, `isDrawingName`,
 `drawingStem`).
 
-The website (`site/app.js`) keeps the drawing in IndexedDB (`scratchy`
+The website (`site/app.js`) keeps drawings in IndexedDB (`scratchy`
 database), opens and saves files with the File System Access API when the
 browser has it (downloads otherwise), and registers `sw.js`, which caches
 the core at install and the rest in the background.
+
+The site's workspace is in `srcjs/src/workspace/`, bundled on its own into
+`site-dist/workspace/` and never added to the R widget or denr:
+
+- `index.js`: tabs, the All boards collection, history, trash and backups.
+  Each visited open tab keeps its own editor (and Undo); restored tabs mount
+  lazily and closed ones are released.
+- `storage.js`: the IndexedDB adapter (version 4). It keeps the legacy `kv`
+  keys, migrates their drawing in one transaction, stores images once by
+  SHA-256, and indexes boards by project, revisions by board and project
+  versions by project. Every write checks revisions, so a stale window's edits
+  become a recovered board or project instead of overwriting newer work.
+- `backup.js`: workspace ZIPs, ordinary `.excalidraw` files plus a manifest
+  that is fully validated before anything is imported.
+- `projects/`: the explorer, master Markdown (`markdown.js`; hidden
+  `scratchy:node`/`scratchy:block` comments give headings and blocks stable
+  IDs) and project rules (`manager.js`). Source edits wait for an explicit
+  Apply; canvas text flows back once native text editing finishes. A drawing
+  change that leaves the master alone writes only that canvas; source and
+  outline changes commit the whole project. Keep the revision checks, the
+  node/block IDs and Excalidraw's `versionNonce` values when changing this.
+- `presentations/`: slide frames (`layout.js`), the slideshow, and PowerPoint
+  and PDF export. The exporters are dynamic chunks, cached in the service
+  worker's background pass.
+
+[The project workflow and storage contract](dev/multi-board/projects-and-slides.md)
+has the details; `dev/multi-board/roadmap.md` the next steps.
+
+Additive mount options: `initialViewport: { scrollX, scrollY, zoom }` skips the
+initial fit; `onStateChange({ elements, appState, files })` observes upstream
+changes before the legacy element-version filter; `onLibraryChange(items)`
+persists libraries in hosts that opt in. `controller.set({ name })` rerenders
+the export name without resetting the editor, and
+`exportScene(scene, { frameId })` fixes the export bounds to a frame. The
+existing `onChange` and R/Shiny contracts are unchanged. `window.scratchy.ctrl`
+and `.doc` are getters for the active session, and `.workspace` is the
+standalone host.
 
 ## 6. Libraries and the licence rule
 
@@ -143,6 +180,8 @@ npm test            # unit tests (WITH_R=1 also checks R reads what JS writes)
 npm run build       # inst/htmlwidgets/lib/excalidraw-widget, inst/js/peeps.js, inst/stickers/index.json
 npm run site        # site-dist/
 npm run e2e         # Chromium; BROWSER=webkit for WebKit
+npm run e2e:workspace # boards: migration, Undo, recovery, search and scale
+npm run e2e:projects  # projects: Markdown sync, drafts, slides, PPTX/PDF, ZIP
 ```
 
 ```r
@@ -225,7 +264,7 @@ tests and its `sketch-*` e2e checks.
 | Text boxes too wide/narrow in R | font not registered | `exc_fonts()`; systemfonts must see `inst/fonts` |
 
 Handles: `el.scratchy` (the controller) on any mounted element;
-`window.scratchy` (`{ ctrl, doc, version }`) on the website.
+`window.scratchy` (`{ ctrl, doc, workspace, version }`) on the website.
 
 ## 13. Glossary
 

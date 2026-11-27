@@ -2,6 +2,19 @@
 
 First public version, on GitHub with a browser version of the editor.
 
+* The browser version keeps many drawings: named tabs, folders, pins,
+  thumbnails and search inside drawings (**All boards**, Cmd/Ctrl+P). Open
+  boards keep their own Undo. Version history, a 30-day trash and workspace
+  ZIP backups recover work; restoring never overwrites what is there.
+* Its project explorer holds projects of nested canvases written as one
+  master Markdown document, editable from either side: headings are canvases,
+  paragraphs, lists, code and images their content. Projects present as a
+  browser slideshow and export to PowerPoint with editable text, to PDF, and
+  to a portable ZIP.
+* `Scratchy.mount()` gains optional `initialViewport`, `onStateChange` and
+  `onLibraryChange`, `controller.set({ name })` renames without remounting,
+  and `exportScene()` accepts a `frameId`. R and denr callers are unchanged.
+
 * Renamed from excalidrawer to scratchy. Drawings tag what R generated in
   `customData$scratchy` (it was `customData$excalidrawer`).
 
